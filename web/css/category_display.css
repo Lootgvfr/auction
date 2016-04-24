@@ -1,0 +1,74 @@
+.lot{
+	font-size: 18px;
+}
+.lot a{
+	text-decoration: none;
+}
+
+.item-pic{
+	display:block;
+	width: 200px;
+	height: 200px;
+}
+
+.item{
+	position: relative;
+	float:left;
+	border: 1px solid #aaa;
+	padding: 0 0 5px 0;
+	display:block;
+	width: 200px;
+	height: 290px;
+	margin: 0px 20px 10px 0px;
+}
+
+.grid{
+	padding: 0;
+	margin: 0;
+}
+
+.bottom{
+	padding: 5px 8px 5px 8px;
+	position: absolute;
+	bottom: 0;
+	display: block;
+}
+
+.item-name{
+	display: inline-block;
+	width: 100%;
+	margin: auto;
+	margin-top: 5px;
+	text-align: center;
+}
+
+.item-name:hover{
+	text-decoration: underline;
+}
+
+.item-price{
+	display:inline-block;
+	padding: 5px;
+	background-color: #555;
+	border-radius: 4px;
+	color: white;
+	float:left;
+}
+
+.item-buy{
+	display:inline-block;
+	padding: 5px;
+	margin-left: 5px;
+	float: left;
+}
+
+.item-buy:hover{
+	text-decoration: underline;
+}
+
+.item-comments{
+	display: block;
+	margin-top: 2px;
+	clear: left;
+	margin-left: 2px;
+}

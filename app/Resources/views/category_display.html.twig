@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ name }}{% endblock %}
+
+{% block css %}
+	<link href="{{ asset('css/category_display.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+	{% if lots %}
+		<ul class="grid">
+		{% for lot in lots %}
+			<li class="item">
+				<a href="{{ path('lot', {'name':lot.name}) }}">
+					<img class="item-pic" src="#" alt="{{ lot.name }}"/>
+					<div class="item-name">{{ lot.name }}</div><br>
+				</a>
+				<div class="bottom">
+					<div class="item-price">{{ lot.startPrice }} hrn.</div>
+					<a href="#" class="item-buy">Buy</a>
+					<div class="item-comments">0 comments</div>
+				</div>
+			</li>
+		{% endfor %}
+		</ul>
+	{% else %}
+		<p>No lots in this category yet.</p>
+	{% endif %}
+{% endblock %}

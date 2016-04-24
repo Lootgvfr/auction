@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Make a lot{% endblock %}
+
+{% block css %}
+	<link href="{{ asset('css/make-lot.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+	<input class="text" type="text" placeholder="Name">
+	<input class="text" type="text" placeholder="Description">
+	<input class="text" type="text" placeholder="Start price">
+	<input class="submit" type="submit" value="Submit"/>
+{% endblock %}
