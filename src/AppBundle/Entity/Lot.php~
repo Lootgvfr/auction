@@ -1,0 +1,54 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="lot")
+ */
+class Lot
+{
+	/**
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+	
+	/**
+     * @ORM\Column(type="string", length=100)
+     */
+    private $name;
+	
+	/**
+     * @ORM\Column(type="string", length=500)
+     */
+    private $description;
+	
+	/**
+     * @ORM\Column(type="string", length=30)
+     */
+    private $status;
+	
+	/**
+     * @ORM\Column(type="float", name="buyout_price")
+     */
+    private $buyoutPrice;
+	
+	/**
+     * @ORM\Column(type="float", name="start_price")
+     */
+    private $startPrice;
+	
+	/**
+     * @ORM\Column(type="datetime", name="start_date")
+     */
+    private $startDate;
+	
+	/**
+     * @ORM\Column(type="datetime", name="end_date")
+     */
+    private $endDate;
+}

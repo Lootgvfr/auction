@@ -18,7 +18,7 @@ class User
 	private $id;
 	
 	/**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string", length=100, unique=true)
      */
     private $login;
 	
@@ -31,6 +31,16 @@ class User
      * @ORM\Column(type="string", length=100)
      */
 	private $email;
+	
+	/**
+     * @ORM\Column(type="string", length=100, nullable=true)
+     */
+	private $name;
+	
+	/**
+     * @ORM\Column(type="string", length=30)
+     */
+	private $group;
 
     /**
      * Get id
@@ -109,5 +119,51 @@ class User
     public function getEmail()
     {
         return $this->email;
+    }
+
+    /**
+     * Set name
+     *
+     * @param string $name
+     * @return User
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    
+        return $this;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string 
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Set group
+     *
+     * @param string $group
+     * @return User
+     */
+    public function setGroup($group)
+    {
+        $this->group = $group;
+    
+        return $this;
+    }
+
+    /**
+     * Get group
+     *
+     * @return string 
+     */
+    public function getGroup()
+    {
+        return $this->group;
     }
 }
