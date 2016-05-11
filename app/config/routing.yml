@@ -1,6 +1,3 @@
 app:
     resource: "@AppBundle/Controller/"
     type:     annotation
-user_registration:
-    path:     /sign
-    defaults: { _controller: AppBundle:Registration:sign }
