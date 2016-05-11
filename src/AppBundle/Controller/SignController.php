@@ -27,7 +27,7 @@ class SignController extends Controller
 				{
 					$password = $this->get('security.password_encoder')
 						->encodePassword($user, $user->getPlainPassword());
-					$user->setPassword("lol");
+					$user->setPassword($password);
 					$user->setGroup("User");
 					
 					$em = $this->getDoctrine()->getManager();

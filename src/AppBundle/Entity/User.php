@@ -52,7 +52,7 @@ class User implements UserInterface
 	private $name;
 	
 	/**
-     * @ORM\Column(type="string", length=30)
+     * @ORM\Column(type="string", length=30, name="group_name")
      */
 	private $group;
 	
