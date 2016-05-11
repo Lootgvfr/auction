@@ -16,7 +16,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class User implements UserInterface
 {
 	/**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
