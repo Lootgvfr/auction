@@ -39,6 +39,10 @@ html, body {
 	font-weight: bold;
 	font-size: 17px;
 }
+.logged a:hover{
+	font-size: 16px !important;
+	color: #42A5F5;
+}
 @font-face {
 	font-family: Alegreya;
 	src: url(fonts/AlegreyaSC-Regular.ttf);
@@ -110,7 +114,7 @@ a{
 .menu{
 	font-family:'Palatino Linotype';
 	background-color: #e71c1c;
-	/*background: linear-gradient(to top, #CD0000, #FF0000);*/
+	
 	box-shadow: 2px 2px 5px black;
 	min-width: 900px;
 	height: 40px;
