@@ -2,6 +2,10 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Category;
+use AppBundle\Entity\Property;
+use AppBundle\Entity\Value;
+use AppBundle\Entity\Lot;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,6 +17,19 @@ class LotController extends Controller
      */
     public function makeLotAction(Request $request)
     {
+		$em = $this->getDoctrine()->getManager();
+
+		// tells Doctrine you want to (eventually) save the Product (no queries yet)
+		$em->persist($product);
+
+		// actually executes the queries (i.e. the INSERT query)
+		$em->flush();
+		
+		$category = new Category();
+		$category->setName("Notebooks");
+		$category2 = new Category();
+		$category2->setName("Phones");
+		
 		
         return $this->render('make-lot.html.twig', array(
         ));
