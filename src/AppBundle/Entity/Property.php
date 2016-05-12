@@ -3,6 +3,8 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+
 
 /**
  * @ORM\Entity
@@ -23,15 +25,24 @@ class Property
     private $name;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string", length=100, name="p_range")
      */
     private $range;
 	
 	/**
-     * @ORM\OneToOne(targetEntity="Category")
-     * @ORM\JoinColumn(name="category_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="Category")
      */
     private $category;
+	
+	/**
+	 * @ORM\OneToMany(targetEntity="Value", mappedBy="property")
+	 */
+	 private $values;
+	 
+	function __construct()
+	{
+		$this->values = new ArrayCollection();
+	}
 
     /**
      * Get id
@@ -110,5 +121,38 @@ class Property
     public function getCategory()
     {
         return $this->category;
+    }
+
+    /**
+     * Add values
+     *
+     * @param \AppBundle\Entity\Value $values
+     * @return Property
+     */
+    public function addValue(\AppBundle\Entity\Value $values)
+    {
+        $this->values[] = $values;
+    
+        return $this;
+    }
+
+    /**
+     * Remove values
+     *
+     * @param \AppBundle\Entity\Value $values
+     */
+    public function removeValue(\AppBundle\Entity\Value $values)
+    {
+        $this->values->removeElement($values);
+    }
+
+    /**
+     * Get values
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getValues()
+    {
+        return $this->values;
     }
 }

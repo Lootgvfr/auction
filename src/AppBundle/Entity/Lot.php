@@ -3,6 +3,8 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+
 
 /**
  * @ORM\Entity
@@ -51,6 +53,22 @@ class Lot
      * @ORM\Column(type="datetime", name="end_date")
      */
     private $endDate;
+	
+	/**
+	 * @ORM\OneToMany(targetEntity="Value", mappedBy="lot")
+	 */
+	private $values;
+	
+	/**
+	 * @ORM\OneToMany(targetEntity="Bid", mappedBy="lot")
+	 */
+	private $bids;
+	 
+	function __construct()
+	{
+		$this->values = new ArrayCollection();
+		$this->bids = new ArrayCollection();
+	}
 
     /**
      * Get id
@@ -221,5 +239,71 @@ class Lot
     public function getEndDate()
     {
         return $this->endDate;
+    }
+
+    /**
+     * Add values
+     *
+     * @param \AppBundle\Entity\Value $values
+     * @return Lot
+     */
+    public function addValue(\AppBundle\Entity\Value $values)
+    {
+        $this->values[] = $values;
+    
+        return $this;
+    }
+
+    /**
+     * Remove values
+     *
+     * @param \AppBundle\Entity\Value $values
+     */
+    public function removeValue(\AppBundle\Entity\Value $values)
+    {
+        $this->values->removeElement($values);
+    }
+
+    /**
+     * Get values
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getValues()
+    {
+        return $this->values;
+    }
+
+    /**
+     * Add bids
+     *
+     * @param \AppBundle\Entity\Bid $bids
+     * @return Lot
+     */
+    public function addBid(\AppBundle\Entity\Bid $bids)
+    {
+        $this->bids[] = $bids;
+    
+        return $this;
+    }
+
+    /**
+     * Remove bids
+     *
+     * @param \AppBundle\Entity\Bid $bids
+     */
+    public function removeBid(\AppBundle\Entity\Bid $bids)
+    {
+        $this->bids->removeElement($bids);
+    }
+
+    /**
+     * Get bids
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getBids()
+    {
+        return $this->bids;
     }
 }

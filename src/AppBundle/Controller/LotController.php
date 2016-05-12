@@ -2,6 +2,10 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Category;
+use AppBundle\Entity\Property;
+use AppBundle\Entity\Value;
+use AppBundle\Entity\Lot;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -9,11 +13,27 @@ use Symfony\Component\HttpFoundation\Request;
 class LotController extends Controller
 {
 	/**
-     * @Route("/make_lot", name="make-lot")
+     * @Route("/make_lot/{category}", name="make-lot-cat")
      */
-    public function makeLotAction(Request $request)
+    public function makeLotAction(Request $request, $category)
     {
+		$error = '';
+		$category = $this->getDoctrine()->getRepository('AppBundle:Category')->findOneByName($category);
+		$properties = $category->getProperties();
         return $this->render('make-lot.html.twig', array(
+			"properties" => $properties,
+			"error" => $error
+        ));
+    }
+	
+	/**
+     * @Route("/make_lot_choose", name="make-lot")
+     */
+    public function makeLotChooseAction(Request $request)
+    {
+		$categories = $this->getDoctrine()->getRepository('AppBundle:Category')->findAll();
+        return $this->render('make-lot-choose.html.twig', array(
+			"categories" => $categories
         ));
     }
 

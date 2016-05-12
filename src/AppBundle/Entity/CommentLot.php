@@ -3,6 +3,8 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+
 
 /**
  * @ORM\Entity
@@ -44,8 +46,7 @@ class CommentLot
     private $lot;
 	
 	/**
-     * @ORM\OneToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="author_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="User")
      */
     private $author;
 
