@@ -10,26 +10,35 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 
-class Register extends AbstractType
+class Edit_profile extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-			->add('username', TextType::class, array(
-				'attr' => array('placeholder' => 'Username', 'class' => 'text-input'),
+			->add('name', TextType::class, array(
+				'attr' => array('placeholder' => 'Name', 'class' => 'text-input', 'value'=> $options.name),
 				'label' => false
 			 ))
             ->add('email', EmailType::class, array(
-				'attr' => array('placeholder' => 'Email', 'class' => 'text-input'),
+				'attr' => array('placeholder' => 'Email', 'class' => 'text-input', 'data'=>$options.email),
 				'label' => false
 			 ))
-            ->add('plainPassword', RepeatedType::class, array(
-                'type' => PasswordType::class,
-				'invalid_message' => 'The password fields must match',
-                'first_options'  => array('label' => false, 'attr' => array('placeholder' => 'Password', 'class' => 'text-input')),
-                'second_options' => array('label' => false, 'attr' => array('placeholder' => 'Repeat password', 'class' => 'text-input')),
-            )
-        );
+			->add('address', TextType::class, array(
+				'attr' => array('placeholder' => 'Email', 'class' => 'text-input', 'data'=>$options.address),
+				'label' => false
+			 ))
+			 ->add('phone', TextType::class, array(
+				'attr' => array('placeholder' => 'Email', 'class' => 'text-input', 'data'=>$options.phone),
+				'label' => false
+			 ))
+			 ->add('info', TextareaType::class, array(
+				'attr' => array('placeholder' => 'Email', 'class' => 'textarea', 'data'=> $options.info),
+				'label' => false
+			 ))
+            ->add('file', FileType::class, array(
+			'attr' => array('data' => $options.file))
+			)
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver)

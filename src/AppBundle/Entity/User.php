@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * @ORM\Entity
@@ -55,6 +56,81 @@ class User implements UserInterface
      * @ORM\Column(type="string", length=30, name="group_name")
      */
 	private $group;
+	
+	/**
+     * @ORM\Column(type="string", length=200, nullable=true)
+     */
+	private $address;
+	
+	/**
+     * @ORM\Column(type="string", length=15, nullable=true)
+     */
+	private $phone;
+	
+	/**
+     * @ORM\Column(type="text", length=2000, nullable=true)
+     */
+	private $info;
+	
+	 /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $path_image;
+	
+	/**
+     * @Assert\File(maxSize="6000000")
+     */
+    private $file;
+
+    /**
+     * Sets file.
+     *
+     * @param UploadedFile $file
+     */
+    public function setFile(UploadedFile $file = null)
+    {
+        $this->file = $file;
+    }
+
+    /**
+     * Get file.
+     *
+     * @return UploadedFile
+     */
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+	
+	public function getAbsolutePath()
+    {
+        return null === $this->path
+            ? null
+            : $this->getUploadRootDir().'/'.$this->path;
+    }
+
+    public function getWebPath()
+    {
+        return null === $this->path
+            ? null
+            : $this->getUploadDir().'/'.$this->path;
+    }
+
+    protected function getUploadRootDir()
+    {
+        // the absolute directory path where uploaded
+        // documents should be saved
+        return __DIR__.'/../../../../web/'.$this->getUploadDir();
+    }
+
+    protected function getUploadDir()
+    {
+        // get rid of the __DIR__ so it doesn't screw up
+        // when displaying uploaded doc/image in the view.
+        return 'uploads/documents';
+    }
+	
 	
 	public function getSalt()
     {
@@ -223,5 +299,97 @@ class User implements UserInterface
     public function getGroup()
     {
         return $this->group;
+    }
+
+    /**
+     * Set address
+     *
+     * @param string $address
+     * @return User
+     */
+    public function setAddress($address)
+    {
+        $this->address = $address;
+    
+        return $this;
+    }
+
+    /**
+     * Get address
+     *
+     * @return string 
+     */
+    public function getAddress()
+    {
+        return $this->address;
+    }
+
+    /**
+     * Set phone
+     *
+     * @param string $phone
+     * @return User
+     */
+    public function setPhone($phone)
+    {
+        $this->phone = $phone;
+    
+        return $this;
+    }
+
+    /**
+     * Get phone
+     *
+     * @return string 
+     */
+    public function getPhone()
+    {
+        return $this->phone;
+    }
+
+    /**
+     * Set info
+     *
+     * @param string $info
+     * @return User
+     */
+    public function setInfo($info)
+    {
+        $this->info = $info;
+    
+        return $this;
+    }
+
+    /**
+     * Get info
+     *
+     * @return string 
+     */
+    public function getInfo()
+    {
+        return $this->info;
+    }
+
+    /**
+     * Set path_image
+     *
+     * @param string $pathImage
+     * @return User
+     */
+    public function setPathImage($pathImage)
+    {
+        $this->path_image = $pathImage;
+    
+        return $this;
+    }
+
+    /**
+     * Get path_image
+     *
+     * @return string 
+     */
+    public function getPathImage()
+    {
+        return $this->path_image;
     }
 }
