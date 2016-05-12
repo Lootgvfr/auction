@@ -17,7 +17,7 @@
 						<a href="{{ path('register') }}">Register</a>
 						<br> <a href="{{ path('login') }}">Login</a>
 					{% else %}
-						<div class="logged">Logged in as <b>{{ app.user.username }}</b></div>
+						<div class="logged">Logged in as <b><a href="{{ path('profile', {'username': app.user.username}) }}">{{ app.user.username }}</a></b></div>
 						<a href="{{ path('logout') }}">Log Out</a>
 					{% endif %}
 				</div>
