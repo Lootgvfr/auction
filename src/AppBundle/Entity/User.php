@@ -16,7 +16,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class User implements UserInterface
 {
 	/**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
@@ -52,7 +52,7 @@ class User implements UserInterface
 	private $name;
 	
 	/**
-     * @ORM\Column(type="string", length=30)
+     * @ORM\Column(type="string", length=30, name="group_name")
      */
 	private $group;
 	
