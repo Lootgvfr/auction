@@ -11,52 +11,53 @@ use Symfony\Component\HttpFoundation\Request;
 class SignController extends Controller
 {
     /**
-     * @Route("/register", name="register")
+     * @Route("/sign", name="sign")
      */
-    public function registerAction(Request $request)
+    public function signAction(Request $request)
     {
+		$logger = $this->get('logger');
 		$user = new User();
         $formRegister = $this->createForm(Register::class, $user);
 		if('POST' === $request->getMethod())
 		{
-			$formRegister->handleRequest($request);
-			if ($formRegister->isSubmitted() && $formRegister->isValid()) 
+			if ($request->request->has('register'))
 			{
-				$password = $this->get('security.password_encoder')
-					->encodePassword($user, $user->getPlainPassword());
-				$user->setPassword($password);
-				$user->setGroup("User");
-				
-				$em = $this->getDoctrine()->getManager();
-				$em->persist($user);
-				$em->flush();
-				return $this->redirectToRoute('login');
+				$formRegister->handleRequest($request);
+				if ($formRegister->isSubmitted() && $formRegister->isValid()) 
+				{
+					$password = $this->get('security.password_encoder')
+						->encodePassword($user, $user->getPlainPassword());
+					$user->setPassword($password);
+					$user->setGroup("User");
+					
+					$em = $this->getDoctrine()->getManager();
+					$em->persist($user);
+					$em->flush();
+					
+					return $this->redirectToRoute('sign');
+				}
+			}
+			else if ($request->request->has('login'))
+			{
+				// LOGIN FORM HERE
 			}
 		}
+			$authenticationUtils = $this->get('security.authentication_utils');
 
-        return $this->render('register.html.twig', 
-			array('form' => $formRegister->createView())
+		// get the login error if there is one
+		$error = $authenticationUtils->getLastAuthenticationError();
+
+		// last username entered by the user
+		$lastUsername = $authenticationUtils->getLastUsername();
+
+
+        return $this->render('sign.html.twig', 
+			array('form' => $formRegister->createView(),
+			'last_username' => $lastUsername,
+            'error'         => $error
+			)
 			);
     }
 	
-	/**
-     * @Route("/login", name="login")
-     */
-    public function loginAction(Request $request)
-    {
-        $authenticationUtils = $this->get('security.authentication_utils');
-
-		$error = $authenticationUtils->getLastAuthenticationError();
-
-		$lastUsername = $authenticationUtils->getLastUsername();
-
-		return $this->render(
-			'login.html.twig',
-			array(
-				'last_username' => $lastUsername,
-				'error'         => $error,
-			)
-		);
-    }
 }
 ?>

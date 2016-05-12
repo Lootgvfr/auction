@@ -27,15 +27,6 @@ class MainController extends Controller
     }
 	
 	/**
-     * @Route("/make_lot", name="make-lot")
-     */
-    public function makeLotAction(Request $request)
-    {
-        return $this->render('make-lot.html.twig', array(
-        ));
-    }
-	
-	/**
      * @Route("/contacts", name="contacts")
      */
     public function contactsAction(Request $request)
@@ -60,27 +51,6 @@ class MainController extends Controller
         return $this->render('category_display.html.twig', array(
 			"lots" => $lotsFiltered,
 			"name" => $name
-        ));
-    }
-	
-	/**
-     * @Route("/lots/{name}", name="lot")
-     */
-    public function lotAction(Request $request, $name)
-    {
-		$found = false;
-		$lot = [];
-		for ($i = 0; $i < count($this::$lots); $i++)
-		{
-			if ($this::$lots[$i]["name"] == $name)
-			{
-				$lot = $this::$lots[$i];
-				$found = true;
-			}
-		}
-        return $this->render('lot.html.twig', array(
-			"found" => $found,
-			"lot" => $lot
         ));
     }
 	

@@ -2,10 +2,13 @@
 
 namespace AppBundle\Controller;
 
+<<<<<<< HEAD
 use AppBundle\Entity\Category;
 use AppBundle\Entity\Property;
 use AppBundle\Entity\Value;
 use AppBundle\Entity\Lot;
+=======
+>>>>>>> master
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,6 +20,7 @@ class LotController extends Controller
      */
     public function makeLotAction(Request $request)
     {
+<<<<<<< HEAD
 		$em = $this->getDoctrine()->getManager();
 
 		// tells Doctrine you want to (eventually) save the Product (no queries yet)
@@ -31,6 +35,8 @@ class LotController extends Controller
 		$category2->setName("Phones");
 		
 		
+=======
+>>>>>>> master
         return $this->render('make-lot.html.twig', array(
         ));
     }
