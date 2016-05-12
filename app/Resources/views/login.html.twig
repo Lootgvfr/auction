@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Sign in | Sign up{% endblock %}
+
+{% block css %}
+	<link href="{{ asset('css/sign.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block page %}
+<div class="wrapper">
+	<div class="div-left">
+		<div class="headline">
+			<div class="red">L</div>ogin
+		</div>
+		<div class="sign-cont">
+			<form action="{{ path('login') }}" method="post">
+				<input class="text-input" type="text" id="username" name="_username" value="{{ last_username }}" placeholder="Username"/>
+
+				<input class="text-input" type="password" id="password" name="_password" placeholder="Password"/>
+				
+				<input type="hidden" name="_target_path" value="{{ path('home') }}" />
+
+				<button class="submit" type="submit">login</button>
+				
+				{% if error %}
+					<div class="error">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+				{% endif %}
+			</form>
+		</div>	
+	</div>
+</div>
+{% endblock %}
