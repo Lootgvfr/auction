@@ -8,7 +8,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 class MainController extends Controller
 {
-	private static $categories = ["Notebooks", "Phones"];
 	private static $lots = [
 		["category"=>"Notebooks", "name"=>"Lenovo HZ-1234", "description"=>"Good computer.", "startPrice"=>5000],
 		["category"=>"Notebooks", "name"=>"Asus Transformer Super Pro 3000", "description"=>"100500 in 1!", "startPrice"=>10000],
@@ -56,8 +55,9 @@ class MainController extends Controller
 	
 	public function categoriesAction()
 	{
+		$categories = $this->getDoctrine()->getRepository('AppBundle:Category')->findAll();
 		return $this->render('categories.html.twig', array(
-			"categories" => $this::$categories
+			"categories" => $categories
         ));
 	}
 }

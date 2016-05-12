@@ -240,4 +240,70 @@ class Lot
     {
         return $this->endDate;
     }
+
+    /**
+     * Add values
+     *
+     * @param \AppBundle\Entity\Value $values
+     * @return Lot
+     */
+    public function addValue(\AppBundle\Entity\Value $values)
+    {
+        $this->values[] = $values;
+    
+        return $this;
+    }
+
+    /**
+     * Remove values
+     *
+     * @param \AppBundle\Entity\Value $values
+     */
+    public function removeValue(\AppBundle\Entity\Value $values)
+    {
+        $this->values->removeElement($values);
+    }
+
+    /**
+     * Get values
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getValues()
+    {
+        return $this->values;
+    }
+
+    /**
+     * Add bids
+     *
+     * @param \AppBundle\Entity\Bid $bids
+     * @return Lot
+     */
+    public function addBid(\AppBundle\Entity\Bid $bids)
+    {
+        $this->bids[] = $bids;
+    
+        return $this;
+    }
+
+    /**
+     * Remove bids
+     *
+     * @param \AppBundle\Entity\Bid $bids
+     */
+    public function removeBid(\AppBundle\Entity\Bid $bids)
+    {
+        $this->bids->removeElement($bids);
+    }
+
+    /**
+     * Get bids
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getBids()
+    {
+        return $this->bids;
+    }
 }
