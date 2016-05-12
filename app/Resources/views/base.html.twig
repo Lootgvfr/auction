@@ -13,8 +13,13 @@
 			<div class="inside-header">
 				<h1 class="title"><a href="{{ path('home') }}">Auction</a></h1>
 				<div class="entrance">
-					<a href="{{ path('sign') }}">Sign in </a>
-					<br> <a href="{{ path('sign') }}">Sign up</a>
+					{% if not is_granted('IS_AUTHENTICATED_FULLY') %}
+						<a href="{{ path('register') }}">Register</a>
+						<br> <a href="{{ path('login') }}">Login</a>
+					{% else %}
+						<div class="logged">Logged in as <b>{{ app.user.username }}</b></div>
+						<a href="{{ path('logout') }}">Log Out</a>
+					{% endif %}
 				</div>
 			</div>
 		</header>
