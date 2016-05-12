@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Sign in | Sign up{% endblock %}
+
+{% block css %}
+	<link href="{{ asset('css/sign.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block page %}
+<div class="wrapper">
+	<div class="div-right">
+		<div class="headline">
+			<div class="red">R</div>egister
+		</div>
+		<div class="sign-cont">
+		{{ form_start(form) }}
+			{{ form_widget(form.username) }}
+			{{ form_widget(form.email) }}
+			{{ form_widget(form.plainPassword.first) }}
+			{{ form_widget(form.plainPassword.second) }}
+			{{ form_errors(form.plainPassword.first) }}
+			{{ form_errors(form.plainPassword.second) }}
+
+			<button class="submit" type="submit">Register</button>
+		{{ form_end(form) }}
+		</div>
+	</div>
+</div>
+{% endblock %}
