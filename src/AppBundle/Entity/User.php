@@ -6,6 +6,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+
 
 /**
  * @ORM\Entity
@@ -55,6 +57,35 @@ class User implements UserInterface
      * @ORM\Column(type="string", length=30, name="group_name")
      */
 	private $group;
+	
+	/**
+	 * @ORM\OneToMany(targetEntity="CommentUser", mappedBy="seller")
+	 */
+	private $user_comments_to;
+	 
+	/**
+	 * @ORM\OneToMany(targetEntity="CommentUser", mappedBy="author")
+	 */
+	private $user_comments_by;
+	
+	/**
+	 * @ORM\OneToMany(targetEntity="CommentLot", mappedBy="author")
+	 */
+	private $lot_comments_by;
+	
+	/**
+	 * @ORM\OneToMany(targetEntity="Bid", mappedBy="user")
+	 */
+	private $bids;
+	
+	function __construct() 
+	{
+		$this->properties = new ArrayCollection();
+		$this->user_comments_to = new ArrayCollection();
+		$this->user_comments_by = new ArrayCollection();
+		$this->lot_comments_by = new ArrayCollection();
+		$this->bids = new ArrayCollection();
+	}
 	
 	public function getSalt()
     {

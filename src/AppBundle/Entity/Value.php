@@ -3,6 +3,8 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+
 
 /**
  * @ORM\Entity
@@ -23,14 +25,12 @@ class Value
     private $val;
 	
 	/**
-     * @ORM\OneToOne(targetEntity="Property")
-     * @ORM\JoinColumn(name="property_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="Property")
      */
     private $property;
 	
 	/**
-     * @ORM\OneToOne(targetEntity="Lot")
-     * @ORM\JoinColumn(name="lot_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="Lot")
      */
     private $lot;
 

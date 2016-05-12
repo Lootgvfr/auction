@@ -3,6 +3,8 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+
 
 /**
  * @ORM\Entity
@@ -28,8 +30,12 @@ class Bid
     private $date;
 	
 	/**
-     * @ORM\OneToOne(targetEntity="Lot")
-     * @ORM\JoinColumn(name="lot_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="User")
+     */
+    private $user;
+	
+	/**
+     * @ORM\ManyToOne(targetEntity="Lot")
      */
     private $lot;
 

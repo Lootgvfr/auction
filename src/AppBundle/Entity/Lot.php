@@ -3,6 +3,8 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+
 
 /**
  * @ORM\Entity
@@ -51,6 +53,22 @@ class Lot
      * @ORM\Column(type="datetime", name="end_date")
      */
     private $endDate;
+	
+	/**
+	 * @ORM\OneToMany(targetEntity="Value", mappedBy="lot")
+	 */
+	private $values;
+	
+	/**
+	 * @ORM\OneToMany(targetEntity="Bid", mappedBy="lot")
+	 */
+	private $bids;
+	 
+	function __construct()
+	{
+		$this->values = new ArrayCollection();
+		$this->bids = new ArrayCollection();
+	}
 
     /**
      * Get id

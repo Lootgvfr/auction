@@ -22,7 +22,17 @@ class Category
      * @ORM\Column(type="string", length=100)
      */
     private $name;
-
+	
+	/**
+	 * @ORM\OneToMany(targetEntity="Property", mappedBy="category")
+	 */
+	 private $properties;
+	
+	function __construct() 
+	{
+		$this->properties = new ArrayCollection();
+	}
+	
     /**
      * Get id
      *
