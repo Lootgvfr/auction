@@ -13,9 +13,14 @@
 			<div class="red">A</div>uthorize
 		</div>
 		<div class="sign-cont">
-			<input class="text-input" type="text" name="login" placeholder="Login">
-			<input class="text-input" type="password" name="password" placeholder="Password">
-			<input class="submit" type="submit" name="sign_in" value="Sign in">
+			<form action="{{ path('sign') }}" method="post">
+			
+			<input type="text" id="username" name="_username" value="{{ last_username }}" />
+
+			<input type="password" id="password" name="_password" />
+			
+			<button type="submit">login</button>
+		</form>
 		</div>	
 	</div>
 	<div class="div-right">
