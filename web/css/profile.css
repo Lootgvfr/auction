@@ -1,0 +1,9 @@
+.whole
+{
+	-webkit-flex: 1;      
+	flex: 1; 
+	font-family: "Georgia";
+	padding: 20px 25px 20px 25px;
+	background-color: #fff;
+	border: 1px solid #ceccbd;
+}
