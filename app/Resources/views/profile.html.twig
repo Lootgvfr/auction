@@ -7,18 +7,57 @@
 {% endblock %}
 
 {% block page %}
-<div class="parrent">
-	<div class="whole">
+<div class="parent">
+	<div class="content">
 		<div class="content_title">User Profile</div>
-		<div class="avatar"><img src="" alt="Profile image"></div>
-		<div class="profile_info">
-			<ul>
-				<li><div class="info_li">Username: </div><b>{{ username }}<b/>
-				<li><div class="info_li">Name: </div><b>{{ name }}<b/>
-				<li><div class="info_li">Email: </div><b>{{ email }}<b/>
-				<li><div class="info_li">Group: </div><b>{{ group }}<b/>
-			</ul>
+		<div class="avatar"><img src="" alt="Profile image"><br>
+		{% if username == app.user.username %}
+		<a href="{{path('edit')}}"> Edit profile</a>
+		{% endif %}
 		</div>
+		
+			<table class="profile_info">
+			<tr>
+				<td width="130">
+				Username: 
+				</td>
+				<td width="300">
+				{{ username }}
+				</td>
+			</tr>
+			<tr>
+				<td>
+				Name: 
+				</td>
+				<td>
+				{{ name }}
+				</td>
+			</tr>
+			<tr>
+				<td>
+				Email:
+				</td>
+				<td>
+				{{ email }}
+				</td>
+			</tr>
+			<tr>
+				<td>
+				Group:
+				</td>
+				<td>
+				{{ group }}
+				</td>
+			</tr>
+			<tr>
+				<td>
+				</td>
+				<td>
+				
+				</td>
+			</tr>
+			</table>
+		
 	</div>
 </div>
 {% endblock %}

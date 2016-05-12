@@ -1,9 +1,33 @@
-.whole
+.content_title
 {
-	-webkit-flex: 1;      
-	flex: 1; 
-	font-family: "Georgia";
-	padding: 20px 25px 20px 25px;
-	background-color: #fff;
-	border: 1px solid #ceccbd;
+	font-family:'Palatino Linotype';
+	font-size: 20px;
+	line-height: 30px;
+	margin: 0 0 15px 15px;
 }
+.avatar
+{
+	margin: 15px;
+	position: relative;
+	float: left;
+}
+.avatar img
+{
+	height: 150px;
+	width: 150px;
+}
+ul
+{
+	margin: 0;
+	list-style: none;
+	
+}
+li {
+	display: inline;
+}
+.profile_info{
+	display: block;
+	margin: 30px 0 15px 200px;
+}
+
+
