@@ -31,6 +31,7 @@ class Property
 	
 	/**
      * @ORM\ManyToOne(targetEntity="Category")
+	 * @ORM\JoinColumn(name="category_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $category;
 	

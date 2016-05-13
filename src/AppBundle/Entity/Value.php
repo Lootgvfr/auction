@@ -26,11 +26,13 @@ class Value
 	
 	/**
      * @ORM\ManyToOne(targetEntity="Property")
+	 * @ORM\JoinColumn(name="property_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $property;
 	
 	/**
      * @ORM\ManyToOne(targetEntity="Lot")
+	 * @ORM\JoinColumn(name="lot_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $lot;
 

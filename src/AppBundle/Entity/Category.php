@@ -27,10 +27,16 @@ class Category
 	 * @ORM\OneToMany(targetEntity="Property", mappedBy="category")
 	 */
 	 private $properties;
+	 
+	/**
+	 * @ORM\OneToMany(targetEntity="Lot", mappedBy="category")
+	 */
+	private $lots;
 	
 	function __construct() 
 	{
 		$this->properties = new ArrayCollection();
+		$this->lots = new ArrayCollection();
 	}
 	
     /**

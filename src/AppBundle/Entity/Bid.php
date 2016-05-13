@@ -31,11 +31,13 @@ class Bid
 	
 	/**
      * @ORM\ManyToOne(targetEntity="User")
+	 * @ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $user;
 	
 	/**
      * @ORM\ManyToOne(targetEntity="Lot")
+	 * @ORM\JoinColumn(name="lot_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $lot;
 

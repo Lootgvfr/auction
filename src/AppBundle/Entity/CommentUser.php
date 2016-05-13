@@ -41,11 +41,13 @@ class CommentUser
 	
 	/**
      * @ORM\ManyToOne(targetEntity="User")
+	 * @ORM\JoinColumn(name="seller_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $seller;
 	
 	/**
      * @ORM\ManyToOne(targetEntity="User")
+	 * @ORM\JoinColumn(name="author_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $author;
 

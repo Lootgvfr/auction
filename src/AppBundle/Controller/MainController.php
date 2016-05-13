@@ -39,16 +39,10 @@ class MainController extends Controller
      */
     public function categoryAction(Request $request, $name)
     {
-		$lotsFiltered = [];
-		for ($i = 0; $i < count($this::$lots); $i++)
-		{
-			if ($this::$lots[$i]["category"] == $name)
-			{
-				$lotsFiltered[] = $this::$lots[$i];
-			}
-		}
+		$cat = $this->getDoctrine()->getRepository('AppBundle:Category')->findOneByName($name);
+		$lots = $this->getDoctrine()->getRepository('AppBundle:Lot')->findByCategory($cat);
         return $this->render('category_display.html.twig', array(
-			"lots" => $lotsFiltered,
+			"lots" => $lots,
 			"name" => $name
         ));
     }

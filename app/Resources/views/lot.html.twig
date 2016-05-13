@@ -15,8 +15,16 @@
 {% block content %}
 	{% if found %}
 		<div class="text">{{ lot.name }}</div>
-		<div class="text">{{ lot.description }}</div>
-		<div class="text">{{ lot.startPrice }}</div>
+		<div class="text">Description: {{ lot.description }}</div>
+		<div class="text">Price: {{ lot.startPrice }}</div>
+		<p>
+			Properties:
+			{% for prop in properties %}
+				<div class="property">
+					{{ prop.name }} : {{ prop.value }}
+				</div>
+			{% endfor %}
+		</p>
 		<input class="submit" type="submit" value="Buy"/>
 	{% else %}
 		Lot not found.
