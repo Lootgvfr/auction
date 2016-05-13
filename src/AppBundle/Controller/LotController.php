@@ -39,6 +39,7 @@ class LotController extends Controller
 		{
 			try
 			{
+				// TODO check input
 				for ($i = 0; $i < count($properties); $i++)
 				{
 					$str = $request->request->get($properties[$i]['und_name']);
