@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Edit Profile {% endblock %}
+
+{% block css %}
+	<link href="{{ asset('css/sign.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block page %}
+<div class="wrapper">
+	<div class="div-right">
+		<div class="headline">
+			<div class="red">E</div>dit <div class="red">P</div>rofile
+		</div>
+		<div class="sign-cont">
+		{{ form_start(form) }}
+			{{ form_widget(form.name) }}
+			{{ form_widget(form.email) }}
+			{{ form_widget(form.address) }}
+			{{ form_widget(form.phone) }}
+			{{ form_widget(form.info) }}
+			{{ form_widget(form.file) }}
+
+			<button class="submit" type="submit">Edit</button>
+		{{ form_end(form) }}
+		</div>
+	</div>
+</div>
+{% endblock %}
