@@ -78,13 +78,18 @@ class User implements UserInterface
 	 */
 	private $bids;
 	
+	/**
+	 * @ORM\OneToMany(targetEntity="Lot", mappedBy="author")
+	 */
+	private $lots;
+	
 	function __construct() 
 	{
-		$this->properties = new ArrayCollection();
 		$this->user_comments_to = new ArrayCollection();
 		$this->user_comments_by = new ArrayCollection();
 		$this->lot_comments_by = new ArrayCollection();
 		$this->bids = new ArrayCollection();
+		$this->lots = new ArrayCollection();
 	}
 	
 	/**
