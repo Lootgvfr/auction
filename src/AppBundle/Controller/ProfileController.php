@@ -16,6 +16,10 @@ class ProfileController extends Controller
      */
     public function editAction(Request $request)
     {
+		$securityContext = $this->container->get('security.authorization_checker');
+		if (!$securityContext->isGranted('IS_AUTHENTICATED_FULLY')) {
+			$this->redirectToRoute('login');
+		}
 		$user =  $this->get('security.token_storage')->getToken()->getUser();
 
 		
