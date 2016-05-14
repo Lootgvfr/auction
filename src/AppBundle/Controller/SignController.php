@@ -26,7 +26,7 @@ class SignController extends Controller
 					->encodePassword($user, $user->getPlainPassword());
 				$user->setPassword($password);
 				$user->setGroup("User");
-				
+				$user->setPath('default.png');
 				$em = $this->getDoctrine()->getManager();
 				$em->persist($user);
 				$em->flush();

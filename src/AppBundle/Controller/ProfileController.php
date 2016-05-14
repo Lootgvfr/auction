@@ -16,15 +16,8 @@ class ProfileController extends Controller
      */
     public function editAction(Request $request)
     {
-		/*$user = $this->getUser();*/
 		$user =  $this->get('security.token_storage')->getToken()->getUser();
-		//var_dump($user);
-		/*
-		$formEdit = $this->createForm(Edit_profile::class, $user, array(
-		'age' => $user));
-		*/
-		$username = $user->getUsername();
-		
+
 		
 		$formEdit = $this->get('form.factory')->create(new Edit_profile(), $user, array(
 			'user' => $user
@@ -35,6 +28,8 @@ class ProfileController extends Controller
 			if ($formEdit->isSubmitted()) 
 			{
 				$em = $this->getDoctrine()->getManager();
+				$user->upload();
+				
 				$em->flush();
 				
 				return $this->redirectToRoute('edit');
@@ -63,7 +58,8 @@ class ProfileController extends Controller
 				'username' => $username,
 				'name'     => $user->getName(),
 				'email'    => $user->getEmail(),
-				'group'    => $user->getGroup()
+				'group'    => $user->getGroup(),
+				'path'	   => $user->getWebPath()
 			));
     }
 	

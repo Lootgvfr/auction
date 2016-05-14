@@ -10,7 +10,7 @@
 <div class="parent">
 	<div class="content">
 		<div class="content_title">User Profile</div>
-		<div class="avatar"><img src="" alt="Profile image"><br>
+		<div class="avatar"><img src='{{ path }}' alt="Profile image"><br>
 		{% if username == app.user.username %}
 		<a href="{{path('edit')}}"> Edit profile</a>
 		{% endif %}
