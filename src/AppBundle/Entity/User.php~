@@ -255,4 +255,136 @@ class User implements UserInterface
     {
         return $this->group;
     }
+
+    /**
+     * Add user_comments_to
+     *
+     * @param \AppBundle\Entity\CommentUser $userCommentsTo
+     * @return User
+     */
+    public function addUserCommentsTo(\AppBundle\Entity\CommentUser $userCommentsTo)
+    {
+        $this->user_comments_to[] = $userCommentsTo;
+    
+        return $this;
+    }
+
+    /**
+     * Remove user_comments_to
+     *
+     * @param \AppBundle\Entity\CommentUser $userCommentsTo
+     */
+    public function removeUserCommentsTo(\AppBundle\Entity\CommentUser $userCommentsTo)
+    {
+        $this->user_comments_to->removeElement($userCommentsTo);
+    }
+
+    /**
+     * Get user_comments_to
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getUserCommentsTo()
+    {
+        return $this->user_comments_to;
+    }
+
+    /**
+     * Add user_comments_by
+     *
+     * @param \AppBundle\Entity\CommentUser $userCommentsBy
+     * @return User
+     */
+    public function addUserCommentsBy(\AppBundle\Entity\CommentUser $userCommentsBy)
+    {
+        $this->user_comments_by[] = $userCommentsBy;
+    
+        return $this;
+    }
+
+    /**
+     * Remove user_comments_by
+     *
+     * @param \AppBundle\Entity\CommentUser $userCommentsBy
+     */
+    public function removeUserCommentsBy(\AppBundle\Entity\CommentUser $userCommentsBy)
+    {
+        $this->user_comments_by->removeElement($userCommentsBy);
+    }
+
+    /**
+     * Get user_comments_by
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getUserCommentsBy()
+    {
+        return $this->user_comments_by;
+    }
+
+    /**
+     * Add lot_comments_by
+     *
+     * @param \AppBundle\Entity\CommentLot $lotCommentsBy
+     * @return User
+     */
+    public function addLotCommentsBy(\AppBundle\Entity\CommentLot $lotCommentsBy)
+    {
+        $this->lot_comments_by[] = $lotCommentsBy;
+    
+        return $this;
+    }
+
+    /**
+     * Remove lot_comments_by
+     *
+     * @param \AppBundle\Entity\CommentLot $lotCommentsBy
+     */
+    public function removeLotCommentsBy(\AppBundle\Entity\CommentLot $lotCommentsBy)
+    {
+        $this->lot_comments_by->removeElement($lotCommentsBy);
+    }
+
+    /**
+     * Get lot_comments_by
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getLotCommentsBy()
+    {
+        return $this->lot_comments_by;
+    }
+
+    /**
+     * Add bids
+     *
+     * @param \AppBundle\Entity\Bid $bids
+     * @return User
+     */
+    public function addBid(\AppBundle\Entity\Bid $bids)
+    {
+        $this->bids[] = $bids;
+    
+        return $this;
+    }
+
+    /**
+     * Remove bids
+     *
+     * @param \AppBundle\Entity\Bid $bids
+     */
+    public function removeBid(\AppBundle\Entity\Bid $bids)
+    {
+        $this->bids->removeElement($bids);
+    }
+
+    /**
+     * Get bids
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getBids()
+    {
+        return $this->bids;
+    }
 }

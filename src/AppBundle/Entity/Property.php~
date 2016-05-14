@@ -122,4 +122,37 @@ class Property
     {
         return $this->category;
     }
+
+    /**
+     * Add values
+     *
+     * @param \AppBundle\Entity\Value $values
+     * @return Property
+     */
+    public function addValue(\AppBundle\Entity\Value $values)
+    {
+        $this->values[] = $values;
+    
+        return $this;
+    }
+
+    /**
+     * Remove values
+     *
+     * @param \AppBundle\Entity\Value $values
+     */
+    public function removeValue(\AppBundle\Entity\Value $values)
+    {
+        $this->values->removeElement($values);
+    }
+
+    /**
+     * Get values
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getValues()
+    {
+        return $this->values;
+    }
 }
