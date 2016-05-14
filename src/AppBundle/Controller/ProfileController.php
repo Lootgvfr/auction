@@ -14,14 +14,32 @@ class ProfileController extends Controller
 	/**
      * @Route("/profile/edit", name="edit")
      */
-    public function editAction()
+    public function editAction(Request $request)
     {
-		$user = $this->getUser();
+		/*$user = $this->getUser();*/
+		$user =  $this->get('security.token_storage')->getToken()->getUser();
+		//var_dump($user);
+		/*
+		$formEdit = $this->createForm(Edit_profile::class, $user, array(
+		'age' => $user));
+		*/
+		$username = $user->getUsername();
 		
-		$formEdit = $this->createForm(Edit_profile::class, $user);
 		
-		
-		
+		$formEdit = $this->get('form.factory')->create(new Edit_profile(), $user, array(
+			'user' => $user
+		));
+		if('POST' === $request->getMethod())
+		{
+			$formEdit->handleRequest($request);
+			if ($formEdit->isSubmitted()) 
+			{
+				$em = $this->getDoctrine()->getManager();
+				$em->flush();
+				
+				return $this->redirectToRoute('edit');
+			}
+		}
 		
         return $this->render('profile_edit.html.twig', 
 			array('form' => $formEdit->createView())
