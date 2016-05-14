@@ -559,4 +559,37 @@ class User implements UserInterface
     {
         return $this->bids;
     }
+
+    /**
+     * Add lots
+     *
+     * @param \AppBundle\Entity\Lot $lots
+     * @return User
+     */
+    public function addLot(\AppBundle\Entity\Lot $lots)
+    {
+        $this->lots[] = $lots;
+    
+        return $this;
+    }
+
+    /**
+     * Remove lots
+     *
+     * @param \AppBundle\Entity\Lot $lots
+     */
+    public function removeLot(\AppBundle\Entity\Lot $lots)
+    {
+        $this->lots->removeElement($lots);
+    }
+
+    /**
+     * Get lots
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getLots()
+    {
+        return $this->lots;
+    }
 }
