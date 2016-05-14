@@ -7,16 +7,20 @@
 {% endblock %}
 
 {% block content %}
-	<form action="#" method="post">
-		{% if error %}
-			<div class="error">{{ error }}</div>
-		{% endif %}
-		<input class="text-input" type="text" name="Name" value="{{ name }}" placeholder="Lot name"/>
-		<textarea class="textarea" name="Description" placeholder="Description">{{ description }}</textarea>
-		{% for property in properties %}
-			<input class="text-input" type="text" name="{{ property.und_name }}" value="{{ property.value }}" placeholder="{{ property.name }}"/>
-		{% endfor %}
-		<input class="text-input" type="text" name="Starting price" value="{{ starting_price }}" placeholder="Starting price"/>
-		<button class="submit" type="submit">Create</button>
-	</form>
+	{% if edit and not found%}
+		Lot not found.
+	{% else %}
+		<form action="{% if edit %}{{ path('edit-lot', {'id':id}) }}{% else %}{{ path('make-lot-cat', {'category':category.name}) }}{% endif %}" method="post">
+			{% if error %}
+				<div class="error">{{ error }}</div>
+			{% endif %}
+			<input class="text-input" type="text" name="Name" value="{{ name }}" placeholder="Lot name"/>
+			<textarea class="textarea" name="Description" placeholder="Description">{{ description }}</textarea>
+			{% for property in properties %}
+				<input class="text-input" type="text" name="{{ property.und_name }}" value="{{ property.value }}" placeholder="{{ property.name }}"/>
+			{% endfor %}
+			<input class="text-input" type="text" name="Starting price" value="{{ starting_price }}" placeholder="Starting price"/>
+			<button class="submit" type="submit">Create</button>
+		</form>
+	{% endif %}
 {% endblock %}
