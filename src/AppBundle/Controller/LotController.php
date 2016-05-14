@@ -22,6 +22,10 @@ class LotController extends Controller
      */
     public function makeLotAction(Request $request, $category)
     {
+		if( !$this->container->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY') )
+		{
+			return $this->redirectToRoute('home');
+		}
 		$error = '';
 		$name = '';
 		$description = '';
@@ -96,7 +100,9 @@ class LotController extends Controller
 			"error" => $error,
 			"name" => $name,
 			'description' => $description,
-			'starting_price' => $starting_price
+			'starting_price' => $starting_price,
+			'edit' => false,
+			'found' => true
         ));
     }
 	
@@ -109,6 +115,18 @@ class LotController extends Controller
         return $this->render('make-lot-choose.html.twig', array(
 			"categories" => $categories
         ));
+    }
+	
+	/**
+     * @Route("/lots/{id}/delete", name="delete-lot")
+     */
+    public function deleteLotAction(Request $request, $id)
+    {
+		$em = $this->getDoctrine()->getManager();
+		$lot = $this->getDoctrine()->getRepository('AppBundle:Lot')->findOneById($id);
+		$em->remove($lot);
+		$em->flush();
+        return $this->redirectToRoute('home');
     }
 
 	/**
@@ -141,6 +159,111 @@ class LotController extends Controller
         ));
     }
 	
-	
+	/**
+     * @Route("/lot/{id}/edit", name="edit-lot")
+     */
+    public function editLotAction(Request $request, $id)
+    {
+		if( !$this->container->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY') )
+		{
+			return $this->redirectToRoute('home');
+		}
+		$lot = $this->getDoctrine()->getRepository('AppBundle:Lot')->findOneById($id);
+		$found = false;
+		if (!$lot)
+		{
+			$found = true;
+			$error = '';
+			$name = '';
+			$description = '';
+			$starting_price = '';
+			$cat = null;
+			$propeties = [];
+		}
+		else
+		{
+			$error = '';
+			$name = $lot->getName();
+			$description = '';
+			$starting_price = '';
+			$cat = $lot->getCategory();
+			$vals = $lot->getValues();
+			
+			$properties = [];
+			for ($i = 0; $i < count($vals); $i++)
+			{
+				array_push($properties, array('name' => $vals[$i]->getProperty()->getName(),
+					'und_name' => $this->prs($vals[$i]->getProperty()->getName()),
+					'value' => $vals[$i]->getVal()) );
+			}
+			
+			if('POST' === $request->getMethod())
+			{
+				try
+				{
+					// TODO check input
+					for ($i = 0; $i < count($properties); $i++)
+					{
+						$str = $request->request->get($properties[$i]['und_name']);
+						$properties[$i]['value'] = $str;
+					}
+					$name = $request->request->get('Name');
+					$description = $request->request->get('Description');
+					$starting_price = $request->request->get('Starting_price');
+					
+					$em = $this->getDoctrine()->getManager();
+					if ($request->request->get('Name') == '' or $request->request->get('Description') == '' or $request->request->get('Starting_price') == '')
+					{
+						throw new \Exception('Some of the fields are empty');
+					}
+					$lot = new Lot();
+					$lot->setName($request->request->get('Name'));
+					$lot->setDescription($request->request->get('Description'));
+					$lot->setStartPrice($request->request->get('Starting_price'));
+					$lot->setStatus('Unconfirmed');
+					$now = new \DateTime();
+					$lot->setStartDate($now);
+					$lot->setEndDate($now);
+					$lot->setCategory($cat);
+
+					for ($i = 0; $i < count($properties); $i++)
+					{
+						if ($request->request->get($properties[$i]['und_name']) == '')
+						{
+							throw new \Exception('Some of the fields are empty (' + $properties[$i]['name'] + ')');
+						}
+						$str = $request->request->get($properties[$i]['und_name']);
+						$val = new Value();
+						$val->setVal($str);
+						$val->setProperty($props[$i]);
+						$val->setLot($lot);
+						$em->persist($val);
+					}
+					
+					$em->persist($lot);
+					$em->flush();
+					
+					return $this->redirectToRoute('lot', array('id' => $lot->getId()));
+					
+				}
+				catch (\Exception $e)
+				{
+					$error = $e->getMessage();
+				}
+			}
+		}
+		
+        return $this->render('make-lot.html.twig', array(
+			"category" => $cat,
+			"properties" => $properties,
+			"error" => $error,
+			"name" => $name,
+			'description' => $description,
+			'starting_price' => $starting_price,
+			'edit' => true,
+			'found' => $found,
+			'id' => $id
+        ));
+    }
 }
 ?>

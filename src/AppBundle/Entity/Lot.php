@@ -69,6 +69,12 @@ class Lot
 	 * @ORM\OneToMany(targetEntity="Bid", mappedBy="lot")
 	 */
 	private $bids;
+	
+	/**
+	 * @ORM\ManyToOne(targetEntity="User")
+	 * @ORM\JoinColumn(name="author_id", referencedColumnName="id", onDelete="CASCADE")
+	 */
+	private $author;
 	 
 	function __construct()
 	{
