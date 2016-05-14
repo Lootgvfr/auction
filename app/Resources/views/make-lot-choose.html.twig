@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Make a lot{% endblock %}
+
+{% block css %}
+	<link href="{{ asset('css/make-lot.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+	{% for cat in categories %}
+		<a href="{{ path('make-lot-cat', {'category':cat.name}) }}"><b>{{ cat.name }}</b></a><br>
+	{% endfor %}
+{% endblock %}

@@ -2,40 +2,145 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Category;
+use AppBundle\Entity\Property;
+use AppBundle\Entity\Value;
+use AppBundle\Entity\Lot;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
 class LotController extends Controller
 {
+	private function prs($string)
+	{
+		return str_replace(" ", "_", $string);
+	}
+
 	/**
-     * @Route("/make_lot", name="make-lot")
+     * @Route("/make_lot/{category}", name="make-lot-cat")
      */
-    public function makeLotAction(Request $request)
+    public function makeLotAction(Request $request, $category)
     {
+		$error = '';
+		$name = '';
+		$description = '';
+		$starting_price = '';
+		$cat = $this->getDoctrine()->getRepository('AppBundle:Category')->findOneByName($category);
+		$props = $cat->getProperties();
+		
+		$properties = [];
+		for ($i = 0; $i < count($props); $i++)
+		{
+			array_push($properties, array('name' => $props[$i]->getName(), 'und_name' => $this->prs($props[$i]->getName()), 'value' => '') );
+		}
+		
+		if('POST' === $request->getMethod())
+		{
+			try
+			{
+				// TODO check input
+				for ($i = 0; $i < count($properties); $i++)
+				{
+					$str = $request->request->get($properties[$i]['und_name']);
+					$properties[$i]['value'] = $str;
+				}
+				$name = $request->request->get('Name');
+				$description = $request->request->get('Description');
+				$starting_price = $request->request->get('Starting_price');
+				
+				$em = $this->getDoctrine()->getManager();
+				if ($request->request->get('Name') == '' or $request->request->get('Description') == '' or $request->request->get('Starting_price') == '')
+				{
+					throw new \Exception('Some of the fields are empty');
+				}
+				$lot = new Lot();
+				$lot->setName($request->request->get('Name'));
+				$lot->setDescription($request->request->get('Description'));
+				$lot->setStartPrice($request->request->get('Starting_price'));
+				$lot->setStatus('Unconfirmed');
+				$now = new \DateTime();
+				$lot->setStartDate($now);
+				$lot->setEndDate($now);
+				$lot->setCategory($cat);
+
+				for ($i = 0; $i < count($properties); $i++)
+				{
+					if ($request->request->get($properties[$i]['und_name']) == '')
+					{
+						throw new \Exception('Some of the fields are empty (' + $properties[$i]['name'] + ')');
+					}
+					$str = $request->request->get($properties[$i]['und_name']);
+					$val = new Value();
+					$val->setVal($str);
+					$val->setProperty($props[$i]);
+					$val->setLot($lot);
+					$em->persist($val);
+				}
+				
+				$em->persist($lot);
+				$em->flush();
+				
+				return $this->redirectToRoute('lot', array('id' => $lot->getId()));
+				
+			}
+			catch (\Exception $e)
+			{
+				$error = $e->getMessage();
+			}
+		}
+		
         return $this->render('make-lot.html.twig', array(
+			"category" => $cat,
+			"properties" => $properties,
+			"error" => $error,
+			"name" => $name,
+			'description' => $description,
+			'starting_price' => $starting_price
+        ));
+    }
+	
+	/**
+     * @Route("/make_lot_choose", name="make-lot")
+     */
+    public function makeLotChooseAction(Request $request)
+    {
+		$categories = $this->getDoctrine()->getRepository('AppBundle:Category')->findAll();
+        return $this->render('make-lot-choose.html.twig', array(
+			"categories" => $categories
         ));
     }
 
 	/**
-     * @Route("/lots/{name}", name="lot")
+     * @Route("/lots/{id}", name="lot")
      */
-    public function lotAction(Request $request, $name)
+    public function lotAction(Request $request, $id)
     {
+		$lot = $this->getDoctrine()->getRepository('AppBundle:Lot')->findOneById($id);
 		$found = false;
-		$lot = [];
-		for ($i = 0; $i < count($this::$lots); $i++)
+		if ($lot)
 		{
-			if ($this::$lots[$i]["name"] == $name)
+			$found = true;
+			$properties = [];
+			$values = $lot->getValues();
+			for($i = 0; $i < count($values); $i++)
 			{
-				$lot = $this::$lots[$i];
-				$found = true;
+				$name = $values[$i]->getProperty()->getName();
+				$val = $values[$i]->getVal();
+				array_push($properties, array('name' => $name, 'value' => $val) );
 			}
+		}
+		else
+		{
+			$properties = [];
 		}
         return $this->render('lot.html.twig', array(
 			"found" => $found,
-			"lot" => $lot
+			"lot" => $lot,
+			'properties' => $properties
         ));
     }
+	
+	
 }
 ?>

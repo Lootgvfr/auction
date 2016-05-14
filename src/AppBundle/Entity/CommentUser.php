@@ -3,6 +3,8 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+
 
 /**
  * @ORM\Entity
@@ -38,14 +40,14 @@ class CommentUser
 	private $rating;
 	
 	/**
-     * @ORM\OneToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="seller_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="User")
+	 * @ORM\JoinColumn(name="seller_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $seller;
 	
 	/**
-     * @ORM\OneToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="author_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="User")
+	 * @ORM\JoinColumn(name="author_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $author;
 

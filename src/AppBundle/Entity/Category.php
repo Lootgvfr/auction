@@ -22,7 +22,23 @@ class Category
      * @ORM\Column(type="string", length=100)
      */
     private $name;
-
+	
+	/**
+	 * @ORM\OneToMany(targetEntity="Property", mappedBy="category")
+	 */
+	 private $properties;
+	 
+	/**
+	 * @ORM\OneToMany(targetEntity="Lot", mappedBy="category")
+	 */
+	private $lots;
+	
+	function __construct() 
+	{
+		$this->properties = new ArrayCollection();
+		$this->lots = new ArrayCollection();
+	}
+	
     /**
      * Get id
      *
@@ -54,5 +70,38 @@ class Category
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Add properties
+     *
+     * @param \AppBundle\Entity\Property $properties
+     * @return Category
+     */
+    public function addProperty(\AppBundle\Entity\Property $properties)
+    {
+        $this->properties[] = $properties;
+    
+        return $this;
+    }
+
+    /**
+     * Remove properties
+     *
+     * @param \AppBundle\Entity\Property $properties
+     */
+    public function removeProperty(\AppBundle\Entity\Property $properties)
+    {
+        $this->properties->removeElement($properties);
+    }
+
+    /**
+     * Get properties
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getProperties()
+    {
+        return $this->properties;
     }
 }

@@ -7,8 +7,16 @@
 {% endblock %}
 
 {% block content %}
-	<input class="text" type="text" placeholder="Name">
-	<input class="text" type="text" placeholder="Description">
-	<input class="text" type="text" placeholder="Start price">
-	<input class="submit" type="submit" value="Submit"/>
+	<form action="#" method="post">
+		{% if error %}
+			<div class="error">{{ error }}</div>
+		{% endif %}
+		<input class="text-input" type="text" name="Name" value="{{ name }}" placeholder="Lot name"/>
+		<textarea class="textarea" name="Description" placeholder="Description">{{ description }}</textarea>
+		{% for property in properties %}
+			<input class="text-input" type="text" name="{{ property.und_name }}" value="{{ property.value }}" placeholder="{{ property.name }}"/>
+		{% endfor %}
+		<input class="text-input" type="text" name="Starting price" value="{{ starting_price }}" placeholder="Starting price"/>
+		<button class="submit" type="submit">Create</button>
+	</form>
 {% endblock %}

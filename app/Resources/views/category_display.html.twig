@@ -11,7 +11,7 @@
 		<ul class="grid">
 		{% for lot in lots %}
 			<li class="item">
-				<a href="{{ path('lot', {'name':lot.name}) }}">
+				<a href="{{ path('lot', {'id':lot.id}) }}">
 					<img class="item-pic" src="#" alt="{{ lot.name }}"/>
 					<div class="item-name">{{ lot.name }}</div><br>
 				</a>
