@@ -30,6 +30,7 @@ class LotController extends Controller
 		$name = '';
 		$description = '';
 		$starting_price = '';
+		$buyout_price = '';
 		$cat = $this->getDoctrine()->getRepository('AppBundle:Category')->findOneByName($category);
 		$props = $cat->getProperties();
 		
@@ -52,6 +53,7 @@ class LotController extends Controller
 				$name = $request->request->get('Name');
 				$description = $request->request->get('Description');
 				$starting_price = $request->request->get('Starting_price');
+				$buyout_price = $request->request->get('Buyout_price');
 				
 				$em = $this->getDoctrine()->getManager();
 				if ($request->request->get('Name') == '' or $request->request->get('Description') == '' or $request->request->get('Starting_price') == '')
@@ -62,19 +64,32 @@ class LotController extends Controller
 				$lot->setName($request->request->get('Name'));
 				$lot->setDescription($request->request->get('Description'));
 				$lot->setStartPrice($request->request->get('Starting_price'));
+				if ($buyout_price != '')
+				{
+					$lot->setBuyoutPrice($buyout_price);
+				}
 				$lot->setStatus('Unconfirmed');
+				$lot->setAuthor($this->get('security.token_storage')->getToken()->getUser());
 				$now = new \DateTime();
 				$lot->setStartDate($now);
 				$lot->setEndDate($now);
 				$lot->setCategory($cat);
+				$data = $this->getRequest()->request->all();
+				$file = $this->getRequest()->files->get('file');
+				if ($file)
+				{
+					$lot->setFile($file);
+					$lot->upload();
+				}
 
 				for ($i = 0; $i < count($properties); $i++)
 				{
-					if ($request->request->get($properties[$i]['und_name']) == '')
+					if ($properties[$i]['value'] == '')
 					{
-						throw new \Exception('Some of the fields are empty (' + $properties[$i]['name'] + ')');
+						$ex = "Some of the fields are empty (" . $properties[$i]['name'] . ")";
+						throw new \Exception($ex);
 					}
-					$str = $request->request->get($properties[$i]['und_name']);
+					$str = $properties[$i]['value'];
 					$val = new Value();
 					$val->setVal($str);
 					$val->setProperty($props[$i]);
@@ -101,6 +116,7 @@ class LotController extends Controller
 			"name" => $name,
 			'description' => $description,
 			'starting_price' => $starting_price,
+			'buyout_price' => $buyout_price,
 			'edit' => false,
 			'found' => true
         ));
@@ -111,6 +127,10 @@ class LotController extends Controller
      */
     public function makeLotChooseAction(Request $request)
     {
+		if( !$this->container->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY') )
+		{
+			return $this->redirectToRoute('home');
+		}
 		$categories = $this->getDoctrine()->getRepository('AppBundle:Category')->findAll();
         return $this->render('make-lot-choose.html.twig', array(
 			"categories" => $categories
@@ -136,11 +156,14 @@ class LotController extends Controller
     {
 		$lot = $this->getDoctrine()->getRepository('AppBundle:Lot')->findOneById($id);
 		$found = false;
+		$author = null;
+		$path = '';
 		if ($lot)
 		{
 			$found = true;
 			$properties = [];
 			$values = $lot->getValues();
+			$author = $lot->getAuthor();
 			for($i = 0; $i < count($values); $i++)
 			{
 				$name = $values[$i]->getProperty()->getName();
@@ -155,7 +178,8 @@ class LotController extends Controller
         return $this->render('lot.html.twig', array(
 			"found" => $found,
 			"lot" => $lot,
-			'properties' => $properties
+			'properties' => $properties,
+			'author' => $author
         ));
     }
 	
@@ -172,20 +196,22 @@ class LotController extends Controller
 		$found = false;
 		if (!$lot)
 		{
-			$found = true;
 			$error = '';
 			$name = '';
 			$description = '';
 			$starting_price = '';
+			$buyout_price = '';
 			$cat = null;
 			$propeties = [];
 		}
 		else
 		{
+			$found = true;
 			$error = '';
 			$name = $lot->getName();
-			$description = '';
-			$starting_price = '';
+			$description = $lot->getDescription();
+			$starting_price = $lot->getStartPrice();
+			$buyout_price = $lot->getBuyoutPrice();
 			$cat = $lot->getCategory();
 			$vals = $lot->getValues();
 			
@@ -210,34 +236,39 @@ class LotController extends Controller
 					$name = $request->request->get('Name');
 					$description = $request->request->get('Description');
 					$starting_price = $request->request->get('Starting_price');
+					$buyout_price = $request->request->get('Buyout_price');
 					
 					$em = $this->getDoctrine()->getManager();
 					if ($request->request->get('Name') == '' or $request->request->get('Description') == '' or $request->request->get('Starting_price') == '')
 					{
 						throw new \Exception('Some of the fields are empty');
 					}
-					$lot = new Lot();
 					$lot->setName($request->request->get('Name'));
 					$lot->setDescription($request->request->get('Description'));
 					$lot->setStartPrice($request->request->get('Starting_price'));
-					$lot->setStatus('Unconfirmed');
-					$now = new \DateTime();
-					$lot->setStartDate($now);
-					$lot->setEndDate($now);
-					$lot->setCategory($cat);
-
-					for ($i = 0; $i < count($properties); $i++)
+					$data = $this->getRequest()->request->all();
+					$file = $this->getRequest()->files->get('file');
+					if ($file)
 					{
-						if ($request->request->get($properties[$i]['und_name']) == '')
+						$lot->setFile($file);
+						$lot->upload();
+					}
+					
+					if ($buyout_price != '')
+					{
+						$lot->setBuyoutPrice($buyout_price);
+					}
+
+					for ($i = 0; $i < count($vals); $i++)
+					{
+						if ($properties[$i]['value'] == '')
 						{
-							throw new \Exception('Some of the fields are empty (' + $properties[$i]['name'] + ')');
+							$ex = "Some of the fields are empty (" . $properties[$i]['name'] . ")";
+							throw new \Exception($ex);
 						}
-						$str = $request->request->get($properties[$i]['und_name']);
-						$val = new Value();
-						$val->setVal($str);
-						$val->setProperty($props[$i]);
-						$val->setLot($lot);
-						$em->persist($val);
+						$str = $properties[$i]['value'];
+						$vals[$i]->setVal($str);
+						$em->persist($vals[$i]);
 					}
 					
 					$em->persist($lot);
@@ -260,6 +291,7 @@ class LotController extends Controller
 			"name" => $name,
 			'description' => $description,
 			'starting_price' => $starting_price,
+			'buyout_price' => $buyout_price,
 			'edit' => true,
 			'found' => $found,
 			'id' => $id

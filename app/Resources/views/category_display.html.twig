@@ -12,7 +12,7 @@
 		{% for lot in lots %}
 			<li class="item">
 				<a href="{{ path('lot', {'id':lot.id}) }}">
-					<img class="item-pic" src="#" alt="{{ lot.name }}"/>
+					<img class="item-pic" src="{{ lot.img }}" alt="{{ lot.name }}"/>
 					<div class="item-name">{{ lot.name }}</div><br>
 				</a>
 				<div class="bottom">

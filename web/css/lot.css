@@ -9,6 +9,9 @@
 }
 
 .right{
-	float: right;
 	position: relative;
+}
+
+.right a{
+	font-weight: bold;
 }

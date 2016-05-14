@@ -4,6 +4,8 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 
 /**
@@ -75,9 +77,88 @@ class Lot
 	 * @ORM\JoinColumn(name="author_id", referencedColumnName="id", onDelete="CASCADE")
 	 */
 	private $author;
+	
+	/**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    public $path;
+	
+	/**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    public $img;
+	
+	public function setImg($img)
+	{
+		$this->img = $img;
+		
+		return $this;
+	}
+	
+	public function getImg()
+	{
+		return $this->img;
+	}
+	
+	public function getWebPath()
+    {
+        return null === $this->path
+            ? null
+            : '/'.$this->getUploadDir().'/'.$this->path;
+    }
+	
+    protected function getUploadDir()
+    {
+        // get rid of the __DIR__ so it doesn't screw up
+        // when displaying uploaded doc/image in the view.
+        return 'uploads/lots';
+    }
+	
+	/**
+     * @Assert\File(maxSize="6000000")
+     */
+    private $file;
+
+    /**
+     * Sets file.
+     *
+     * @param UploadedFile $file
+     */
+    public function setFile(UploadedFile $file = null)
+    {
+        $this->file = $file;
+    }
+
+    /**
+     * Get file.
+     *
+     * @return UploadedFile
+     */
+    public function getFile()
+    {
+        return $this->file;
+    }
+	
+	public function upload()
+	{
+		if (null === $this->getFile()) {
+			return;
+		}
+		
+			$this->getFile()->move(
+			$this->getUploadDir(),
+			$this->getFile()->getClientOriginalName()
+		);
+
+		$this->path = $this->getFile()->getClientOriginalName();
+		$this->setImg($this->getWebPath());
+		
+		$this->file = null;
+	}
 	 
 	function __construct()
 	{
+		$this->img = $this->getWebPath();
 		$this->values = new ArrayCollection();
 		$this->bids = new ArrayCollection();
 	}
