@@ -6,6 +6,7 @@ use AppBundle\Entity\Category;
 use AppBundle\Entity\Property;
 use AppBundle\Entity\Value;
 use AppBundle\Entity\Lot;
+use AppBundle\Entity\Bid;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,7 +25,7 @@ class LotController extends Controller
     {
 		if( !$this->container->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY') )
 		{
-			return $this->redirectToRoute('home');
+			return $this->redirectToRoute('login');
 		}
 		$error = '';
 		$name = '';
@@ -67,6 +68,14 @@ class LotController extends Controller
 				if ($buyout_price != '')
 				{
 					$lot->setBuyoutPrice($buyout_price);
+					if ($lot->getBuyoutPrice() < $lot->getStartPrice())
+					{
+						throw new \Exception('Buyout price cannot be lower than the starting price.');
+					}
+				}
+				else
+				{
+					$lot->setBuyoutPrice(null);
 				}
 				$lot->setStatus('Unconfirmed');
 				$lot->setAuthor($this->get('security.token_storage')->getToken()->getUser());
@@ -129,7 +138,7 @@ class LotController extends Controller
     {
 		if( !$this->container->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY') )
 		{
-			return $this->redirectToRoute('home');
+			return $this->redirectToRoute('login');
 		}
 		$categories = $this->getDoctrine()->getRepository('AppBundle:Category')->findAll();
         return $this->render('make-lot-choose.html.twig', array(
@@ -155,9 +164,8 @@ class LotController extends Controller
     public function lotAction(Request $request, $id)
     {
 		$lot = $this->getDoctrine()->getRepository('AppBundle:Lot')->findOneById($id);
-		$found = false;
-		$author = null;
-		$path = '';
+		$error = '';
+		$price = 0;
 		if ($lot)
 		{
 			$found = true;
@@ -170,16 +178,73 @@ class LotController extends Controller
 				$val = $values[$i]->getVal();
 				array_push($properties, array('name' => $name, 'value' => $val) );
 			}
+			$lot->getCurrentPrice();
 		}
 		else
 		{
+			$found = false;
+			$author = null;
 			$properties = [];
+		}
+		if('POST' === $request->getMethod())
+		{
+			if ($request->request->has('Bid'))
+			{
+				try
+				{
+					$v = $request->request->get('Bid_value');
+					$val = floatval($v);
+					if ($val < $lot->getCurrentPrice()*1.02)
+					{
+						throw new \Exception('Your bid must be higher than the current price by 2% at least.');
+					}
+					$bid = new Bid();
+					$bid->setValue($val);
+					$bid->setLot($lot);
+					$bid->setUser($this->get('security.token_storage')->getToken()->getUser());
+					$bid->setDate(new \DateTime());
+					$em = $this->getDoctrine()->getManager();
+					$em->persist($bid);
+					$em->persist($lot);
+					$em->flush();
+					$price = $val;
+				}
+				catch (\Exception $e)
+				{
+					$error = $e->getMessage();
+				}
+			}
+			else if ($request->request->has('Buyout'))
+			{
+				try
+				{
+					$bid = new Bid();
+					$bid->setValue($lot->getBuyoutPrice());
+					$bid->setLot($lot);
+					$bid->setUser($this->get('security.token_storage')->getToken()->getUser());
+					$bid->setDate(new \DateTime());
+					$lot->setEndDate(new \DateTime());
+					$lot->setStatus('Finished');
+					$lot->setCurrentPrice($lot->getBuyoutPrice());
+					$em = $this->getDoctrine()->getManager();
+					$em->persist($bid);
+					$em->persist($lot);
+					$em->flush();
+					$price = $lot->getBuyoutPrice();
+				}
+				catch (\Exception $e)
+				{
+					$error = $e->getMessage();
+				}
+			}
 		}
         return $this->render('lot.html.twig', array(
 			"found" => $found,
 			"lot" => $lot,
 			'properties' => $properties,
-			'author' => $author
+			'author' => $author,
+			'error' => $error,
+			'price' => $price
         ));
     }
 	
@@ -190,7 +255,7 @@ class LotController extends Controller
     {
 		if( !$this->container->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY') )
 		{
-			return $this->redirectToRoute('home');
+			return $this->redirectToRoute('login');
 		}
 		$lot = $this->getDoctrine()->getRepository('AppBundle:Lot')->findOneById($id);
 		$found = false;
@@ -253,12 +318,18 @@ class LotController extends Controller
 						$lot->setFile($file);
 						$lot->upload();
 					}
-					
 					if ($buyout_price != '')
 					{
 						$lot->setBuyoutPrice($buyout_price);
+						if ($lot->getBuyoutPrice() < $lot->getStartPrice())
+						{
+							throw new \Exception('Buyout price cannot be lower than the starting price.');
+						}
 					}
-
+					else
+					{
+						$lot->setBuyoutPrice(null);
+					}
 					for ($i = 0; $i < count($vals); $i++)
 					{
 						if ($properties[$i]['value'] == '')

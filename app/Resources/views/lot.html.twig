@@ -14,32 +14,59 @@
 
 {% block content %}
 	{% if found %}
-		{% if lot.img %}
-		<img class="img" src="{{ lot.img }}">
-		{% endif %}
-		<div class="text">{{ lot.name }}</div>
-		<div class="text">Description: {{ lot.description }}</div>
-		<div class="text">Price: {{ lot.startPrice }} hrn.</div>
-		{% if lot.buyoutPrice %}
-		<div class="text">Buyout price: {{ lot.buyoutPrice }} hrn.</div>
-		{% endif %}
-		<p>
-			Properties:
-			{% for prop in properties %}
-				<div class="property">
-					{{ prop.name }} : {{ prop.value }}
-				</div>
-			{% endfor %}
-		</p>
-		<input class="submit" type="submit" value="Buy"/>
-		{% if is_granted('IS_AUTHENTICATED_FULLY') %}
-			{% if app.user.username == author.username %}
-				<div class="right">
-					<p><a href="{{ path('edit-lot', {'id':lot.id}) }}">Edit</a></p>
-					<a href="{{ path('delete-lot', {'id':lot.id}) }}">Delete</a>
-				</div>
+		<div class="text-title">{{ lot.name }}</div>
+		<div class="else">
+			{% if lot.img %}
+			<img class="img" src="{{ lot.img }}">
 			{% endif %}
-		{% endif %}
+			<div class="buy">
+				<form method="post" action="{{ path('lot', {'id':lot.id}) }}">
+					<div class="bid">
+						<div id="pr" class="text"><b>Current price:</b> {% if not price == 0 %}{{ price }}{% else %}{{ lot.currentPrice }}{% endif %} hrn.</div>
+						{% if lot.status == 'Open' and is_granted('IS_AUTHENTICATED_FULLY') %}
+							<button class="submit" name="Bid" type="submit">Make a bid</button>
+							<input class="text-input" name="Bid_value" placeholder="Your bid"/>
+						{% endif %}
+					</div>
+					{% if error %}
+						<div class="error">{{ error }}</div>
+					{% endif %}
+					<div class="buyout">
+					{% if lot.status == 'Finished' %}
+						<div class="error">This lot is already closed.</div>
+					{% else %}
+						{% if lot.buyoutPrice %}
+							<div id="pr" class="text"><b>Buyout price:</b> {{ lot.buyoutPrice }} hrn.</div>
+							{% if lot.status == 'Open' and is_granted('IS_AUTHENTICATED_FULLY') %}
+								<button id="b" class="submit" name="Buyout" type="submit">Buyout</button>
+							{% endif %}
+						{% endif %}
+					{% endif %}
+					</div>
+				</form>
+				{% if is_granted('IS_AUTHENTICATED_FULLY') and lot.status == 'Unconfirmed' %}
+					{% if app.user.username == author.username or app.user.group == 'Content-manager' %}
+						<div class="right">
+							<a href="{{ path('edit-lot', {'id':lot.id}) }}">Edit lot</a><br>
+							<a href="{{ path('delete-lot', {'id':lot.id}) }}">Delete lot</a>
+						</div>
+					{% endif %}
+				{% endif %}
+			</div>
+		</div>
+		<div class="props">
+			<div id="desc" class="text"><b>Description:</b> {{ lot.description }}</div>
+			<p>
+				<div class="sep">
+					<i><b>Properties:</b></i>
+				</div>
+				{% for prop in properties %}
+					<div class="property">
+						<b>{{ prop.name }}:</b> {{ prop.value }}
+					</div>
+				{% endfor %}
+			</p>
+		</div>
 	{% else %}
 		Lot not found.
 	{% endif %}

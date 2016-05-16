@@ -83,6 +83,8 @@ class Lot
      */
     public $path;
 	
+	private $currentPrice;
+	
 	/**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
@@ -162,7 +164,27 @@ class Lot
 		$this->values = new ArrayCollection();
 		$this->bids = new ArrayCollection();
 	}
+	
+	public function setCurrentPrice($currentPrice)
+	{
+		$this->currentPrice = $currentPrice;
+	}
 
+	public function getCurrentPrice()
+	{
+		$bids = $this->bids;
+		if (count($bids) == 0)
+		{
+			$this->currentPrice = $this->startPrice;
+			return $this->currentPrice;
+		}
+		else
+		{
+			$this->currentPrice = $bids[count($bids)-1]->getValue();
+			return $this->currentPrice;
+		}
+	}
+	
     /**
      * Get id
      *
