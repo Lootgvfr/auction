@@ -146,14 +146,14 @@ class User implements UserInterface
 	
 	public function getAbsolutePath()
     {
-        return null === $this->path
+        return null === $this->path_image
             ? null
             : $this->getUploadRootDir().$this->path;
     }
 
     public function getWebPath()
     {
-        return null === $this->path
+        return null === $this->path_image
             ? null
             : '/'.$this->getUploadDir().$this->path;
     }

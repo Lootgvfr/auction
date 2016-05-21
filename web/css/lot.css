@@ -1,6 +1,22 @@
 .text{
 	font-size: 16px;
 	display: block;
+	font-family: "Palatino Linotype";
+}
+
+.property{
+	font-size: 16px;
+	display: block;
+	font-family: "Palatino Linotype";
+}
+
+.sep{
+	font-size: 16px;
+	width: auto;
+	display: inline-block;
+	margin-bottom: 5px;
+	font-family: "Palatino Linotype";
+	border-bottom: 1px solid #555;
 }
 
 .submit{
@@ -9,6 +25,104 @@
 }
 
 .right{
-	float: right;
 	position: relative;
+	font-family: "Palatino Linotype";
+}
+
+.right a{
+	font-weight: bold;
+	font-family: "Palatino Linotype";
+	font-size: 16px;
+	margin-top: 5px; margin-bottom: 5px;
+	display: inline-block;
+}
+
+.error{
+	font-family: "Palatino Linotype";
+}
+
+.img{
+	width: 300px;
+	height: 300px;
+	float: left;
+	position: relative;
+	margin-right: 10px;
+}
+
+.desc{
+	clear: left;
+	float: left;
+}
+
+.else{
+	overflow: auto;
+	display:block;
+	margin-bottom: 10px;
+}
+
+.buy{
+	float: left;
+	position: relative;
+	overflow: auto;
+}
+
+.bid{
+	width: 400px;
+	overflow: auto;
+	margin-top: 8px;
+	margin-bottom: 8px;
+}
+
+.buyout{
+	width: 400px;
+	overflow: auto;
+	margin-top: 8px;
+	margin-bottom: 8px;
+}
+
+#pr{
+	float: left;
+	padding-top: 3px;
+}
+
+.text-title{
+	font-size: 22px;
+	font-weight: bold;
+	margin-bottom: 5px;
+}
+
+.text-input{
+	display:inline-block;
+	width: 70px;
+	padding: 3px 5px 3px 5px;
+	font-family: "Palatino Linotype";
+	font-size: 16px;
+	margin-right: 8px;
+	float: right;
+	border-radius: 2px;
+	border: 1px solid #AAA;
+}
+
+.submit{
+	display: inline-block;
+	font-family: "Palatino Linotype";
+	font-size: 16px;
+	float: right;
+	padding: 3px 15px 3px 15px;
+	border: 0px;
+	color: white;
+	border-radius: 2px;
+	background-color: #555;
+	border: 1px solid #ceccbd;
+}
+
+#b{
+	display: block;
+}
+
+.submit:hover{
+	cursor: pointer;
+	background-color: #eee;
+	border: 1px solid #555;
+	color: #555;
 }
