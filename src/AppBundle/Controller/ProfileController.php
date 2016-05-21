@@ -6,7 +6,11 @@ use AppBundle\Form\Edit_profile;
 use AppBundle\Entity\User;
 use AppBundle\Entity\CommentUser;
 use AppBundle\Form\CommentUserForm;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -105,7 +109,13 @@ class ProfileController extends Controller
 			));
     }
 	
-	
+	/**
+     * @Route("/comment/{sellerName}/new", name = "comment_new")
+     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
+     *
+     * @Method("POST")
+     * @ParamConverter("seller", options={"mapping": {"sellerName": "username"}})
+     */
 	public function commentNewAction(Request $request, User $seller)
     {
         $form = $this->createForm(new CommentUserForm());
@@ -117,6 +127,8 @@ class ProfileController extends Controller
             $comment = $form->getData();
             $comment->setAuthor($this->getUser());
 			$comment->setSeller($seller);
+			$comment->setStatus("unchecked");
+			$comment->setDate((new DateTime())->format('Y-m-d H:i:s'));
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($comment);
@@ -125,8 +137,8 @@ class ProfileController extends Controller
             return $this->redirectToRoute('profile', array('username' => $seller->username()));
         }
 
-        return $this->render('blog/comment_form_error.html.twig', array(
-            'post' => $post,
+        return $this->render('comment_form_error.html.twig', array(
+            'user' => $seller,
             'form' => $form->createView(),
         ));
     }
@@ -143,12 +155,12 @@ class ProfileController extends Controller
      *
      * @return Response
      */
-    public function commentFormAction(Post $post)
+    public function commentFormAction(User $user)
     {
-        $form = $this->createForm(new CommentType());
+        $form = $this->createForm(new CommentUserForm());
 
-        return $this->render('blog/_comment_form.html.twig', array(
-            'post' => $post,
+        return $this->render('_comment_form.html.twig', array(
+            'user' => $user,
             'form' => $form->createView(),
         ));
     }

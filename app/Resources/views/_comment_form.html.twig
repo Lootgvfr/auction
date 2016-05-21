@@ -6,7 +6,7 @@
     {{ form_start(form, { method: ..., action: ..., attr: { novalidate: 'novalidate' } }) }}
 #}
 
-{{ form_start(form, { method: 'POST', action: path('comment_new', { 'postSlug': post.slug }) }) }}
+{{ form_start(form, { method: 'POST', action: path('comment_new', { 'sellerName': user.username }) }) }}
     {#  instead of displaying form fields one by one, you can also display them
         all with their default options and styles just by calling to this function:
 
@@ -19,13 +19,10 @@
         {# Render any global form error (e.g. when a constraint on a public getter method failed) #}
         {{ form_errors(form) }}
 
-        <div class="form-group {% if not form.content.vars.valid %}has-error{% endif %}">
-            {{ form_label(form.content, 'label.content', { label_attr: { class: 'hidden' }}) }}
+        <div class="form-group {% if not form.text.vars.valid %}has-error{% endif %}">
+            {{ form_errors(form.text) }}
 
-            {# Render any errors for the "content" field (e.g. when a class property constraint failed) #}
-            {{ form_errors(form.content) }}
-
-            {{ form_widget(form.content, { attr: { rows: 10 } }) }}
+            {{ form_widget(form.text, { attr: { rows: 10 } }) }}
         </div>
 
         <div class="form-group">
