@@ -7,7 +7,10 @@
 {% endblock %}
 
 {% block content %}
+	Choose category:
+	<p>
 	{% for cat in categories %}
 		<a href="{{ path('make-lot-cat', {'category':cat.name}) }}"><b>{{ cat.name }}</b></a><br>
 	{% endfor %}
+	</p>
 {% endblock %}
