@@ -32,9 +32,7 @@
 						<div class="error">{{ error }}</div>
 					{% endif %}
 					<div class="buyout">
-					{% if lot.status == 'Finished' %}
-						<div class="error">This lot is already closed.</div>
-					{% else %}
+					{% if lot.status == 'Open'%}
 						{% if lot.buyoutPrice %}
 							<div id="pr" class="text"><b>Buyout price:</b> {{ lot.buyoutPrice }} hrn.</div>
 							{% if lot.status == 'Open' and is_granted('IS_AUTHENTICATED_FULLY') %}
@@ -44,11 +42,29 @@
 					{% endif %}
 					</div>
 				</form>
+				{% if lot.status == 'Unconfirmed' %}
+				<div class="right">
+					This lot is not yet confirmed<br>Duration: {{ duration }} days
+				</div>
+				{% endif %}
+				{% if lot.status == 'Open' %}
+				<div class="right">
+					Ends on {{ lot.endDate|date('d.m.Y') }}!
+				</div>
+				{% endif %}
+				{% if lot.status == 'Finished' %}
+				<div class="right">
+					This lot is already closed<br>It was closed on {{ lot.endDate|date('d.m.Y') }}
+				</div>
+				{% endif %}
 				{% if is_granted('IS_AUTHENTICATED_FULLY') and lot.status == 'Unconfirmed' %}
-					{% if app.user.username == author.username or app.user.group == 'Content-manager' %}
+					{% if app.user.username == author.username or app.user.group == 'Content-manager' or app.user.group == 'Admin' %}
 						<div class="right">
 							<a href="{{ path('edit-lot', {'id':lot.id}) }}">Edit lot</a><br>
 							<a href="{{ path('delete-lot', {'id':lot.id}) }}">Delete lot</a>
+							{% if app.user.group == 'Content-manager' or app.user.group == 'Admin' %}
+								<br><a href="{{ path('confirm-lot', {'id':lot.id}) }}">Confirm lot</a>
+							{% endif %}
 						</div>
 					{% endif %}
 				{% endif %}
