@@ -1,3 +1,108 @@
+.lala{
+	display: -webkit-flex;    
+	display: flex;  
+	width: 100%;
+	margin-bottom: 20px;
+	flex-direction: row;
+	
+}
+
+
+.manage{
+	width: 150px;
+	text-align: center;
+	margin: auto;
+}
+
+.set_group{
+	margin: 5px;
+}
+
+.ok_button{
+	border: none;
+	/*width: 35px;
+	height: 22px;*/
+	font-family:'Palatino Linotype';
+	margin: 2px;
+	background-color: transparent;
+	font-size: 16px;
+	
+	text-shadow: 1px 1px 1px #545;
+}
+.ok_button:hover{
+	cursor: pointer;
+	color:  #42A5F5;
+}
+.ban_button:hover{
+	cursor: pointer;
+	color:  #e74c3c;
+}
+.ban_button{
+	border: none;
+	width: 55px;
+    height: 20px;
+	text-align: right;
+	font-family:'Palatino Linotype';
+	margin: 2px;
+	background-color: transparent;
+	font-size: 16px;
+	font-weight: bold;
+	background-image: url(/img/ban.png);
+	background-repeat: no-repeat;
+	background-position: left bottom;
+}
+
+.edit_profile a{
+	font-family:'Palatino Linotype';
+	padding: 2px 7px 2px 7px;
+	line-height: 26px;
+	
+	margin: auto;
+	background-color: #555;
+	border: 1px solid #ceccbd;
+}
+
+.edit_profile a{
+	color: #fff;
+}
+.edit_profile a:hover{
+	color: #555;
+}
+
+.edit_profile a:hover{
+	cursor: pointer;
+	background-color: #eee;
+	border: 1px solid #555;
+}
+
+.edit_profile img{
+	vertical-align: top;
+	padding-top: 3px;
+	margin-right: 3px;
+	width: 20px;
+	height: 20px;
+	border: none;
+}
+
+.unban_button:hover{
+	cursor: pointer;
+	color:  #27ae60;
+}
+.unban_button{
+	border: none;
+	width: 75px;
+    height: 20px;
+	text-align: right;
+	font-family:'Palatino Linotype';
+	margin: 2px;
+	background-color: transparent;
+	font-size: 16px;
+	font-weight: bold;
+	background-image: url(/img/unban.png);
+	background-repeat: no-repeat;
+	background-position: left bottom;
+}
+
 .content_title
 {
 	font-family:'Palatino Linotype';
@@ -7,15 +112,21 @@
 }
 .avatar
 {
+	/*-webkit-flex: 1;      
+	flex: 1;*/
+	max-width: 170px;
 	margin: 15px;
 	position: relative;
 	float: left;
 }
-.avatar img
+.image
 {
 	height: 150px;
 	width: 150px;
+	border: 1px solid black;
+	margin-bottom: 5px;
 }
+
 ul
 {
 	margin: 0;
@@ -26,8 +137,20 @@ li {
 	display: inline;
 }
 .profile_info{
+	/*-webkit-flex: 1;      
+	flex: 1;
+	*/
 	display: block;
-	margin: 30px 0 15px 200px;
+	margin: 30px 0 15px 0px;
+	width: 50%;
+}
+.active_auctions
+{
+	padding-left: 15px;
+	margin-left: 15px;
+	float: right;
+	width: 30%;
+	border-left: 1px dashed #ceccbd;
 }
 
 

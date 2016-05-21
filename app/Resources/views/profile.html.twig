@@ -7,57 +7,137 @@
 {% endblock %}
 
 {% block page %}
+
 <div class="parent">
 	<div class="content">
 		<div class="content_title">User Profile</div>
-		<div class="avatar"><img src='{{ path }}' alt="Profile image"><br>
-		{% if username == app.user.username %}
-		<a href="{{path('edit')}}"> Edit profile</a>
-		{% endif %}
-		</div>
+		<div class="lala">
 		
+			<div class="avatar">
+				<img src='{{ path }}' alt="Profile image" class="image"><br>
+				<div class="manage">
+				{% if username == app.user.username %}
+					<div class="edit_profile">
+					<a href="{{path('edit')}}"><img src='/img/edit.png'>Edit profile</a><br>
+					</div>
+				{% endif %}
+				{% if "Admin" == app.user.group %}
+				<form action="{{path('set_group')}}" method="post" class="set_group">
+					<select name="new_group">
+						<option {% if group == "Admin" %} selected {% endif %} value="Admin">Admin
+						<option {% if group == "Moderator" %} selected {% endif %} value="Moderator">Moderator
+						<option {% if group == "Manager" %} selected {% endif %} value="Manager">Manager
+						<option {% if group == "User" %} selected {% endif %} value="User">User
+						<option {% if group == "Banned" %} selected {% endif %} value="Banned">Banned
+					</select>
+					<input type="hidden" value="{{username}}" name="username">
+					<input type="submit" value="OK" class="ok_button">
+				</form>
+				{% endif %}
+				{% if "Moderator" == app.user.group  or "Manager" == app.user.group %}
+				{% if group == "User" %}
+					<form action="{{path('set_group')}}" method="post">
+						<input type="hidden" value="Banned" name="new_group">
+						<input type="hidden" value="{{username}}" name="username">
+						<input type="submit" value="Ban" class="ban_button">
+					</form>
+				{% endif %}
+				{% endif %}
+				{% if "User" != app.user.group and group == "Banned" %}
+					<form action="{{path('set_group')}}" method="post">
+						<input type="hidden" value="User" name="new_group">
+						<input type="hidden" value="{{username}}" name="username">
+						<input type="submit" value="Unban" class="unban_button">
+					</form>
+				{% endif %}
+				</div>
+			</div>
+			
 			<table class="profile_info">
-			<tr>
-				<td width="130">
-				Username: 
-				</td>
-				<td width="300">
-				{{ username }}
-				</td>
-			</tr>
-			<tr>
-				<td>
-				Name: 
-				</td>
-				<td>
-				{{ name }}
-				</td>
-			</tr>
-			<tr>
-				<td>
-				Email:
-				</td>
-				<td>
-				{{ email }}
-				</td>
-			</tr>
-			<tr>
-				<td>
-				Group:
-				</td>
-				<td>
-				{{ group }}
-				</td>
-			</tr>
-			<tr>
-				<td>
-				</td>
-				<td>
-				
-				</td>
-			</tr>
+				<tr>
+					<td width="100">
+					Username: 
+					</td>
+					<td>
+					{{ username }}
+					</td>
+				</tr>
+				{% if name %}
+				<tr>
+					<td>
+					Name: 
+					</td>
+					<td>
+					{{ name }}
+					</td>
+				</tr>
+				{% endif %}
+				{% if username == app.user.username %}
+				<tr>
+					<td>
+					Email:
+					</td>
+					<td>
+					{{ email }}
+					</td>
+				</tr>
+				{% endif %}
+				<tr>
+					<td>
+					Group:
+					</td>
+					<td>
+					{{ group }}
+					</td>
+				</tr>
+				{% if address and username == app.user.username %}
+				<tr>
+					<td>
+					Address:
+					</td>
+					<td>
+					{{ address }}
+					</td>
+				</tr>
+				{% endif %}
+				{% if phone and username == app.user.username %}
+				<tr>
+					<td>
+					Phone:
+					</td>
+					<td>
+					{{ phone }}
+					</td>
+				</tr>
+				{% endif %}
+				{% if info %}
+				<tr>
+					<td>
+					Info:
+					</td>
+					<td>
+					{{ info }}
+					</td>
+				</tr>
+				{% endif %}
 			</table>
-		
+			<div class="active_auctions">
+				{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+					{{ render(controller('AppBundle:Profile:commentForm', { 'id': id })) }}
+				{% else %}
+				<p>
+					<a class="submit" href="{{ path('login') }}">
+						Sign in
+					</a>
+					for leaving a comment
+				</p>
+				{% endif %}
+			</div>
+			
+		</div>	
+		Symfony comes packed with a lot of useful objects, called services. These are used for rendering templates, sending emails, querying the database and any other "work" you can think of. When you install a new bundle, it probably brings in even more services. When extending the base controller class, you can access any Symfony service via the get() method of the Controller class. Here are several common services you might need:
 	</div>
 </div>
+
+
 {% endblock %}
