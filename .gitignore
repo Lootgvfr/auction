@@ -5,3 +5,4 @@ app/config/parameters.yml.dist
 vendor/*
 var/*
 src/AppBundle/Entity/*.php~
+web/uploads
