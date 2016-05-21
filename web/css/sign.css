@@ -69,3 +69,11 @@ ul{
 li{
 	font-family: "Palatino Linotype";
 }
+
+textarea{
+	width: 254px;
+	height: 150px;
+	resize: none;
+	border-radius: 3px;
+}
+

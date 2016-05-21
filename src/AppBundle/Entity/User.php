@@ -8,9 +8,12 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
 
 /**
  * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks
  * @ORM\Table(name="user")
  * @UniqueEntity(fields="email", message="Email already taken")
  * @UniqueEntity(fields="username", message="Username already taken")
@@ -110,10 +113,13 @@ class User implements UserInterface
 	 /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $path_image;
+    private $path;
 	
 	/**
-     * @Assert\File(maxSize="6000000")
+     * @Assert\File(
+     *     maxSize = "5M",
+     *     maxSizeMessage = "The maxmimum allowed file size is 5MB."
+     * )
      */
     private $file;
 
@@ -142,17 +148,17 @@ class User implements UserInterface
     {
         return null === $this->path
             ? null
-            : $this->getUploadRootDir().'/'.$this->path;
+            : $this->getUploadRootDir().$this->path;
     }
 
     public function getWebPath()
     {
         return null === $this->path
             ? null
-            : $this->getUploadDir().'/'.$this->path;
+            : '/'.$this->getUploadDir().$this->path;
     }
 
-    protected function getUploadRootDir()
+	protected function getUploadRootDir()
     {
         // the absolute directory path where uploaded
         // documents should be saved
@@ -163,9 +169,62 @@ class User implements UserInterface
     {
         // get rid of the __DIR__ so it doesn't screw up
         // when displaying uploaded doc/image in the view.
-        return 'uploads/documents';
+        return 'uploads/headshots/';
     }
 	
+	/**
+	 * Called before saving the entity
+	 * 
+	 * @ORM\PrePersist()
+	 * @ORM\PreUpdate()
+	 */
+	public function preUpload()
+	{   
+		if (null !== $this->file) {
+			// do whatever you want to generate a unique name
+			$filename = $this->username;
+			$this->path = $filename.'.png';
+		}
+	}
+	
+	/**
+	 * Called before entity removal
+	 *
+	 * @ORM\PreRemove()
+	 */
+	public function removeUpload()
+	{
+		if ($file = $this->getAbsolutePath()) {
+			unlink($file); 
+		}
+	}
+	/**
+	 * Called after entity persistence
+	 *
+	 * @ORM\PostPersist()
+	 * @ORM\PostUpdate()
+	 */
+	public function upload()
+	{
+		// The file property can be empty if the field is not required
+		if (null === $this->file) {
+			return;
+		}
+		
+		$this->path = $this->username.'.png';
+		// Use the original file name here but you should
+		// sanitize it at least to avoid any security issues
+
+		// move takes the target directory and then the
+		// target filename to move to
+		$this->file->move(
+			$this->getUploadDir(),
+			$this->path
+		);
+
+		// Clean up the file property as you won't need it anymore
+		$this->file = null;
+	}
 	
 	public function getSalt()
     {
@@ -411,9 +470,9 @@ class User implements UserInterface
      * @param string $pathImage
      * @return User
      */
-    public function setPathImage($pathImage)
+    public function setPath($path)
     {
-        $this->path_image = $pathImage;
+        $this->path = $path;
     
         return $this;
     }
@@ -423,9 +482,9 @@ class User implements UserInterface
      *
      * @return string 
      */
-    public function getPathImage()
+    public function getPath()
     {
-        return $this->path_image;
+        return $this->path;
     }
 	
 	/**
