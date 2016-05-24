@@ -16,12 +16,12 @@
 			<div class="avatar">
 				<img src='{{ path }}' alt="Profile image" class="image"><br>
 				<div class="manage">
-				{% if username == app.user.username %}
+				{% if is_granted('IS_AUTHENTICATED_FULLY') and username == app.user.username %}
 					<div class="edit_profile">
 					<a href="{{path('edit')}}"><img src='/img/edit.png'>Edit profile</a><br>
 					</div>
 				{% endif %}
-				{% if "Admin" == app.user.group %}
+				{% if  is_granted('IS_AUTHENTICATED_FULLY') and "Admin" == app.user.group %}
 				<form action="{{path('set_group')}}" method="post" class="set_group">
 					<select name="new_group">
 						<option {% if group == "Admin" %} selected {% endif %} value="Admin">Admin
@@ -34,7 +34,7 @@
 					<input type="submit" value="OK" class="ok_button">
 				</form>
 				{% endif %}
-				{% if "Moderator" == app.user.group  or "Manager" == app.user.group %}
+				{% if is_granted('IS_AUTHENTICATED_FULLY') and ("Moderator" == app.user.group  or "Manager" == app.user.group) %}
 				{% if group == "User" %}
 					<form action="{{path('set_group')}}" method="post">
 						<input type="hidden" value="Banned" name="new_group">
@@ -43,7 +43,7 @@
 					</form>
 				{% endif %}
 				{% endif %}
-				{% if "User" != app.user.group and group == "Banned" %}
+				{% if  is_granted('IS_AUTHENTICATED_FULLY') and "User" != app.user.group and group == "Banned" %}
 					<form action="{{path('set_group')}}" method="post">
 						<input type="hidden" value="User" name="new_group">
 						<input type="hidden" value="{{username}}" name="username">
@@ -72,7 +72,7 @@
 					</td>
 				</tr>
 				{% endif %}
-				{% if username == app.user.username %}
+				{% if  is_granted('IS_AUTHENTICATED_FULLY') and username == app.user.username %}
 				<tr>
 					<td>
 					Email:
@@ -90,7 +90,7 @@
 					{{ group }}
 					</td>
 				</tr>
-				{% if address and username == app.user.username %}
+				{% if  is_granted('IS_AUTHENTICATED_FULLY') and address and username == app.user.username %}
 				<tr>
 					<td>
 					Address:
@@ -100,7 +100,7 @@
 					</td>
 				</tr>
 				{% endif %}
-				{% if phone and username == app.user.username %}
+				{% if  is_granted('IS_AUTHENTICATED_FULLY') and phone and username == app.user.username %}
 				<tr>
 					<td>
 					Phone:

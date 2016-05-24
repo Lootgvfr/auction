@@ -166,7 +166,7 @@ class ProfileController extends Controller
     {
         $form = $this->createForm(new CommentUserForm());
 
-        return $this->render('_comment_form.html.twig', array(
+        return $this->render('_user_comment.html.twig', array(
             'user' => $user,
             'form' => $form->createView(),
         ));

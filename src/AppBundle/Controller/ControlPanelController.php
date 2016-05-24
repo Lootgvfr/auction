@@ -27,7 +27,7 @@ class ControlPanelController extends Controller
 		
 		$lot_comments = $this->getDoctrine()
 		->getRepository('AppBundle:CommentLot')
-		->findByStatus('unchecked');
+		->findByStatus('unconfirmed');
 		
 		return $this->render('moder.html.twig', 
 			array(
@@ -71,6 +71,41 @@ class ControlPanelController extends Controller
 		return $this->redirectToRoute('moderator');
 		
 	}
+	/**
+     * @Route("/check_lot/{id}", name="check_lot")
+     */
+    public function checkLotAction($id)
+    {
+		$em = $this->getDoctrine()->getManager();
+		$comment = $this->getDoctrine()
+		->getRepository('AppBundle:CommentLot')
+		->find($id);
+		
+		$comment->setStatus('confirmed');
+				
+		$em->flush();
+		
+		return $this->redirectToRoute('moderator');
+		
+	}
+  
+	/**
+     * @Route("/delete_lot/{id}", name="delete_lot")
+     */
+    public function deleteLotAction($id)
+    {
+		$em = $this->getDoctrine()->getManager();
+		$comment = $this->getDoctrine()
+		->getRepository('AppBundle:CommentLot')
+		->find($id);
+				
+		$em->remove($comment);
+		$em->flush();
+		
+		return $this->redirectToRoute('moderator');
+		
+	}
+	
 	
 	
 }

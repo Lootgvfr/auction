@@ -7,7 +7,13 @@ use AppBundle\Entity\Property;
 use AppBundle\Entity\Value;
 use AppBundle\Entity\Lot;
 use AppBundle\Entity\Bid;
+use AppBundle\Entity\CommentLot;
+use AppBundle\Form\CommentLotForm;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -430,6 +436,11 @@ class LotController extends Controller
 				}
 			}
 		}
+		$comments = $this->getDoctrine()
+        ->getRepository('AppBundle:CommentLot')
+        ->findBy(
+		array('status' => 'confirmed', 'lot' => $lot)		
+		);
 		
         return $this->render('lot.html.twig', array(
 			"found" => $found,
@@ -438,8 +449,75 @@ class LotController extends Controller
 			'author' => $author,
 			'error' => $error,
 			'price' => $price,
-			'duration' => $duration
+			'duration' => $duration,
+			'comments' => $comments,
+			'id' => $id
+        ));
+		
+    }
+	
+	/**
+     * @Route("/comment/{lot_id}/new", name = "lot_comment_new")
+     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
+     *
+     * @Method("POST")
+     * @ParamConverter("lot", options={"mapping": {"lot_id": "id"}})
+     */
+	public function commentNewAction(Request $request, Lot $lot)
+    {
+        $form = $this->createForm(new CommentLotForm());
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var Comment $comment */
+            $comment = $form->getData();
+            $comment->setAuthor($this->getUser());
+			$comment->setLot($lot);
+			$comment->setStatus("unconfirmed");
+			$date = new \DateTime(); //->format('Y-m-d H:i:s')
+			$comment->setDate($date);
+			$comment->setRating(5);
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($comment);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('lot', array('id' => $lot->getId()));
+        }
+
+        $form = $this->createForm(new CommentLotForm());
+
+        return $this->render('_lot_comment.html.twig', array(
+            'lot' => $lot,
+            'form' => $form->createView()
         ));
     }
+
+/**
+     * This controller is called directly via the render() function in the
+     * blog/post_show.html.twig template. That's why it's not needed to define
+     * a route name for it.
+     *
+     * The "id" of the Post is passed in and then turned into a Post object
+     * automatically by the ParamConverter.
+     *
+     * @param Post $post
+     *
+     * @return Response
+     */
+    public function commentFormAction(Lot $lot)
+    {
+        $form = $this->createForm(new CommentLotForm());
+
+        return $this->render('_lot_comment.html.twig', array(
+            'lot' => $lot,
+            'form' => $form->createView()
+        ));
+    }
+	
+	
+	
+	
 }
 ?>
