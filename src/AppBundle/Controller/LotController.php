@@ -345,6 +345,7 @@ class LotController extends Controller
 			$properties = [];
 			$values = $lot->getValues();
 			$author = $lot->getAuthor();
+			
 			for($i = 0; $i < count($values); $i++)
 			{
 				$name = $values[$i]->getProperty()->getName();
@@ -429,6 +430,7 @@ class LotController extends Controller
 				}
 			}
 		}
+		
         return $this->render('lot.html.twig', array(
 			"found" => $found,
 			"lot" => $lot,

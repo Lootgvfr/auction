@@ -94,6 +94,10 @@ class ProfileController extends Controller
         ->getRepository('AppBundle:User')
         ->findOneByUsername($username);
 		
+		$comments = $this->getDoctrine()
+        ->getRepository('AppBundle:CommentUser')
+        ->findBy(
+		array('status' => 'checked', 'seller' => $user)		);
 		
         return $this->render('profile.html.twig', 
 			array(
@@ -105,7 +109,8 @@ class ProfileController extends Controller
 				'address'  => $user->getAddress(),
 				'phone'    => $user->getPhone(),
 				'info'     => $user->getInfo(),
-				'id'       => $user->getId()
+				'id'       => $user->getId(),
+				'comments' => $comments
 			));
     }
 	
@@ -128,13 +133,15 @@ class ProfileController extends Controller
             $comment->setAuthor($this->getUser());
 			$comment->setSeller($seller);
 			$comment->setStatus("unchecked");
-			$comment->setDate((new DateTime())->format('Y-m-d H:i:s'));
+			$date = new \DateTime(); //->format('Y-m-d H:i:s')
+			$comment->setDate($date);
+			$comment->setRating(5);
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($comment);
             $entityManager->flush();
 
-            return $this->redirectToRoute('profile', array('username' => $seller->username()));
+            return $this->redirectToRoute('profile', array('username' => $seller->getUsername()));
         }
 
         return $this->render('comment_form_error.html.twig', array(

@@ -1,0 +1,107 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Control panel | Moderator {% endblock %}
+
+{% block css %}
+	<link href="{{ asset('css/control_panel.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block page %}
+<div class="parent">
+	<div class="content">
+		
+		<div class="comments">
+		{% if comments or lot_comments %}
+		<table>
+		<tr>
+				<td width="150">
+				Date: 
+				<td>
+				<td width="100">
+				Author: 
+				<td>
+				<td width="100">
+				Seller/Lot: 
+				<td>
+				<td width="400">
+				Text: 
+				<td>
+				<td width="40">
+				Rating: 
+				<td>
+				<td width="100">
+				Check: 
+				<td>
+				<td width="100">
+				Delete: 
+				<td>
+		</tr>
+		{% else %}
+		No unchecked comments.
+		{% endif %}
+		
+		{% for comment in comments %}
+		
+			<tr class="comment">
+				<td>
+				{{ comment.date | date('d.m.Y')}}
+				<td>
+				<td>
+				<a href="{{ path('profile', {'username': comment.author.username}) }}">{{ comment.author.username }}</a>
+				<td>
+				<td>
+				<a href="{{ path('profile', {'username': comment.seller.username}) }}">{{ comment.seller.username}}</a>
+				<td>
+				<td>
+				{{ comment.text}}
+				<td>
+				<td>
+				{{ comment.rating}}
+				<td>
+				<td>
+				<a href="{{ path('check_user', {'id': comment.id}) }}">Check</a>
+				<td>
+				<td>
+				<a href="{{ path('delete_user', {'id': comment.id}) }}">Delete</a>
+				<td>
+			</tr>
+		{% endfor %}
+		{% for lot_comment in lot_comments %}
+		
+			<tr class="comment">
+				<td>
+				{{ lot_comment.date | date('d.m.Y')}}
+				<td>
+				<td>
+				<a href="{{ path('profile', {'username': lot_comment.author.username}) }}">{{ lot_comment.author.username }}</a>
+				<td>
+				<td>
+				<a href="{{ path('lot', {'id': lot_comment.id}) }}">{{ lot_comment.lot.name}}</a>
+				<td>
+				<td>
+				{{ lot_comment.text}}
+				<td>
+				<td>
+				{{ lot_comment.rating}}
+				<td>
+				<td>
+				<a href="{{ path('check_lot', {'id': lot_comment.id}) }}">Check</a>
+				<td>
+				<td>
+				<a href="{{ path('delete-lot', {'id': lot_comment.id}) }}">Delete</a>
+				<td>
+			</tr>
+		{% endfor %}
+		
+		{% if comments %}
+		</table>
+		{% endif %}
+		
+		</div>
+	
+	</div>
+</div>
+
+
+
+{% endblock %}
