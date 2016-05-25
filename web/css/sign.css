@@ -9,30 +9,13 @@
 	margin-bottom: 8px;
 }
 
-.submit{
-	font-family: "Palatino Linotype";
-	font-size: 16px;
-	padding: 3px 15px 3px 15px;
-	border: 0px;
-	color: white;
-	border-radius: 2px;
-	background-color: #555;
-	border: 1px solid #ceccbd;
-	float: right;
-	margin-right: 45% - 250px;
-}
+
 .sign-cont{
 	display: block;
 	width: 260px;
 	margin: 0 auto;
 }
 
-.submit:hover{
-	cursor: pointer;
-	background-color: #eee;
-	border: 1px solid #555;
-	color: #555;
-}
 
 .wrapper{
 	display: -webkit-flex;    

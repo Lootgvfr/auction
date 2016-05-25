@@ -495,12 +495,6 @@ class LotController extends Controller
     }
 
 /**
-     * This controller is called directly via the render() function in the
-     * blog/post_show.html.twig template. That's why it's not needed to define
-     * a route name for it.
-     *
-     * The "id" of the Post is passed in and then turned into a Post object
-     * automatically by the ParamConverter.
      *
      * @param Post $post
      *
