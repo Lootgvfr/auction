@@ -253,7 +253,11 @@ a{
 .new_comment{
 	margin: 25px 10px 10px 10px;
 }
-
+.new_comment textarea{
+	width: 300px;
+	resize: none;
+	border-radius: 3px;
+}
 
 
 

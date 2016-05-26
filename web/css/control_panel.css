@@ -1,0 +1,12 @@
+.first_tr{
+    text-align: center;
+    font-weight: bold;
+    border: 1px dashed black;
+}
+.comments a:hover{
+    color: #42A5F5;
+}
+.comments td{
+    border-left: 1px dashed black;
+    padding: 0 10px 0 10px;
+}

@@ -13,28 +13,28 @@
 		<div class="comments">
 		{% if comments or lot_comments %}
 		<table>
-		<tr>
+		<tr class="first_tr">
 				<td width="150">
 				Date: 
-				<td>
+				</td>
 				<td width="100">
 				Author: 
-				<td>
+				</td>
 				<td width="100">
 				Seller/Lot: 
-				<td>
+				</td>
 				<td width="400">
 				Text: 
-				<td>
+				</td>
 				<td width="40">
 				Rating: 
-				<td>
+				</td>
 				<td width="100">
 				Check: 
-				<td>
+				</td>
 				<td width="100">
 				Delete: 
-				<td>
+				</td>
 		</tr>
 		{% else %}
 		No unchecked comments.
@@ -45,25 +45,25 @@
 			<tr class="comment">
 				<td>
 				{{ comment.date | date('d.m.Y')}}
-				<td>
+				</td>
 				<td>
 				<a href="{{ path('profile', {'username': comment.author.username}) }}">{{ comment.author.username }}</a>
-				<td>
+				</td>
 				<td>
 				<a href="{{ path('profile', {'username': comment.seller.username}) }}">{{ comment.seller.username}}</a>
-				<td>
+				</td>
 				<td>
 				{{ comment.text}}
-				<td>
+				</td>
 				<td>
 				{{ comment.rating}}
-				<td>
+				</td>
 				<td>
 				<a href="{{ path('check_user', {'id': comment.id}) }}">Check</a>
-				<td>
+				</td>
 				<td>
 				<a href="{{ path('delete_user', {'id': comment.id}) }}">Delete</a>
-				<td>
+				</td>
 			</tr>
 		{% endfor %}
 		{% for lot_comment in lot_comments %}
