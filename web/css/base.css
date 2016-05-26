@@ -232,9 +232,32 @@ a{
 	width: 100%;
 }
 
+.button{
+	font-family: "Palatino Linotype";
+	font-size: 16px;
+	padding: 3px 15px 3px 15px;
+	border: 0px;
+	color: white;
+	border-radius: 2px;
+	background-color: #555;
+	border: 1px solid #ceccbd;
+	margin-right: 45% - 250px;
+}
 
-
-
+.button:hover{
+	cursor: pointer;
+	background-color: #eee;
+	border: 1px solid #555;
+	color: #555;
+}
+.new_comment{
+	margin: 25px 10px 10px 10px;
+}
+.new_comment textarea{
+	width: 300px;
+	resize: none;
+	border-radius: 3px;
+}
 
 
 

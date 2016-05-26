@@ -6,7 +6,11 @@ use AppBundle\Form\Edit_profile;
 use AppBundle\Entity\User;
 use AppBundle\Entity\CommentUser;
 use AppBundle\Form\CommentUserForm;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -90,6 +94,10 @@ class ProfileController extends Controller
         ->getRepository('AppBundle:User')
         ->findOneByUsername($username);
 		
+		$comments = $this->getDoctrine()
+        ->getRepository('AppBundle:CommentUser')
+        ->findBy(
+		array('status' => 'checked', 'seller' => $user)		);
 		
         return $this->render('profile.html.twig', 
 			array(
@@ -101,11 +109,18 @@ class ProfileController extends Controller
 				'address'  => $user->getAddress(),
 				'phone'    => $user->getPhone(),
 				'info'     => $user->getInfo(),
-				'id'       => $user->getId()
+				'id'       => $user->getId(),
+				'comments' => $comments
 			));
     }
 	
-	
+	/**
+     * @Route("/comment/{sellerName}/new", name = "comment_new")
+     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
+     *
+     * @Method("POST")
+     * @ParamConverter("seller", options={"mapping": {"sellerName": "username"}})
+     */
 	public function commentNewAction(Request $request, User $seller)
     {
         $form = $this->createForm(new CommentUserForm());
@@ -117,38 +132,36 @@ class ProfileController extends Controller
             $comment = $form->getData();
             $comment->setAuthor($this->getUser());
 			$comment->setSeller($seller);
+			$comment->setStatus("unchecked");
+			$date = new \DateTime(); //->format('Y-m-d H:i:s')
+			$comment->setDate($date);
+			$comment->setRating(5);
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($comment);
             $entityManager->flush();
 
-            return $this->redirectToRoute('profile', array('username' => $seller->username()));
+            return $this->redirectToRoute('profile', array('username' => $seller->getUsername()));
         }
 
-        return $this->render('blog/comment_form_error.html.twig', array(
-            'post' => $post,
+        return $this->render('comment_form_error.html.twig', array(
+            'user' => $seller,
             'form' => $form->createView(),
         ));
     }
 
     /**
-     * This controller is called directly via the render() function in the
-     * blog/post_show.html.twig template. That's why it's not needed to define
-     * a route name for it.
-     *
-     * The "id" of the Post is passed in and then turned into a Post object
-     * automatically by the ParamConverter.
      *
      * @param Post $post
      *
      * @return Response
      */
-    public function commentFormAction(Post $post)
+    public function commentFormAction(User $user)
     {
-        $form = $this->createForm(new CommentType());
+        $form = $this->createForm(new CommentUserForm());
 
-        return $this->render('blog/_comment_form.html.twig', array(
-            'post' => $post,
+        return $this->render('_user_comment.html.twig', array(
+            'user' => $user,
             'form' => $form->createView(),
         ));
     }
