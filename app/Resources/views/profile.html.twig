@@ -15,7 +15,8 @@
 		<div class="lala">
 		
 			<div class="avatar">
-				<img src='{{ path }}' alt="Profile image" class="image"><br>
+				<img src='{{ path }}' alt="Profile image" class="image">
+				<input class="rating rating-loading" data-size="sm" data-readonly="true" value="{{ rating }}" ><br>
 				<div class="manage">
 				{% if is_granted('IS_AUTHENTICATED_FULLY') and user.username == app.user.username %}
 					<div class="edit_profile">
@@ -55,8 +56,11 @@
 			</div>
 			
 			<table class="profile_info">
+			
 				<tr>
+				
 					<td width="100">
+					
 					Username: 
 					</td>
 					<td>
@@ -124,12 +128,14 @@
 			</table>
 			<div class="comments">
 				{% for comment in comments %}
-					<div class="row post-comment">
-						<div class="col-sm-3">
+					<div class="row show-comment">
+						<div class="col-sm-4 ">
+						<span class="glyphicon glyphicon-comment" aria-label="Left Align"></span>
 							<strong><a href="{{ path('profile', {'username': comment.author.username}) }}"> {{ comment.author.username }}</a></strong> 
 							{{ comment.date|date('d.m.Y') }}
+							<input class="rating rating-loading" data-size="xs" data-readonly="true" value="{{ comment.rating }}" >
 						</div>
-						<div class="col-sm-9">
+						<div class="col-sm-9 left">
 							{{ comment.text }}
 						</div>
 					</div>
@@ -139,7 +145,16 @@
 					</div>
 				{% endfor %}
 				{% if is_granted('IS_AUTHENTICATED_FULLY') %}
-					{{ render(controller('AppBundle:Profile:commentForm', { 'id': user.id })) }}
+				
+				<form action="{{ path('comment_new', { 'sellerName': user.username }) }}" method="post">
+					<div class="new_comment">
+							<input id="input-1-sm" name="rating" class="rating rating-loading" data-min="0" data-max="5" data-step="1" data-size="sm"> <br>
+							<textarea name="text"></textarea>
+							<button class="button" type="submit" name="submit">Comment</button>
+					</div>
+
+				</form>
+					
 				{% else %}
 				<p>
 					<a class="submit" href="{{ path('login') }}">
@@ -153,7 +168,7 @@
 		</div>	
 
 		<div class="auctions">
-			<div class="section-title">
+			<div class="content_title">
 				User's lots
 			</div>
             {% if lots %}

@@ -12,7 +12,7 @@
 		
 		<div class="lots">
 		{% if lots %}
-		<table>
+		<table class="table">
 		<tr class="first_tr">
 				<td width="150">
 				Date: 
@@ -39,7 +39,7 @@
 		
 		{% for lot in lots %}
 		
-			<tr class="comment">
+			<tr class="comments">
 				<td>
 				{{ lot.startDate | date('d.m.Y')}}
 				</td>
@@ -53,10 +53,10 @@
 				Rating
 				</td>
 				<td>
-				<a href="{{ path('confirm-lot', {'id': lot.id}) }}">Confirm</a>
+				<a  class="btn btn-success btn-xs" href="{{ path('confirm-lot', {'id': lot.id}) }}">Confirm</a>
 				</td>
 				<td>
-				<a href="{{ path('delete-lot', {'id': lot.id}) }}">Delete</a>
+				<a  class="btn btn-danger btn-xs" href="{{ path('delete-lot', {'id': lot.id}) }}">Delete</a>
 				</td>
 			</tr>
 		{% endfor %}

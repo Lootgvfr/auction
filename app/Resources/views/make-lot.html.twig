@@ -22,7 +22,9 @@
 			<input class="text-input" type="text" name="Starting_price" value="{{ starting_price }}" placeholder="Starting price"/>
 			<input class="text-input" type="text" name="Buyout_price" value="{{ buyout_price }}" placeholder="Buyout price"/>
 			<input class="text-input" type="text" name="Duration" value="{{ duration }}" placeholder="Duration (days)"/>
-			<input type="file" name="file">
+			<span class="btn btn-info btn-file">
+				Browse <input type="file" name="file">
+			</span>
 			<button class="submit" type="submit">{% if edit %}Save{% else %}Create{% endif %}</button>
 		</form>
 	{% endif %}

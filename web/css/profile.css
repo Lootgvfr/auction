@@ -142,15 +142,21 @@ li {
 	*/
 	display: block;
 	margin: 30px 0 15px 0px;
-	width: 50%;
+	width: 45%;
 }
 .comments
 {
 	padding-left: 15px;
 	margin-left: 15px;
 	float: right;
-	width: 30%;
+	width: 35%;
 	border-left: 1px dashed #ceccbd;
 }
 
-
+.show-comment{
+	margin-bottom: 10px;
+}
+.left{
+	margin-left: -20px;
+	margin-right: -20px;
+}

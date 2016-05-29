@@ -12,7 +12,7 @@
 		
 		<div class="comments">
 		{% if comments %}
-		<table>
+		<table class="table">
 		<tr class="first_tr">
 				<td width="100">
 				Date: 
@@ -42,7 +42,7 @@
 		
 		{% for comment in comments %}
 		
-			<tr class="comment">
+			<tr class="comments">
 				<td>
 				{{ comment.date | date('d.m.Y')}}
 				</td>
@@ -59,10 +59,10 @@
 				{{ comment.rating}}
 				</td>
 				<td>
-				<a href="{{ path('check_user', {'id': comment.id}) }}">Check</a>
+				<a class="btn btn-success btn-xs" href="{{ path('check_user', {'id': comment.id}) }}">Check</a>
 				</td>
 				<td>
-				<a href="{{ path('delete_user', {'id': comment.id}) }}">Delete</a>
+				<a class="btn btn-danger btn-xs" href="{{ path('delete_user', {'id': comment.id}) }}">Delete</a>
 				</td>
 			</tr>
 		{% endfor %}
@@ -74,7 +74,7 @@
 		
 		<div class="comments">
 			{% if lot_comments %}
-			<table>
+			<table class="table">
 			<tr class="first_tr">
 					<td width="100">
 					Date: 
@@ -104,7 +104,7 @@
 			
 			{% for lot_comment in lot_comments %}
 			
-				<tr class="comment">
+				<tr class="comments">
 					<td>
 					{{ lot_comment.date | date('d.m.Y')}}
 					</td>
@@ -121,10 +121,10 @@
 					{{ lot_comment.rating}}
 					</td>
 					<td>
-					<a href="{{ path('check_lot', {'id': lot_comment.id}) }}">Check</a>
+					<a class="btn btn-success btn-xs" href="{{ path('check_lot', {'id': lot_comment.id}) }}">Check</a>
 					</td>
 					<td>
-					<a href="{{ path('delete-lot', {'id': lot_comment.id}) }}">Delete</a>
+					<a class="btn btn-danger btn-xs" href="{{ path('delete-lot', {'id': lot_comment.id}) }}">Delete</a>
 					</td>
 				</tr>
 			{% endfor %}

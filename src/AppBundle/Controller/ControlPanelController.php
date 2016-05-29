@@ -32,7 +32,7 @@ class ControlPanelController extends Controller
 		->findByStatus('unconfirmed');
 			
 		
-		return $this->render('moder.html.twig', 
+		return $this->render('moderator.html.twig', 
 			array(
 				'comments' => $comments,
 				'lot_comments' => $lot_comments

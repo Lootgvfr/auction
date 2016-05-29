@@ -3,7 +3,7 @@
 {% block title %} Control panel | Moderator {% endblock %}
 
 {% block css %}
-	<link href="{{ asset('css/control_panel.css') }}" rel="stylesheet">
+		<link href="{{ asset('css/control_panel.css') }}" rel="stylesheet">
 {% endblock %}
 
 {% block page %}
@@ -12,7 +12,7 @@
 		
 		<div class="comments">
 		{% if messages %}
-		<table>
+		<table class="table">
 		<tr class="first_tr">
 				<td width="100">
 				Date: 
@@ -44,7 +44,7 @@
 				{{ message.message}}
 				</td>
 				<td>
-				<a href="{{ path('delete_message', {'id': message.id}) }}">Delete</a>
+				<a class="btn btn-danger btn-xs" href="{{ path('delete_message', {'id': message.id}) }}">Delete</a>
 				</td>
 			</tr>
 		{% endfor %}
