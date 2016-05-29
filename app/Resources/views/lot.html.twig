@@ -102,7 +102,7 @@
 			</div>
 		{% endfor %}
 		{% if is_granted('IS_AUTHENTICATED_FULLY') %}
-			{{ render(controller('AppBundle:Lot:commentForm', { 'id': id })) }}
+			{{ render(controller('AppBundle:Lot:commentLotForm', { 'id': id })) }}
 		{% else %}
 		<p>
 			<a class="submit" href="{{ path('login') }}">
