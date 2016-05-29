@@ -36,6 +36,24 @@
 					<li class="menu-item">
 						<a href="{{ path('contacts') }}">Contacts</a>
 					</li>
+					{% if is_granted('IS_AUTHENTICATED_FULLY') and app.user.group == 'Moderator'%}
+						<li class="menu-item">
+							<a href="{{ path('moderator') }}">Panel</a>
+						</li>
+					{% endif %}
+					{% if is_granted('IS_AUTHENTICATED_FULLY') and app.user.group == 'Manager'%}
+						<li class="menu-item">
+							<a href="{{ path('manager') }}">Panel</a>
+						</li>
+					{% endif %}
+					{% if is_granted('IS_AUTHENTICATED_FULLY') and app.user.group == 'Admin'%}
+						<li class="menu-item">
+							<a href="{{ path('moderator') }}">M. Panel</a>
+						</li>
+						<li class="menu-item">
+							<a href="{{ path('manager') }}">C-M. Panel</a>
+						</li>
+					{% endif %}
 				</ul>
 				<div class="quick-search">
 					<form action="">

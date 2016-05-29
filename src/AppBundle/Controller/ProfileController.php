@@ -93,7 +93,11 @@ class ProfileController extends Controller
 		$user = $this->getDoctrine()
         ->getRepository('AppBundle:User')
         ->findOneByUsername($username);
-		
+
+		$lots = $this->getDoctrine()
+			->getRepository('AppBundle:Lot')
+			->findByAuthor($user);
+
 		$comments = $this->getDoctrine()
         ->getRepository('AppBundle:CommentUser')
         ->findBy(
@@ -101,16 +105,10 @@ class ProfileController extends Controller
 		
         return $this->render('profile.html.twig', 
 			array(
-				'username' => $username,
-				'name'     => $user->getName(),
-				'email'    => $user->getEmail(),
-				'group'    => $user->getGroup(),
+				'user'     => $user,
 				'path'	   => $user->getWebPath(),
-				'address'  => $user->getAddress(),
-				'phone'    => $user->getPhone(),
-				'info'     => $user->getInfo(),
-				'id'       => $user->getId(),
-				'comments' => $comments
+				'comments' => $comments,
+				'lots'     => $lots
 			));
     }
 	
@@ -132,7 +130,7 @@ class ProfileController extends Controller
             $comment = $form->getData();
             $comment->setAuthor($this->getUser());
 			$comment->setSeller($seller);
-			$comment->setStatus("unchecked");
+			$comment->setStatus("Unconfirmed");
 			$date = new \DateTime(); //->format('Y-m-d H:i:s')
 			$comment->setDate($date);
 			$comment->setRating(5);

@@ -4,6 +4,7 @@
 
 {% block css %}
 	<link href="{{ asset('css/profile.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/category_display.css') }}" rel="stylesheet">
 {% endblock %}
 
 {% block page %}
@@ -16,7 +17,7 @@
 			<div class="avatar">
 				<img src='{{ path }}' alt="Profile image" class="image"><br>
 				<div class="manage">
-				{% if is_granted('IS_AUTHENTICATED_FULLY') and username == app.user.username %}
+				{% if is_granted('IS_AUTHENTICATED_FULLY') and user.username == app.user.username %}
 					<div class="edit_profile">
 					<a href="{{path('edit')}}"><img src='/img/edit.png'>Edit profile</a><br>
 					</div>
@@ -24,29 +25,29 @@
 				{% if  is_granted('IS_AUTHENTICATED_FULLY') and "Admin" == app.user.group %}
 				<form action="{{path('set_group')}}" method="post" class="set_group">
 					<select name="new_group">
-						<option {% if group == "Admin" %} selected {% endif %} value="Admin">Admin
-						<option {% if group == "Moderator" %} selected {% endif %} value="Moderator">Moderator
-						<option {% if group == "Manager" %} selected {% endif %} value="Manager">Manager
-						<option {% if group == "User" %} selected {% endif %} value="User">User
-						<option {% if group == "Banned" %} selected {% endif %} value="Banned">Banned
+						<option {% if user.group == "Admin" %} selected {% endif %} value="Admin">Admin
+						<option {% if user.group == "Moderator" %} selected {% endif %} value="Moderator">Moderator
+						<option {% if user.group == "Manager" %} selected {% endif %} value="Manager">Manager
+						<option {% if user.group == "User" %} selected {% endif %} value="User">User
+						<option {% if user.group == "Banned" %} selected {% endif %} value="Banned">Banned
 					</select>
-					<input type="hidden" value="{{username}}" name="username">
+					<input type="hidden" value="{{user.username}}" name="username">
 					<input type="submit" value="OK" class="ok_button">
 				</form>
 				{% endif %}
 				{% if is_granted('IS_AUTHENTICATED_FULLY') and ("Moderator" == app.user.group  or "Manager" == app.user.group) %}
-				{% if group == "User" %}
+				{% if user.group == "User" %}
 					<form action="{{path('set_group')}}" method="post">
 						<input type="hidden" value="Banned" name="new_group">
-						<input type="hidden" value="{{username}}" name="username">
+						<input type="hidden" value="{{user.username}}" name="username">
 						<input type="submit" value="Ban" class="ban_button">
 					</form>
 				{% endif %}
 				{% endif %}
-				{% if  is_granted('IS_AUTHENTICATED_FULLY') and "User" != app.user.group and group == "Banned" %}
+				{% if  is_granted('IS_AUTHENTICATED_FULLY') and "User" != app.user.group and user.group == "Banned" %}
 					<form action="{{path('set_group')}}" method="post">
 						<input type="hidden" value="User" name="new_group">
-						<input type="hidden" value="{{username}}" name="username">
+						<input type="hidden" value="{{user.username}}" name="username">
 						<input type="submit" value="Unban" class="unban_button">
 					</form>
 				{% endif %}
@@ -59,26 +60,26 @@
 					Username: 
 					</td>
 					<td>
-					{{ username }}
+					{{ user.username }}
 					</td>
 				</tr>
-				{% if name %}
+				{% if user.name %}
 				<tr>
 					<td>
 					Name: 
 					</td>
 					<td>
-					{{ name }}
+					{{ user.name }}
 					</td>
 				</tr>
 				{% endif %}
-				{% if  is_granted('IS_AUTHENTICATED_FULLY') and username == app.user.username %}
+				{% if  is_granted('IS_AUTHENTICATED_FULLY') and user.username == app.user.username %}
 				<tr>
 					<td>
 					Email:
 					</td>
 					<td>
-					{{ email }}
+					{{ user.email }}
 					</td>
 				</tr>
 				{% endif %}
@@ -87,41 +88,41 @@
 					Group:
 					</td>
 					<td>
-					{{ group }}
+					{{ user.group }}
 					</td>
 				</tr>
-				{% if  is_granted('IS_AUTHENTICATED_FULLY') and address and username == app.user.username %}
+				{% if  is_granted('IS_AUTHENTICATED_FULLY') and user.address and user.username == app.user.username %}
 				<tr>
 					<td>
 					Address:
 					</td>
 					<td>
-					{{ address }}
+					{{ user.address }}
 					</td>
 				</tr>
 				{% endif %}
-				{% if  is_granted('IS_AUTHENTICATED_FULLY') and phone and username == app.user.username %}
+				{% if  is_granted('IS_AUTHENTICATED_FULLY') and user.phone and user.username == app.user.username %}
 				<tr>
 					<td>
 					Phone:
 					</td>
 					<td>
-					{{ phone }}
+					{{ user.phone }}
 					</td>
 				</tr>
 				{% endif %}
-				{% if info %}
+				{% if user.info %}
 				<tr>
 					<td>
 					Info:
 					</td>
 					<td>
-					{{ info }}
+					{{ user.info }}
 					</td>
 				</tr>
 				{% endif %}
 			</table>
-			<div class="active_auctions">
+			<div class="comments">
 				{% for comment in comments %}
 					<div class="row post-comment">
 						<div class="col-sm-3">
@@ -138,7 +139,7 @@
 					</div>
 				{% endfor %}
 				{% if is_granted('IS_AUTHENTICATED_FULLY') %}
-					{{ render(controller('AppBundle:Profile:commentForm', { 'id': id })) }}
+					{{ render(controller('AppBundle:Profile:commentForm', { 'id': user.id })) }}
 				{% else %}
 				<p>
 					<a class="submit" href="{{ path('login') }}">
@@ -150,7 +151,33 @@
 			</div>
 			
 		</div>	
-		Symfony comes packed with a lot of useful objects, called services. These are used for rendering templates, sending emails, querying the database and any other "work" you can think of. When you install a new bundle, it probably brings in even more services. When extending the base controller class, you can access any Symfony service via the get() method of the Controller class. Here are several common services you might need:
+
+		<div class="auctions">
+			<div class="section-title">
+				User's lots
+			</div>
+            {% if lots %}
+                <ul class="grid">
+                    {% for lot in lots %}
+                        <li class="item">
+                            <a href="{{ path('lot', {'id':lot.id}) }}">
+                                <img class="item-pic" src="{{ lot.img }}" alt="{{ lot.name }}"/>
+                                <div class="item-name">{{ lot.name }}</div><br>
+                            </a>
+                            <div class="bottom">
+                                <div class="item-price">{{ lot.currentPrice }} hrn.</div>
+                                <div class="item-comments">0 comments</div>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>This user doesn't have lots yet.</p>
+            {% endif %}
+
+
+
+		</div>
 	</div>
 </div>
 

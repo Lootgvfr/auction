@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Control panel | Moderator {% endblock %}
+
+{% block css %}
+	<link href="{{ asset('css/control_panel.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block page %}
+<div class="parent">
+	<div class="content">
+		
+		<div class="comments">
+		{% if messages %}
+		<table>
+		<tr class="first_tr">
+				<td width="100">
+				Date: 
+				</td>
+				<td width="100">
+				Author: 
+				</td>
+				<td width="500">
+				Message: 
+				</td>
+				<td width="100">
+				Delete: 
+				</td>
+		</tr>
+		{% else %}
+		No messages yet.
+		{% endif %}
+		
+		{% for message in messages %}
+		
+			<tr class="comment">
+				<td>
+				{{ message.date | date('d.m.Y')}}
+				</td>
+				<td>
+				<a href="{{ path('profile', {'username': message.author.username}) }}">{{ message.author.username }}</a>
+				</td>
+				<td>
+				{{ message.message}}
+				</td>
+				<td>
+				<a href="{{ path('delete_message', {'id': message.id}) }}">Delete</a>
+				</td>
+			</tr>
+		{% endfor %}
+		{% if messages %}
+		</table>
+		{% endif %}
+		</div>
+	</div>
+</div>
+
+
+
+{% endblock %}

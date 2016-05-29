@@ -2,3 +2,10 @@
 	font-size: 20px;
 	display:block;
 }
+
+.success-message{
+	font-size: 20px;
+	display:block;
+	font-family:'Palatino Linotype';
+	color: green;
+}

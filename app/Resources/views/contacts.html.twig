@@ -7,5 +7,23 @@
 {% endblock %}
 
 {% block content %}
-	<div class="text">123</div>
-{% endblock %}
+	<div class="text">If you have any questions fill this form.</div>
+	{% if  is_granted('IS_AUTHENTICATED_FULLY') %}
+		<form action="{{ path('contacts') }}" method="POST">
+			<textarea rows="10" cols="45" name="message"></textarea>
+			<input type="hidden" name="username" value="drgreed" >
+			<br>
+			<input class="button" type="submit" name="submit" value="Send">
+		</form>
+		<div class="success-message">
+			{{ message }}
+		</div>
+	{% else %}
+		<p>
+			<a class="button" href="{{ path('login') }}">
+				Sign in
+			</a>
+			for contact.
+		</p>
+	{% endif %}
+ {% endblock %}
