@@ -4,6 +4,8 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use AppBundle\Entity\CommentLot;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 
 /**
@@ -198,4 +200,8 @@ class CommentUser
     {
         return $this->author;
     }
+	
+	
+	
+	
 }

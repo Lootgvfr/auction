@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Contact;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,7 +23,22 @@ class MainController extends Controller
      */
     public function contactsAction(Request $request)
     {
-        return $this->render('contacts.html.twig', array(
+        $message = "";
+		if (isset($_POST['submit']))
+        {
+            $em = $this->getDoctrine()->getManager();
+            $contact = new Contact();
+            $author = $this->getDoctrine()->getRepository('AppBundle:User')->findOneByUsername($_POST['username']);
+            $contact->setMessage($_POST['message']);
+			$contact->setAuthor($author);
+            $now = new \DateTime();
+            $contact->setDate($now);
+            $em->persist($contact);
+            $em->flush();
+            $message = "Your message was successfully sent";
+        }
+        return $this->render('contacts.html.twig',
+            array('message' => $message
         ));
     }
 	

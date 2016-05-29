@@ -6,34 +6,39 @@ use AppBundle\Form\Edit_profile;
 use AppBundle\Entity\User;
 use AppBundle\Entity\CommentUser;
 use AppBundle\Entity\CommentLot;
+use AppBundle\Entity\Contact;
 use AppBundle\Entity\Lot;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
+
 class ControlPanelController extends Controller
 {
 	
 	/**
-     * @Route("/control_panel/moderator", name="moderator")
+     * @Route("/control_panel/moderator/{page}", name="moderator", defaults={"page" = 1}, requirements={"page" : "\d+"})
      */
-    public function moderatorAction()
+    public function moderatorAction($page)
     {
 		
 		$comments = $this->getDoctrine()
 		->getRepository('AppBundle:CommentUser')
-		->findByStatus('unchecked');
+		->findByStatus('unconfirmed');
 		
 		$lot_comments = $this->getDoctrine()
 		->getRepository('AppBundle:CommentLot')
 		->findByStatus('unconfirmed');
+			
 		
-		return $this->render('moder.html.twig', 
+		return $this->render('moderator.html.twig', 
 			array(
 				'comments' => $comments,
 				'lot_comments' => $lot_comments
 			));
+		
+		
 		
 	}
 	
@@ -47,7 +52,7 @@ class ControlPanelController extends Controller
 		->getRepository('AppBundle:CommentUser')
 		->find($id);
 		
-		$comment->setStatus('checked');
+		$comment->setStatus('confirmed');
 				
 		$em->flush();
 		
@@ -103,6 +108,57 @@ class ControlPanelController extends Controller
 		$em->flush();
 		
 		return $this->redirectToRoute('moderator');
+		
+	}
+	
+	
+	/**
+     * @Route("/control_panel/manager", name="manager")
+     */
+    public function managerAction()
+    {
+		
+		$lots = $this->getDoctrine()
+		->getRepository('AppBundle:Lot')
+		->findByStatus('unconfirmed');
+		
+		
+		return $this->render('manager.html.twig', 
+			array(
+				'lots' => $lots
+			));
+		
+	}
+		/**
+     * @Route("/control_panel/admin", name="admin")
+     */
+    public function adminAction()
+    {
+		
+		$messages = $this->getDoctrine()
+		->getRepository('AppBundle:Contact')
+		->findAll();
+				
+		return $this->render('admin.html.twig', 
+			array(
+				'messages' => $messages
+			));
+		
+	}
+	/**
+     * @Route("/delete_message/{id}", name="delete_message")
+     */
+    public function deleteMessageAction($id)
+    {
+		$em = $this->getDoctrine()->getManager();
+		$message = $this->getDoctrine()
+		->getRepository('AppBundle:Contact')
+		->find($id);
+				
+		$em->remove($message);
+		$em->flush();
+		
+		return $this->redirectToRoute('admin');
 		
 	}
 	

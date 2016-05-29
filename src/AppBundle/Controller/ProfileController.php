@@ -93,24 +93,37 @@ class ProfileController extends Controller
 		$user = $this->getDoctrine()
         ->getRepository('AppBundle:User')
         ->findOneByUsername($username);
+
+		$em = $this->getDoctrine()->getManager();
+		$query = $em->createQuery(
+			'SELECT AVG(p.rating)
+			FROM AppBundle:CommentUser p
+			WHERE p.status = :status AND
+			p.seller= :id'
+		)->setParameters(array(
+			'status' => 'confirmed', 
+			'id' => $user));
+
+		$rating = $query->getResult();
+		 
+		var_dump($rating);
 		
+		$lots = $this->getDoctrine()
+			->getRepository('AppBundle:Lot')
+			->findByAuthor($user);
+
 		$comments = $this->getDoctrine()
         ->getRepository('AppBundle:CommentUser')
         ->findBy(
-		array('status' => 'checked', 'seller' => $user)		);
+		array('status' => 'confirmed', 'seller' => $user)		);
 		
         return $this->render('profile.html.twig', 
 			array(
-				'username' => $username,
-				'name'     => $user->getName(),
-				'email'    => $user->getEmail(),
-				'group'    => $user->getGroup(),
+				'user'     => $user,
 				'path'	   => $user->getWebPath(),
-				'address'  => $user->getAddress(),
-				'phone'    => $user->getPhone(),
-				'info'     => $user->getInfo(),
-				'id'       => $user->getId(),
-				'comments' => $comments
+				'comments' => $comments,
+				'lots'     => $lots,
+				'rating'   => $rating[0][1]
 			));
     }
 	
@@ -123,50 +136,27 @@ class ProfileController extends Controller
      */
 	public function commentNewAction(Request $request, User $seller)
     {
-        $form = $this->createForm(new CommentUserForm());
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            /** @var Comment $comment */
-            $comment = $form->getData();
-            $comment->setAuthor($this->getUser());
+		if (isset($_POST['submit']))
+		{
+			$comment = new CommentUser();
+			$comment->setAuthor($this->getUser());
 			$comment->setSeller($seller);
-			$comment->setStatus("unchecked");
+			$comment->setStatus("Unconfirmed");
 			$date = new \DateTime(); //->format('Y-m-d H:i:s')
 			$comment->setDate($date);
-			$comment->setRating(5);
-
-            $entityManager = $this->getDoctrine()->getManager();
+			$comment->setText($_POST['text']);
+			$comment->setRating($_POST['caption']);
+			
+			$entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($comment);
             $entityManager->flush();
 
-            return $this->redirectToRoute('profile', array('username' => $seller->getUsername()));
-        }
+            
+		}
 
-        return $this->render('comment_form_error.html.twig', array(
-            'user' => $seller,
-            'form' => $form->createView(),
-        ));
+        return $this->redirectToRoute('profile', array('username' => $seller->getUsername()));
     }
 
-    /**
-     *
-     * @param Post $post
-     *
-     * @return Response
-     */
-    public function commentFormAction(User $user)
-    {
-        $form = $this->createForm(new CommentUserForm());
-
-        return $this->render('_user_comment.html.twig', array(
-            'user' => $user,
-            'form' => $form->createView(),
-        ));
-    }
-	
-	
 	
 }
 ?>

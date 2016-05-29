@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Control panel | Moderator {% endblock %}
+
+{% block css %}
+	<link href="{{ asset('css/control_panel.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block page %}
+<div class="parent">
+	<div class="content">
+		
+		<div class="lots">
+		{% if lots %}
+		<table class="table">
+		<tr class="first_tr">
+				<td width="150">
+				Date: 
+				</td>
+				<td width="100">
+				Seller: 
+				</td>
+				<td width="100">
+				Lot: 
+				</td>
+				<td width="40">
+				Rating: 
+				</td>
+				<td width="100">
+				Confirm: 
+				</td>
+				<td width="100">
+				Delete: 
+				</td>
+		</tr>
+		{% else %}
+		No unconfirmed lots.
+		{% endif %}
+		
+		{% for lot in lots %}
+		
+			<tr class="comments">
+				<td>
+				{{ lot.startDate | date('d.m.Y')}}
+				</td>
+				<td>
+				<a href="{{ path('profile', {'username': lot.author.username}) }}">{{ lot.author.username }}</a>
+				</td>
+				<td>
+				<a href="{{ path('lot', {'id': lot.id}) }}">{{ lot.name}}</a>
+				</td>
+				<td>
+				Rating
+				</td>
+				<td>
+				<a  class="btn btn-success btn-xs" href="{{ path('confirm-lot', {'id': lot.id}) }}">Confirm</a>
+				</td>
+				<td>
+				<a  class="btn btn-danger btn-xs" href="{{ path('delete-lot', {'id': lot.id}) }}">Delete</a>
+				</td>
+			</tr>
+		{% endfor %}
+		
+		{% if lots %}
+		</table>
+		{% endif %}
+		
+		</div>
+	
+	</div>
+</div>
+
+
+
+{% endblock %}
