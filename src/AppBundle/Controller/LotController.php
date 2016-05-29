@@ -457,7 +457,7 @@ class LotController extends Controller
     }
 	
 	/**
-     * @Route("/comment/{lot_id}/new", name = "lot_comment_new")
+     * @Route("/comment/{lot_id}/lot_new", name = "lot_comment_new")
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      *
      * @Method("POST")
@@ -500,7 +500,7 @@ class LotController extends Controller
      *
      * @return Response
      */
-    public function commentFormAction(Lot $lot)
+    public function commentLotFormAction(Lot $lot)
     {
         $form = $this->createForm(new CommentLotForm());
 

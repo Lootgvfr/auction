@@ -4,6 +4,13 @@
         <meta charset="UTF-8" />
         <title>{% block title %}{% endblock %}</title>
 		<link href="{{ asset('css/base.css') }}" rel="stylesheet">
+		<link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet">
+		<link href="{{ asset('css/star-rating.css') }}" rel="stylesheet">
+		<script src="https://code.jquery.com/jquery.min.js"></script>
+		<script rel="text/javascript" src="{{ asset('js/bootstrap.js') }}"></script>
+		<script rel="text/javascript" src="{{ asset('js/star-rating.js') }}"></script>
+		
+		
         {% block css %}{% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
@@ -36,11 +43,49 @@
 					<li class="menu-item">
 						<a href="{{ path('contacts') }}">Contacts</a>
 					</li>
+					{% if is_granted('IS_AUTHENTICATED_FULLY') and app.user.group == 'Moderator'%}
+						<li class="menu-item">
+							<a href="{{ path('moderator') }}">Panel</a>
+						</li>
+					{% endif %}
+					{% if is_granted('IS_AUTHENTICATED_FULLY') and app.user.group == 'Manager'%}
+						<li class="menu-item">
+							<a href="{{ path('manager') }}">Panel</a>
+						</li>
+					{% endif %}
+					{% if is_granted('IS_AUTHENTICATED_FULLY') and app.user.group == 'Admin'%}
+					
+					<div class="btn-group">
+					  <button type="button" class="drop-item dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						Panel <span class="caret"></span>
+					  </button>
+					  <ul class="dropdown-menu">
+						<li><a href="{{ path('admin') }}">Messages</a></li>
+						<li><a href="{{ path('manager') }}">Lots</a></li>
+						<li><a href="{{ path('moderator') }}">Comments</a></li>
+					  </ul>
+					</div>
+					
+					
+					<!--
+					
+						<li class="menu-item">
+							<a href="{{ path('moderator') }}">M. Panel</a>
+						</li>
+						<li class="menu-item">
+							<a href="{{ path('manager') }}">C-M. Panel</a>
+						</li>
+						
+					-->
+					{% endif %}
 				</ul>
 				<div class="quick-search">
-					<form action="">
+					<form action="{{ path('search') }}">
 						<input class="search" type="text" name="parameters">
-						<input class="but_search" type="submit" name="search" value="Search">
+						<button type="submit" class="but_search" name="search" >
+						  <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+						</button>
+						<!--<input class="but_search" type="submit" name="search" value="Search">-->
 					</form>
 				</div>
 			</div>
@@ -58,10 +103,12 @@
 			</div>
 		</div>
 		{% endblock %}
+		<div class="footer1">
 		
 		<div class="footer">
 			Made by Good people.
-		<div>
+		</div>
+		</div>
 	</div>
 		{% block js %}{% endblock %}
     </body>

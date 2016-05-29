@@ -87,32 +87,32 @@
 		Lot not found.
 	{% endif %}
 	
-	<div class="active_auctions">
-				{% for comment in comments %}
-					<div class="row post-comment">
-						<div class="col-sm-3">
-							<strong><a href="{{ path('profile', {'username': comment.author.username}) }}"> {{ comment.author.username }}</a></strong> 
-							{{ comment.date|date('d.m.Y') }}
-						</div>
-						<div class="col-sm-9">
-							{{ comment.text }}
-						</div>
-					</div>
-				{% else %}
-					<div class="post-comment">
-						<p>No comments.</p>
-					</div>
-				{% endfor %}
-				{% if is_granted('IS_AUTHENTICATED_FULLY') %}
-					{{ render(controller('AppBundle:Lot:commentForm', { 'id': id })) }}
-				{% else %}
-				<p>
-					<a class="submit" href="{{ path('login') }}">
-						Sign in
-					</a>
-					for leaving a comment
-				</p>
-				{% endif %}
+	{%if lot.status != 'Unconfirmed'%}
+		{% for comment in comments %}
+			<div class="row post-comment">
+				<div class="col-sm-3">
+					<strong><a href="{{ path('profile', {'username': comment.author.username}) }}"> {{ comment.author.username }}</a></strong> 
+					{{ comment.date|date('d.m.Y') }}
+				</div>
+				<div class="col-sm-9">
+					{{ comment.text }}
+				</div>
 			</div>
+		{% else %}
+			<div class="post-comment">
+				<p>No comments.</p>
+			</div>
+		{% endfor %}
+		{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+			{{ render(controller('AppBundle:Lot:commentLotForm', { 'id': id })) }}
+		{% else %}
+		<p>
+			<a class="submit" href="{{ path('login') }}">
+				Sign in
+			</a>
+			for leaving a comment
+		</p>
+		{% endif %}
+	{% endif %}
 	
 {% endblock %}
