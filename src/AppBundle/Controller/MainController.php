@@ -32,7 +32,43 @@ class MainController extends Controller
     public function categoryAction(Request $request, $name)
     {
 		$cat = $this->getDoctrine()->getRepository('AppBundle:Category')->findOneByName($name);
-		$lots = $this->getDoctrine()->getRepository('AppBundle:Lot')->findByCategory($cat);
+		$rep = $this->getDoctrine()->getRepository('AppBundle:Lot');
+		$date = new \DateTime();
+		$date->sub(new \DateInterval('P7D'));
+		$cm = false;
+		if ($this->container->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY'))
+		{
+			$user = $this->get('security.token_storage')->getToken()->getUser();
+			if ($user->getGroup() == 'Admin' or $user->getGroup() == 'Content-manager')
+			{
+				$cm = true;
+			}
+		}
+		if (!$cm)
+		{
+			$query = $rep->createQueryBuilder('l')
+				->where('l.endDate > :date')
+				->andWhere('l.category = :cat')
+				->andWhere('l.status != \'Unconfirmed\'')
+				->setParameter('date', $date)
+				->setParameter('cat', $cat)
+				->orderBy('l.startDate', 'DESC')
+				->orderBy('l.status', 'DESC')
+				->getQuery();
+		}
+		else
+		{
+			$query = $rep->createQueryBuilder('l')
+				->where('l.endDate > :date')
+				->andWhere('l.category = :cat')
+				->setParameter('date', $date)
+				->setParameter('cat', $cat)
+				->orderBy('l.startDate', 'DESC')
+				->orderBy('l.status', 'DESC')
+				->getQuery();
+		}
+		
+		$lots = $query->getResult();
 		foreach($lots as $lot)
 		{
 			$lot->getCurrentPrice();

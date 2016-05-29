@@ -16,9 +16,16 @@
 					<div class="item-name">{{ lot.name }}</div><br>
 				</a>
 				<div class="bottom">
-					<div class="item-price">{{ lot.currentPrice }} hrn.</div>
+					{% if lot.status == 'Finished' %}
+						<label class="label-closed">Closed</label>
+					{% elseif lot.status == 'Unconfirmed' %}
+						<label class="label-closed">Unconfirmed</label>
+					{% else %}
+						<label class="label-open">Open</label>
+					{% endif %}
+					<div class="item-price">{{ lot.currentPrice }} {{ lot.currency.name }}</div>
 					<!-- <a href="#" class="item-buy">Buy</a> -->
-					<div class="item-comments">0 comments</div>
+					<div class="item-comments">{{ lot.comments|length }} comments</div>
 				</div>
 			</li>
 		{% endfor %}

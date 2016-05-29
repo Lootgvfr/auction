@@ -11,18 +11,76 @@
 		Lot not found.
 	{% else %}
 		<form action="{% if edit %}{{ path('edit-lot', {'id':id}) }}{% else %}{{ path('make-lot-cat', {'category':category.name}) }}{% endif %}" method="post" enctype="multipart/form-data">
-			{% if error %}
-				<div class="error">{{ error }}</div>
+		
+			{% if errors.general %}
+				<div class="error">{{ errors.general }}</div>
 			{% endif %}
-			<input class="text-input" type="text" name="Name" value="{{ name }}" placeholder="Lot name"/>
+			
+			<label class="lbl">Lot name(*): </label>
+			{% if not errors.name %}
+				<input class="text-input" type="text" name="Name" value="{{ name }}" placeholder="Brand new Samsung Galaxy S7"/>
+			{% else %}
+				<input class="text-input-error" type="text" name="Name" value="{{ name }}" placeholder="Brand new Samsung Galaxy S7"/>
+				<div class="error">{{ errors.name }}</div>
+			{% endif %}
+		
 			<textarea class="textarea" name="Description" placeholder="Description">{{ description }}</textarea>
+			
+			{% if not errors.currency %}
+				<label class="lbl">Currency: </label>
+				<select name='Currency' class='cur-select'>
+					<option value="None" disabled selected>Select</option>
+					{% for currency in currencies %}
+					<option value="{{ currency.name }}" {% if cur == currency.name %}selected{% endif %} >{{ currency.name }}</option>
+					{% endfor %}
+				</select>
+			{% else %}
+				<label class="lbl">Currency(*): </label>
+				<select name='Currency' class='cur-select-error'>
+					<option value="None" selected>Select</option>
+					{% for currency in currencies %}
+					<option value="{{ currency.name }}">{{ currency.name }}</option>
+					{% endfor %}
+				</select>
+				<div class="error">{{ errors.currency }}</div>
+			{% endif %}
+			<br>
+			
+			<label class="lbl">Starting price(*): </label>
+			{% if not errors.starting_price %}
+				<input class="text-input" type="text" name="Starting_price" value="{{ starting_price }}" placeholder="5000"/>
+			{% else %}
+				<input class="text-input-error" type="text" name="Starting_price" value="{{ starting_price }}" placeholder="5000"/>
+				<div class="error">{{ errors.starting_price }}</div>
+			{% endif %}
+			
+			<label class="lbl">Buyout price(*): </label>
+			{% if not errors.buyout_price %}
+				<input class="text-input" type="text" name="Buyout_price" value="{{ buyout_price }}" placeholder="6000"/>
+			{% else %}
+				<input class="text-input-error" type="text" name="Buyout_price" value="{{ buyout_price }}" placeholder="6000"/>
+				<div class="error">{{ errors.buyout_price }}</div>
+			{% endif %}
+			
+			<label class="lbl">Lot duration (days)(*): </label>
+			{% if not errors.duration %}
+				<input class="text-input" type="text" name="Duration" value="{% if duration != 0 %}{{ duration }}{% endif %}" placeholder="5"/>
+			{% else %}
+				<input class="text-input-error" type="text" name="Duration" value="{% if duration != 0 %}{{ duration }}{% endif %}" placeholder="5"/>
+				<div class="error">{{ errors.duration }}</div>
+			{% endif %}
+			
 			{% for property in properties %}
-				<input class="text-input" type="text" name="{{ property.und_name }}" value="{{ property.value }}" placeholder="{{ property.name }}"/>
+				<label class="lbl">{{ property.name }}{% if not property.is_nullable %}(*){% endif %}: </label>
+				{% if not property.error %}
+					<input class="text-input" type="text" name="{{ property.und_name }}" value="{{ property.value }}" placeholder="{{ property.example }}"/>
+				{% else %}
+					<input class="text-input-error" type="text" name="{{ property.und_name }}" value="{{ property.value }}" placeholder="{{ property.example }}"/>
+					<div class="error">{{ property.error }}</div>
+				{% endif %}
 			{% endfor %}
-			<input class="text-input" type="text" name="Starting_price" value="{{ starting_price }}" placeholder="Starting price"/>
-			<input class="text-input" type="text" name="Buyout_price" value="{{ buyout_price }}" placeholder="Buyout price"/>
-			<input class="text-input" type="text" name="Duration" value="{{ duration }}" placeholder="Duration (days)"/>
-			<input type="file" name="file">
+			
+			<label class="lbl">Picture:</label> <input type="file" name="file">
 			<button class="submit" type="submit">{% if edit %}Save{% else %}Create{% endif %}</button>
 		</form>
 	{% endif %}
