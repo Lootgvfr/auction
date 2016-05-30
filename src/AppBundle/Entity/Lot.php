@@ -63,6 +63,12 @@ class Lot
 	private $category;
 	
 	/**
+     * @ORM\ManyToOne(targetEntity="Currency")
+     * @ORM\JoinColumn(name="currency_id", referencedColumnName="id")
+     */
+	private $currency;
+	
+	/**
 	 * @ORM\OneToMany(targetEntity="Value", mappedBy="lot")
 	 */
 	private $values;
@@ -71,6 +77,11 @@ class Lot
 	 * @ORM\OneToMany(targetEntity="Bid", mappedBy="lot")
 	 */
 	private $bids;
+	
+	/**
+	 * @ORM\OneToMany(targetEntity="CommentLot", mappedBy="lot")
+	 */
+	private $comments;
 	
 	/**
 	 * @ORM\ManyToOne(targetEntity="User")
@@ -163,6 +174,7 @@ class Lot
 		$this->img = $this->getWebPath();
 		$this->values = new ArrayCollection();
 		$this->bids = new ArrayCollection();
+		$this->comments = new ArrayCollection();
 	}
 	
 	public function setCurrentPrice($currentPrice)
@@ -466,5 +478,84 @@ class Lot
     public function getAuthor()
     {
         return $this->author;
+    }
+
+    /**
+     * Set path
+     *
+     * @param string $path
+     * @return Lot
+     */
+    public function setPath($path)
+    {
+        $this->path = $path;
+    
+        return $this;
+    }
+
+    /**
+     * Get path
+     *
+     * @return string 
+     */
+    public function getPath()
+    {
+        return $this->path;
+    }
+
+    /**
+     * Add comments
+     *
+     * @param \AppBundle\Entity\CommentLot $comments
+     * @return Lot
+     */
+    public function addComment(\AppBundle\Entity\CommentLot $comments)
+    {
+        $this->comments[] = $comments;
+    
+        return $this;
+    }
+
+    /**
+     * Remove comments
+     *
+     * @param \AppBundle\Entity\CommentLot $comments
+     */
+    public function removeComment(\AppBundle\Entity\CommentLot $comments)
+    {
+        $this->comments->removeElement($comments);
+    }
+
+    /**
+     * Get comments
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getComments()
+    {
+        return $this->comments;
+    }
+
+    /**
+     * Set currency
+     *
+     * @param \AppBundle\Entity\Currency $currency
+     * @return Lot
+     */
+    public function setCurrency(\AppBundle\Entity\Currency $currency = null)
+    {
+        $this->currency = $currency;
+    
+        return $this;
+    }
+
+    /**
+     * Get currency
+     *
+     * @return \AppBundle\Entity\Currency 
+     */
+    public function getCurrency()
+    {
+        return $this->currency;
     }
 }

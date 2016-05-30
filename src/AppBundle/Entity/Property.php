@@ -30,10 +30,25 @@ class Property
     private $range;
 	
 	/**
+     * @ORM\Column(type="string", length=100)
+     */
+    private $example;
+	
+	/**
+     * @ORM\Column(type="boolean", name="is_nullable", options={"default": true})
+     */
+    private $isNullable;
+	
+	/**
      * @ORM\ManyToOne(targetEntity="Category")
 	 * @ORM\JoinColumn(name="category_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $category;
+	
+	/**
+	 * @ORM\OneToMany(targetEntity="Regular", mappedBy="property")
+	 */
+    private $regulars; 
 	
 	/**
 	 * @ORM\OneToMany(targetEntity="Value", mappedBy="property")
@@ -43,6 +58,7 @@ class Property
 	function __construct()
 	{
 		$this->values = new ArrayCollection();
+		$this->regulars = new ArrayCollection();
 	}
 
     /**
@@ -155,5 +171,107 @@ class Property
     public function getValues()
     {
         return $this->values;
+    }
+
+    /**
+     * Set regexp
+     *
+     * @param string $regexp
+     * @return Property
+     */
+    public function setRegexp($regexp)
+    {
+        $this->regexp = $regexp;
+    
+        return $this;
+    }
+
+    /**
+     * Get regexp
+     *
+     * @return string 
+     */
+    public function getRegexp()
+    {
+        return $this->regexp;
+    }
+
+    /**
+     * Set example
+     *
+     * @param string $example
+     * @return Property
+     */
+    public function setExample($example)
+    {
+        $this->example = $example;
+    
+        return $this;
+    }
+
+    /**
+     * Get example
+     *
+     * @return string 
+     */
+    public function getExample()
+    {
+        return $this->example;
+    }
+
+    /**
+     * Set is_nullable
+     *
+     * @param \bool $isNullable
+     * @return Property
+     */
+    public function setIsNullable($isNullable)
+    {
+        $this->isNullable = $isNullable;
+    
+        return $this;
+    }
+
+    /**
+     * Get is_nullable
+     *
+     * @return \bool 
+     */
+    public function getIsNullable()
+    {
+        return $this->isNullable;
+    }
+
+    /**
+     * Add regulars
+     *
+     * @param \AppBundle\Entity\Regular $regulars
+     * @return Property
+     */
+    public function addRegular(\AppBundle\Entity\Regular $regulars)
+    {
+        $this->regulars[] = $regulars;
+    
+        return $this;
+    }
+
+    /**
+     * Remove regulars
+     *
+     * @param \AppBundle\Entity\Regular $regulars
+     */
+    public function removeRegular(\AppBundle\Entity\Regular $regulars)
+    {
+        $this->regulars->removeElement($regulars);
+    }
+
+    /**
+     * Get regulars
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getRegulars()
+    {
+        return $this->regulars;
     }
 }

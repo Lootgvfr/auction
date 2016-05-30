@@ -40,7 +40,7 @@ class CommentLot
 	private $rating;
 	
 	/**
-     * @ORM\OneToOne(targetEntity="Lot")
+     * @ORM\ManyToOne(targetEntity="Lot")
      * @ORM\JoinColumn(name="lot_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $lot;

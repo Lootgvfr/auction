@@ -37,6 +37,25 @@
 	display: inline-block;
 }
 
+.right-block{
+	position: relative;
+	font-family: "Palatino Linotype";
+	border: 1px solid #aaa;
+	border-radius: 3px;
+	overflow: auto;
+	display: inline-block;
+}
+
+.right-block a{
+	font-weight: bold;
+	font-family: "Palatino Linotype";
+	font-size: 16px;
+	margin-top: 5px; margin-bottom: 5px;
+	display: inline-block;
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
 .error{
 	font-family: "Palatino Linotype";
 }

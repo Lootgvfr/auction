@@ -22,7 +22,7 @@
 			<div class="buy">
 				<form method="post" action="{{ path('lot', {'id':lot.id}) }}">
 					<div class="bid">
-						<div id="pr" class="text"><b>Current price:</b> {% if not price == 0 %}{{ price }}{% else %}{{ lot.currentPrice }}{% endif %} hrn.</div>
+						<div id="pr" class="text"><b>Current price:</b> {% if not price == 0 %}{{ price }}{% else %}{{ lot.currentPrice }}{% endif %} {{ lot.currency.name }}</div>
 						{% if lot.status == 'Open' and is_granted('IS_AUTHENTICATED_FULLY') %}
 							<button class="submit" name="Bid" type="submit">Make a bid</button>
 							<input class="text-input" name="Bid_value" placeholder="Your bid"/>
@@ -34,7 +34,7 @@
 					<div class="buyout">
 					{% if lot.status == 'Open'%}
 						{% if lot.buyoutPrice %}
-							<div id="pr" class="text"><b>Buyout price:</b> {{ lot.buyoutPrice }} hrn.</div>
+							<div id="pr" class="text"><b>Buyout price:</b> {{ lot.buyoutPrice }} {{ lot.currency.name }}</div>
 							{% if lot.status == 'Open' and is_granted('IS_AUTHENTICATED_FULLY') %}
 								<button id="b" class="submit" name="Buyout" type="submit">Buyout</button>
 							{% endif %}
@@ -59,7 +59,7 @@
 				{% endif %}
 				{% if is_granted('IS_AUTHENTICATED_FULLY') and lot.status == 'Unconfirmed' %}
 					{% if app.user.username == author.username or app.user.group == 'Content-manager' or app.user.group == 'Admin' %}
-						<div class="right">
+						<div class="right-block">
 							<a href="{{ path('edit-lot', {'id':lot.id}) }}">Edit lot</a><br>
 							<a href="{{ path('delete-lot', {'id':lot.id}) }}">Delete lot</a>
 							{% if app.user.group == 'Content-manager' or app.user.group == 'Admin' %}
@@ -77,18 +77,16 @@
 					<i><b>Properties:</b></i>
 				</div>
 				{% for prop in properties %}
+					{% if prop.value %}
 					<div class="property">
 						<b>{{ prop.name }}:</b> {{ prop.value }}
 					</div>
+					{% endif %}
 				{% endfor %}
 			</p>
 		</div>
-	{% else %}
-		Lot not found.
-	{% endif %}
-	
-	{%if lot.status != 'Unconfirmed'%}
-		{% for comment in comments %}
+		<div class="active_auctions">
+		{% for comment in lot.comments %}
 			<div class="row post-comment">
 				<div class="col-sm-3">
 					<strong><a href="{{ path('profile', {'username': comment.author.username}) }}"> {{ comment.author.username }}</a></strong> 
@@ -100,7 +98,7 @@
 			</div>
 		{% else %}
 			<div class="post-comment">
-				<p>No comments.</p>
+				<p>No comments here yet.</p>
 			</div>
 		{% endfor %}
 		{% if is_granted('IS_AUTHENTICATED_FULLY') %}
@@ -113,6 +111,8 @@
 			for leaving a comment
 		</p>
 		{% endif %}
+	</div>
+	{% else %}
+		Lot not found.
 	{% endif %}
-	
 {% endblock %}
