@@ -148,8 +148,8 @@
 				
 				<form action="{{ path('comment_new', { 'sellerName': user.username }) }}" method="post">
 					<div class="new_comment">
-							<input id="input-1-sm" name="rating" class="rating rating-loading" data-min="0" data-max="5" data-step="1" data-size="sm"> <br>
-							<textarea name="text"></textarea>
+							<input  required id="input-1-sm" name="rating" class="rating rating-loading" data-min="0" data-max="5" data-step="1" data-size="sm"> <br>
+							<textarea name="text"  required ></textarea>
 							<button class="button" type="submit" name="submit">Comment</button>
 					</div>
 

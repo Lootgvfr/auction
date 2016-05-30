@@ -17,7 +17,7 @@
 		<div class="text-title">{{ lot.name }}</div>
 		<div class="else">
 			{% if lot.img %}
-			<img class="img" src="{{ lot.img }}">
+			<img class="img" src="{{ path }}">
 			{% endif %}
 			<div class="buy">
 				<form method="post" action="{{ path('lot', {'id':lot.id}) }}">
@@ -88,13 +88,16 @@
 		<div class="active_auctions">
 		{% for comment in lot.comments %}
 			<div class="row post-comment">
-				<div class="col-sm-3">
+				<div class="col-sm-4 ">
+				<span class="glyphicon glyphicon-comment" aria-label="Left Align"></span>
 					<strong><a href="{{ path('profile', {'username': comment.author.username}) }}"> {{ comment.author.username }}</a></strong> 
 					{{ comment.date|date('d.m.Y') }}
+					<input class="rating rating-loading" data-size="xs" data-readonly="true" value="{{ comment.rating }}" >
 				</div>
-				<div class="col-sm-9">
+				<div class="col-sm-9 left">
 					{{ comment.text }}
 				</div>
+				
 			</div>
 		{% else %}
 			<div class="post-comment">
@@ -102,7 +105,14 @@
 			</div>
 		{% endfor %}
 		{% if is_granted('IS_AUTHENTICATED_FULLY') %}
-			{{ render(controller('AppBundle:Lot:commentLotForm', { 'id': id })) }}
+			<form action="{{ path('lot_comment_new', { 'lot_id': lot.id }) }}" method="post">
+					<div class="new_comment">
+							<input id="input-1-sm" name="rating" class="rating rating-loading" data-min="0" data-max="5" data-step="1" data-size="sm"> <br>
+							<textarea name="text"></textarea>
+							<button class="button" type="submit" name="submit">Comment</button>
+					</div>
+
+				</form>
 		{% else %}
 		<p>
 			<a class="submit" href="{{ path('login') }}">

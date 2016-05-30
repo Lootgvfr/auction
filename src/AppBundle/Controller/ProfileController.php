@@ -106,7 +106,7 @@ class ProfileController extends Controller
 
 		$rating = $query->getResult();
 		 
-		var_dump($rating);
+		
 		
 		$lots = $this->getDoctrine()
 			->getRepository('AppBundle:Lot')

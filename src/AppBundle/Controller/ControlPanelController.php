@@ -18,24 +18,139 @@ class ControlPanelController extends Controller
 {
 	
 	/**
-     * @Route("/control_panel/moderator/{page}", name="moderator", defaults={"page" = 1}, requirements={"page" : "\d+"})
+     * @Route("/control_panel/comments_user/{page}", name="comments_user", defaults={"page" = 1}, requirements={"page" : "\d+"})
      */
-    public function moderatorAction($page)
+    public function commentUserAction($page)
     {
+		$em = $this->getDoctrine()->getManager();
 		
-		$comments = $this->getDoctrine()
-		->getRepository('AppBundle:CommentUser')
-		->findByStatus('unconfirmed');
+		$per_page = 15;  
+		$pages_query = $em->createQuery(
+						'SELECT COUNT(p.id)
+						FROM AppBundle:CommentUser p
+						WHERE p.status = :status'
+					)->setParameter('status', 'unconfirmed');
+		$pages = $pages_query->getResult();
 		
-		$lot_comments = $this->getDoctrine()
-		->getRepository('AppBundle:CommentLot')
-		->findByStatus('unconfirmed');
-			
+		$pages = ceil($pages[0][1] / $per_page);   
+		$start = ($page - 1) * $per_page;  
 		
-		return $this->render('moderator.html.twig', 
+		if ($pages > 5)
+		{
+			if ($page > 3)
+			{
+				if ($page < $page - 2)
+				{
+					$start_pag = $pages - 2;
+					$end_pag = $pages + 2;
+				}
+				else if ($page > $page - 2)
+				{
+					$start_pag = $pages - 4;
+					$end_pag = $pages;
+				}
+			}
+			else {
+				$start_pag = 1;
+				$end_pag = 5;
+			}
+		}
+		else
+		{
+			$start_pag = 1;
+			$end_pag = $pages;
+		}
+
+		$query = $em->createQuery(
+			'SELECT p
+			FROM AppBundle:CommentUser p
+			WHERE p.status = :status
+			ORDER BY p.date ASC'
+		)->setParameter('status', 'unconfirmed')
+		->setFirstResult($start)
+        ->setMaxResults($per_page);
+
+		$comments = $query->getResult();
+		
+		return $this->render('comments_user.html.twig', 
 			array(
 				'comments' => $comments,
-				'lot_comments' => $lot_comments
+				'start_pag' => $start_pag,
+				'end_pag' => $end_pag,
+				'page' => $page,
+				'pages' => $pages
+			));
+		
+		
+		
+	}
+	
+	/**
+     * @Route("/control_panel/comments_lot/{page}", name="comments_lot", defaults={"page" = 1}, requirements={"page" : "\d+"})
+     */
+    public function commentLotAction($page)
+    {
+		
+		$em = $this->getDoctrine()->getManager();
+		
+		$per_page = 15;   
+		$pages_query = $em->createQuery(
+						'SELECT COUNT(p.id)
+						FROM AppBundle:CommentUser p
+						WHERE p.status = :status'
+					)->setParameter('status', 'unconfirmed');
+		$pages = $pages_query->getResult();
+		
+		$pages = ceil($pages[0][1] / $per_page);  
+		$start = ($page - 1) * $per_page; 
+		
+		if ($pages > 5)
+		{
+			if ($page > 3)
+			{
+				if ($page < $page - 2)
+				{
+					$start_pag = $pages - 2;
+					$end_pag = $pages + 2;
+				}
+				else if ($page > $page - 2)
+				{
+					$start_pag = $pages - 4;
+					$end_pag = $pages;
+				}
+			}
+			else {
+				$start_pag = 1;
+				$end_pag = 5;
+			}
+		}
+		else
+		{
+			$start_pag = 1;
+			$end_pag = $pages;
+		}
+				
+		
+		
+		
+		$query = $em->createQuery(
+			'SELECT p
+			FROM AppBundle:CommentLot p
+			WHERE p.status = :status
+			ORDER BY p.date ASC'
+		)->setParameter('status', 'unconfirmed')
+		->setFirstResult($start)
+        ->setMaxResults($per_page);
+
+		$comments = $query->getResult();
+		
+		return $this->render('comments_lot.html.twig', 
+			array(
+				'lot_comments' => $comments,
+				'start_pag' => $start_pag,
+				'end_pag' => $end_pag,
+				'page' => $page,
+				'pages' => $pages
 			));
 		
 		
