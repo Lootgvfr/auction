@@ -14,7 +14,18 @@ class MainController extends Controller
      */
     public function homeAction(Request $request)
     {
+		$rep = $this->getDoctrine()->getRepository('AppBundle:Lot');
+		$query = $rep->createQueryBuilder('l')
+				->where('l.status = :open')
+				->setParameter('open', 'open')
+				->orderBy('l.startDate', 'DESC')
+				->getQuery();
+		$lots = $query->getResult();
+		$recent = array_slice($lots, 0, 4);
+		$recommended = array_slice($lots, 0, 4);
         return $this->render('home.html.twig', array(
+			'recent' => $recent,
+			'recommended' => $recommended
         ));
     }
 	

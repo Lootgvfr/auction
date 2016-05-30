@@ -280,7 +280,7 @@ class LotController extends Controller
     {
 		$user = $this->get('security.token_storage')->getToken()->getUser();
 		$lot = $this->getDoctrine()->getRepository('AppBundle:Lot')->findOneById($id);
-		if (! ($user->getGroup() == 'Admin' or $user->getGroup() == 'Content-manager' or $user == $lot->getAuthor()))
+		if (! ($user->getGroup() == 'Admin' or $user->getGroup() == 'Manager' or $user == $lot->getAuthor()))
 		{
 			$this->redirectToRoute('login');
 		}
@@ -566,7 +566,7 @@ class LotController extends Controller
 		$user = $this->get('security.token_storage')->getToken()->getUser();
 		$em = $this->getDoctrine()->getManager();
 		$lot = $this->getDoctrine()->getRepository('AppBundle:Lot')->findOneById($id);
-		if (! ($user->getGroup() == 'Admin' or $user->getGroup() == 'Content-manager' or $user == $lot->getAuthor()))
+		if (! ($user->getGroup() == 'Admin' or $user->getGroup() == 'Manager' or $user == $lot->getAuthor()))
 		{
 			$this->redirectToRoute('login');
 		}
@@ -582,7 +582,7 @@ class LotController extends Controller
     public function checkLotsAction(Request $request)
     {
 		$user = $this->get('security.token_storage')->getToken()->getUser();
-		if (!($user->getGroup() == 'Admin' or $user->getGroup() == 'Content-manager'))
+		if (!($user->getGroup() == 'Admin' or $user->getGroup() == 'Manager'))
 		{
 			$this->redirectToRoute('login');
 		}
@@ -613,7 +613,7 @@ class LotController extends Controller
 		$em = $this->getDoctrine()->getManager();
 		$lot = $this->getDoctrine()->getRepository('AppBundle:Lot')->findOneById($id);
 		$user = $this->get('security.token_storage')->getToken()->getUser();
-		if (!($user->getGroup() == 'Admin' or $user->getGroup() == 'Content-manager'))
+		if (!($user->getGroup() == 'Admin' or $user->getGroup() == 'Manager'))
 		{
 			$this->redirectToRoute('login');
 		}
