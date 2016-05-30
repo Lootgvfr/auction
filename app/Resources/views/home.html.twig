@@ -8,138 +8,57 @@
 
 {% block content %}
 	<div class="welcome">
+	Welcome to the internet-auction!
+	</div>
+	<div class="part">
+		<div class="txt">Recently opened lots:</div>
+		<ul class="grid">
+			{% for lot in recent %}
+				<li class="item">
+					<a href="{{ path('lot', {'id':lot.id}) }}">
+						<img class="item-pic" src="{{ lot.img }}" alt="{{ lot.name }}"/>
+						<div class="item-name">{{ lot.name }}</div><br>
+					</a>
+					<div class="bottom">
+						{% if lot.status == 'Finished' %}
+							<label class="label-closed">Closed</label>
+						{% elseif lot.status == 'Unconfirmed' %}
+							<label class="label-closed">Unconfirmed</label>
+						{% else %}
+							<label class="label-open">Open</label>
+						{% endif %}
+						<div class="item-price">{{ lot.currentPrice }} {{ lot.currency.name }}</div>
+						<!-- <a href="#" class="item-buy">Buy</a> -->
+						<div class="item-comments">{{ lot.comments|length }} comments</div>
+					</div>
+				</li>
+			{% endfor %}
+		</ul>
+	</div>
 	
-	
-	
-	Welcome!
-	there was a water song that we sang
-when we were going to fetch river from the river,
-it was filled with water sounds
-& pebbles. here, in the after-wind, with the other girls,
-we trade words like special things.
-one girl tells me “mai” was her sister’s name,
-the word for “flower.” she has been saving
-this one for a special trade. I understand
-& am quiet awhile, respecting, then give
-her my word “mai,” for “water,”
-& another girl tells me “mai” is “mother”
-in her language, & another says it meant,
-to her, “what belongs to me,” then
-“belonging,” suddenly, is a strange word,
-or a way of feeling, like “to be longing for,”
-& you, brother, are the only one,
-the only one I think of to finish that thought,there was a water song that we sang
-when we were going to fetch river from the river,
-it was filled with water sounds
-& pebbles. here, in the after-wind, with the other girls,
-we trade words like special things.
-one girl tells me “mai” was her sister’s name,
-the word for “flower.” she has been saving
-this one for a special trade. I understand
-& am quiet awhile, respecting, then give
-her my word “mai,” for “water,”
-& another girl tells me “mai” is “mother”
-in her language, & another says it meant,
-to her, “what belongs to me,” then
-“belonging,” suddenly, is a strange word,
-or a way of feeling, like “to be longing for,”
-& you, brother, are the only one,
-the only one I think of to finish that thought,there was a water song that we sang
-when we were going to fetch river from the river,
-it was filled with water sounds
-& pebbles. here, in the after-wind, with the other girls,
-we trade words like special things.
-one girl tells me “mai” was her sister’s name,
-the word for “flower.” she has been saving
-this one for a special trade. I understand
-& am quiet awhile, respecting, then give
-her my word “mai,” for “water,”
-& another girl tells me “mai” is “mother”
-in her language, & another says it meant,
-to her, “what belongs to me,” then
-“belonging,” suddenly, is a strange word,
-or a way of feeling, like “to be longing for,”
-& you, brother, are the only one,
-the only one I think of to finish that thought,there was a water song that we sang
-when we were going to fetch river from the river,
-it was filled with water sounds
-& pebbles. here, in the after-wind, with the other girls,
-we trade words like special things.
-one girl tells me “mai” was her sister’s name,
-the word for “flower.” she has been saving
-this one for a special trade. I understand
-& am quiet awhile, respecting, then give
-her my word “mai,” for “water,”
-& another girl tells me “mai” is “mother”
-in her language, & another says it meant,
-to her, “what belongs to me,” then
-“belonging,” suddenly, is a strange word,
-or a way of feeling, like “to be longing for,”
-& you, brother, are the only one,
-the only one I think of to finish that thought,there was a water song that we sang
-when we were going to fetch river from the river,
-it was filled with water sounds
-& pebbles. here, in the after-wind, with the other girls,
-we trade words like special things.
-one girl tells me “mai” was her sister’s name,
-the word for “flower.” she has been saving
-this one for a special trade. I understand
-& am quiet awhile, respecting, then give
-her my word “mai,” for “water,”
-& another girl tells me “mai” is “mother”
-in her language, & another says it meant,
-to her, “what belongs to me,” then
-“belonging,” suddenly, is a strange word,
-or a way of feeling, like “to be longing for,”
-& you, brother, are the only one,
-the only one I think of to finish that thought,there was a water song that we sang
-when we were going to fetch river from the river,
-it was filled with water sounds
-& pebbles. here, in the after-wind, with the other girls,
-we trade words like special things.
-one girl tells me “mai” was her sister’s name,
-the word for “flower.” she has been saving
-this one for a special trade. I understand
-& am quiet awhile, respecting, then give
-her my word “mai,” for “water,”
-& another girl tells me “mai” is “mother”
-in her language, & another says it meant,
-to her, “what belongs to me,” then
-“belonging,” suddenly, is a strange word,
-or a way of feeling, like “to be longing for,”
-& you, brother, are the only one,
-the only one I think of to finish that thought,there was a water song that we sang
-when we were going to fetch river from the river,
-it was filled with water sounds
-& pebbles. here, in the after-wind, with the other girls,
-we trade words like special things.
-one girl tells me “mai” was her sister’s name,
-the word for “flower.” she has been saving
-this one for a special trade. I understand
-& am quiet awhile, respecting, then give
-her my word “mai,” for “water,”
-& another girl tells me “mai” is “mother”
-in her language, & another says it meant,
-to her, “what belongs to me,” then
-“belonging,” suddenly, is a strange word,
-or a way of feeling, like “to be longing for,”
-& you, brother, are the only one,
-the only one I think of to finish that thought,there was a water song that we sang
-when we were going to fetch river from the river,
-it was filled with water sounds
-& pebbles. here, in the after-wind, with the other girls,
-we trade words like special things.
-one girl tells me “mai” was her sister’s name,
-the word for “flower.” she has been saving
-this one for a special trade. I understand
-& am quiet awhile, respecting, then give
-her my word “mai,” for “water,”
-& another girl tells me “mai” is “mother”
-in her language, & another says it meant,
-to her, “what belongs to me,” then
-“belonging,” suddenly, is a strange word,
-or a way of feeling, like “to be longing for,”
-& you, brother, are the only one,
-the only one I think of to finish that thought,
+	<div class="part">
+		<div class="txt">Recommended for you:</div>
+		<ul class="grid">
+			{% for lot in recommended %}
+				<li class="item">
+					<a href="{{ path('lot', {'id':lot.id}) }}">
+						<img class="item-pic" src="{{ lot.img }}" alt="{{ lot.name }}"/>
+						<div class="item-name">{{ lot.name }}</div><br>
+					</a>
+					<div class="bottom">
+						{% if lot.status == 'Finished' %}
+							<label class="label-closed">Closed</label>
+						{% elseif lot.status == 'Unconfirmed' %}
+							<label class="label-closed">Unconfirmed</label>
+						{% else %}
+							<label class="label-open">Open</label>
+						{% endif %}
+						<div class="item-price">{{ lot.currentPrice }} {{ lot.currency.name }}</div>
+						<!-- <a href="#" class="item-buy">Buy</a> -->
+						<div class="item-comments">{{ lot.comments|length }} comments</div>
+					</div>
+				</li>
+			{% endfor %}
+		</ul>
 	</div>
 {% endblock %}

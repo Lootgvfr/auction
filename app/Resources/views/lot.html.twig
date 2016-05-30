@@ -58,11 +58,11 @@
 				</div>
 				{% endif %}
 				{% if is_granted('IS_AUTHENTICATED_FULLY') and lot.status == 'Unconfirmed' %}
-					{% if app.user.username == author.username or app.user.group == 'Content-manager' or app.user.group == 'Admin' %}
+					{% if app.user.username == author.username or app.user.group == 'Manager' or app.user.group == 'Admin' %}
 						<div class="right-block">
 							<a href="{{ path('edit-lot', {'id':lot.id}) }}">Edit lot</a><br>
 							<a href="{{ path('delete-lot', {'id':lot.id}) }}">Delete lot</a>
-							{% if app.user.group == 'Content-manager' or app.user.group == 'Admin' %}
+							{% if app.user.group == 'Manager' or app.user.group == 'Admin' %}
 								<br><a href="{{ path('confirm-lot', {'id':lot.id}) }}">Confirm lot</a>
 							{% endif %}
 						</div>
