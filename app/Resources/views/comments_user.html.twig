@@ -1,0 +1,109 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Control panel | Moderator {% endblock %}
+
+{% block css %}
+	<link href="{{ asset('css/control_panel.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block page %}
+<div class="parent">
+	<div class="content">
+		<div class="comments">
+		{% if comments %}
+		<table class="table">
+		<tr class="first_tr">
+				<td width="100">
+				Date: 
+				</td>
+				<td width="100">
+				Author: 
+				</td>
+				<td width="100">
+				Seller: 
+				</td>
+				<td width="400">
+				Text: 
+				</td>
+				<td width="40">
+				Rating: 
+				</td>
+				<td width="100">
+				Check: 
+				</td>
+				<td width="100">
+				Delete: 
+				</td>
+		</tr>
+		{% else %}
+		No unchecked comments.
+		{% endif %}
+		
+		{% for comment in comments %}
+		
+			<tr class="comments">
+				<td>
+				{{ comment.date | date('d.m.Y')}}
+				</td>
+				<td>
+				<a href="{{ path('profile', {'username': comment.author.username}) }}">{{ comment.author.username }}</a>
+				</td>
+				<td>
+				<a href="{{ path('profile', {'username': comment.seller.username}) }}">{{ comment.seller.username}}</a>
+				</td>
+				<td>
+				{{ comment.text}}
+				</td>
+				<td>
+				{{ comment.rating}}
+				</td>
+				<td>
+				<a class="btn btn-success btn-xs" href="{{ path('check_user', {'id': comment.id}) }}">Check</a>
+				</td>
+				<td>
+				<a class="btn btn-danger btn-xs" href="{{ path('delete_user', {'id': comment.id}) }}">Delete</a>
+				</td>
+			</tr>
+		{% endfor %}
+		{% if comments %}
+		</table>
+		{% endif %}
+		</div>
+		<ul class="pagination pagination-sm">
+				
+				{% if page - 1 == 0%}
+					<li class="disabled"><a href="{{ path('comments_user', {'page': page - 1}) }}" aria-label="Previous">
+						<span aria-hidden="true">&laquo;</span>
+					</a></li>
+				{% else %}
+					<li><a href="{{ path('comments_user', {'page': page - 1}) }}" aria-label="Previous">
+						<span aria-hidden="true">&laquo;</span>
+					</a></li>
+				{% endif %}
+				
+				{% for i in start_pag..end_pag %}
+					{% if i == page %}
+						<li class="active"><a href="{{ path('comments_user', {'page': i}) }}">{{i}}</a></li>
+					{% else %}
+						<li><a href="{{ path('comments_user', {'page': i}) }}">{{i}}</a></li>
+					{% endif %}
+				{% endfor %}
+				{% if pages == page%}
+					<li class="disabled"><a href="{{ path('comments_user', {'page': page + 1}) }}" aria-label="Next">
+						<span aria-hidden="true">&raquo;</span>
+					</a></li>
+				{% else %}
+					<li><a href="{{ path('comments_user', {'page': page + 1}) }}" aria-label="Next">
+						<span aria-hidden="true">&raquo;</span>
+					</a></li>
+				{% endif %}
+			</ul>
+		
+		
+	
+	</div>
+</div>
+
+
+
+{% endblock %}

@@ -226,6 +226,10 @@ class LotController extends Controller
 						$lot->setFile($file);
 						$lot->upload();
 					}
+					else {
+						$lot->setPath('default.png');
+						
+					}
 					
 					// save duration
 					$now = new \DateTime();
@@ -751,9 +755,12 @@ class LotController extends Controller
 			}
 		}
 		
+		
+		
         return $this->render('lot.html.twig', array(
 			"found" => $found,
 			"lot" => $lot,
+			'path' => $lot->getWebPath(),
 			'properties' => $properties,
 			'author' => $author,
 			'error' => $error,
@@ -775,52 +782,26 @@ class LotController extends Controller
      */
 	public function commentNewAction(Request $request, Lot $lot)
     {
-        $form = $this->createForm(new CommentLotForm());
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            /** @var Comment $comment */
-            $comment = $form->getData();
+        if (isset($_POST['submit']))
+		{
+            $comment = new CommentLot();
             $comment->setAuthor($this->getUser());
 			$comment->setLot($lot);
 			$comment->setStatus("unconfirmed");
 			$date = new \DateTime(); //->format('Y-m-d H:i:s')
 			$comment->setDate($date);
-			$comment->setRating(5);
+			$comment->setText($_POST['text']);
+			$comment->setRating($_POST['caption']);
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($comment);
             $entityManager->flush();
 
-            return $this->redirectToRoute('lot', array('id' => $lot->getId()));
+            
         }
-
-        $form = $this->createForm(new CommentLotForm());
-
-        return $this->render('_lot_comment.html.twig', array(
-            'lot' => $lot,
-            'form' => $form->createView()
-        ));
+		return $this->redirectToRoute('lot', array('id' => $lot->getId()));
+        
     }
-
-/**
-     *
-     * @param Post $post
-     *
-     * @return Response
-     */
-    public function commentLotFormAction(Lot $lot)
-    {
-        $form = $this->createForm(new CommentLotForm());
-
-        return $this->render('_lot_comment.html.twig', array(
-            'lot' => $lot,
-            'form' => $form->createView()
-        ));
-    }
-	
-	
 	
 	
 }
