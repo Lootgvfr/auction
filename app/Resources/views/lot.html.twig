@@ -20,6 +20,7 @@
 			<img class="img" src="{{ path }}">
 			{% endif %}
 			<div class="buy">
+			<p><b>Seller:  </b> <strong><a href="{{ path('profile', {'username': lot.author.username}) }}"> {{ lot.author.username }}</a></strong></p>
 				<form method="post" action="{{ path('lot', {'id':lot.id}) }}">
 					<div class="bid">
 						<div id="pr" class="text"><b>Current price:</b> {% if not price == 0 %}{{ price }}{% else %}{{ lot.currentPrice }}{% endif %} {{ lot.currency.name }}</div>
@@ -70,7 +71,8 @@
 				{% endif %}
 			</div>
 		</div>
-		<div class="props">
+		<div class="row">
+		<div class="col-md-6">
 			<div id="desc" class="text"><b>Description:</b> {{ lot.description }}</div>
 			<p>
 				<div class="sep">
@@ -85,7 +87,48 @@
 				{% endfor %}
 			</p>
 		</div>
-		<div class="active_auctions">
+		
+		<div class="comments col-md-6">
+				{% for comment in lot.comments %}
+					<div class="row show-comment">
+						<div class="col-sm-4">
+						<span class="glyphicon glyphicon-comment" aria-label="Left Align"></span>
+							<strong><a href="{{ path('profile', {'username': comment.author.username}) }}"> {{ comment.author.username }}</a></strong> 
+							{{ comment.date|date('d.m.Y') }}
+							<input class="rating rating-loading" data-size="xs" data-readonly="true" value="{{ comment.rating }}" >
+						</div>
+						<div class="col-sm-7 left">
+							{{ comment.text }}
+						</div>
+					</div>
+				{% else %}
+					<div class="post-comment">
+						<p>No comments.</p>
+					</div>
+				{% endfor %}
+				{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+				
+				<form action="{{ path('lot_comment_new', { 'lot_id': lot.id }) }}" method="post">
+					<div class="new_comment">
+							<input  required id="input-1-sm" name="rating" class="rating rating-loading" data-min="0" data-max="5" data-step="1" data-size="sm"> <br>
+							<textarea name="text"  required ></textarea>
+							<button class="button" type="submit" name="submit">Comment</button>
+					</div>
+
+				</form>
+					
+				{% else %}
+				<p>
+					<a class="submit" href="{{ path('login') }}">
+						Sign in
+					</a>
+					for leaving a comment
+				</p>
+				{% endif %}
+			</div>     
+	<!----------
+		
+		<div class="col-md-4">
 		{% for comment in lot.comments %}
 			<div class="row post-comment">
 				<div class="col-sm-4 ">
@@ -122,7 +165,10 @@
 		</p>
 		{% endif %}
 	</div>
+	-->
+	</div>
 	{% else %}
 		Lot not found.
 	{% endif %}
+	
 {% endblock %}

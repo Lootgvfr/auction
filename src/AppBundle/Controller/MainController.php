@@ -54,9 +54,9 @@ class MainController extends Controller
     }
 	
 	/**
-     * @Route("/categories/{name}", name="category_display")
+     * @Route("/categories/{name}/{page}", name="category_display", defaults={"page" = 1}, requirements={"page" : "\d+"})
      */
-    public function categoryAction(Request $request, $name)
+    public function categoryAction(Request $request, $name, $page)
     {
 		$cat = $this->getDoctrine()->getRepository('AppBundle:Category')->findOneByName($name);
 		$rep = $this->getDoctrine()->getRepository('AppBundle:Lot');
@@ -71,38 +71,104 @@ class MainController extends Controller
 				$cm = true;
 			}
 		}
+		
+		$em = $this->getDoctrine()->getManager();
+		
+		$per_page = 10;   
 		if (!$cm)
 		{
-			$query = $rep->createQueryBuilder('l')
-				->where('l.endDate > :date')
-				->andWhere('l.category = :cat')
-				->andWhere('l.status != \'Unconfirmed\'')
-				->setParameter('date', $date)
-				->setParameter('cat', $cat)
-				->orderBy('l.startDate', 'DESC')
-				->orderBy('l.status', 'DESC')
-				->getQuery();
+			$pages_query = $em->createQuery(
+						'SELECT COUNT(p.id)
+						FROM AppBundle:Lot p
+						WHERE p.status != :status
+						and p.endDate > :date
+						and p.category = :cat'
+					)->setParameter('status', 'unconfirmed')
+					->setParameter('date', $date)
+					->setParameter('cat', $cat);
+		}
+		else {
+			$pages_query = $em->createQuery(
+						'SELECT COUNT(p.id)
+						FROM AppBundle:Lot p
+						WHERE p.endDate > :date
+						and p.category = :cat'
+					)
+					->setParameter('date', $date)
+					->setParameter('cat', $cat);
+		}
+		$pages = $pages_query->getResult();
+		
+		$pages = ceil($pages[0][1] / $per_page);  
+		$start = ($page - 1) * $per_page; 
+		
+		if ($pages > 5)
+		{
+			if ($page > 3)
+			{
+				if ($page < $page - 2)
+				{
+					$start_pag = $pages - 2;
+					$end_pag = $pages + 2;
+				}
+				else if ($page > $page - 2)
+				{
+					$start_pag = $pages - 4;
+					$end_pag = $pages;
+				}
+			}
+			else {
+				$start_pag = 1;
+				$end_pag = 5;
+			}
 		}
 		else
 		{
-			$query = $rep->createQueryBuilder('l')
-				->where('l.endDate > :date')
-				->andWhere('l.category = :cat')
-				->setParameter('date', $date)
-				->setParameter('cat', $cat)
-				->orderBy('l.startDate', 'DESC')
-				->orderBy('l.status', 'DESC')
-				->getQuery();
+			$start_pag = 1;
+			$end_pag = $pages;
+		}
+
+		if (!$cm)
+		{
+			$query = $em->createQuery(
+						'SELECT p
+						FROM AppBundle:Lot p
+						WHERE p.status != :status
+						and p.endDate > :date
+						and p.category = :cat'
+					)->setParameter('status', 'unconfirmed')
+					->setParameter('date', $date)
+					->setParameter('cat', $cat)
+					->setFirstResult($start)
+					->setMaxResults($per_page);
+		}
+		else {
+			$query = $em->createQuery(
+						'SELECT p
+						FROM AppBundle:Lot p
+						WHERE p.endDate > :date
+						and p.category = :cat'
+					)
+					->setParameter('date', $date)
+					->setParameter('cat', $cat)
+					->setFirstResult($start)
+					->setMaxResults($per_page);
 		}
 		
+
 		$lots = $query->getResult();
+
 		foreach($lots as $lot)
 		{
 			$lot->getCurrentPrice();
 		}
         return $this->render('category_display.html.twig', array(
 			"lots" => $lots,
-			"name" => $name
+			"name" => $name,
+			'start_pag' => $start_pag,
+			'end_pag' => $end_pag,
+			'page' => $page,
+			'pages' => $pages
         ));
     }
 	

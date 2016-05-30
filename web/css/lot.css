@@ -18,7 +18,11 @@
 	font-family: "Palatino Linotype";
 	border-bottom: 1px solid #555;
 }
-
+.comments
+{
+	
+	border-left: 1px dashed #ceccbd;
+}
 
 
 .submit{

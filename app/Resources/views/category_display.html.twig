@@ -8,7 +8,7 @@
 
 {% block content %}
 	{% if lots %}
-		<ul class="grid">
+		<ul class="grid row">
 		{% for lot in lots %}
 			<li class="item">
 				<a href="{{ path('lot', {'id':lot.id}) }}">
@@ -30,7 +30,39 @@
 			</li>
 		{% endfor %}
 		</ul>
+		<ul class="pagination pagination-sm row">
+				
+				{% if page - 1 == 0%}
+					<li class="disabled"><a href="{{ path('category_display', {'page': page - 1, 'name': name}) }}" aria-label="Previous">
+						<span aria-hidden="true">&laquo;</span>
+					</a></li>
+				{% else %}
+					<li><a href="{{ path('category_display', {'page': page - 1, 'name': name}) }}" aria-label="Previous">
+						<span aria-hidden="true">&laquo;</span>
+					</a></li>
+				{% endif %}
+				
+				{% for i in start_pag..end_pag %}
+					{% if i == page %}
+						<li class="active"><a href="{{ path('category_display', {'page': i, 'name': name}) }}">{{i}}</a></li>
+					{% else %}
+						<li><a href="{{ path('category_display', {'page': i, 'name': name}) }}">{{i}}</a></li>
+					{% endif %}
+				{% endfor %}
+				{% if pages == page%}
+					<li class="disabled"><a href="{{ path('category_display', {'page': page + 1, 'name': name}) }}" aria-label="Next">
+						<span aria-hidden="true">&raquo;</span>
+					</a></li>
+				{% else %}
+					<li><a href="{{ path('category_display', {'page': page + 1, 'name': name}) }}" aria-label="Next">
+						<span aria-hidden="true">&raquo;</span>
+					</a></li>
+				{% endif %}
+			</ul>
+		
+		
 	{% else %}
 		<p>No lots in this category yet.</p>
 	{% endif %}
+	
 {% endblock %}
