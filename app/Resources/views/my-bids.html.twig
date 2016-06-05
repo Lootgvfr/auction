@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Your bids {% endblock %}
+
+{% block css %}
+	<link href="{{ asset('css/my-bids.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block page %}
+<div class="parent">
+	<div class="content">
+		<div class="lots">
+		{% if bids %}
+		<table class="table">
+		<tr class="first_tr">
+				<td width="150">
+				Date
+				</td>
+				<td width="100">
+				Value
+				</td>
+				<td width="100">
+				Category
+				</td>
+				<td width="100">
+				Lot
+				</td>
+		</tr>
+		{% else %}
+		You haven't made any bids yet.
+		{% endif %}
+		
+		{% for bid in bids %}
+		
+			<tr class="comments">
+				<td>
+				{{ bid.date | date('d.m.Y')}}
+				</td>
+				<td>
+				{{ bid.value }}
+				</td>
+				<td>
+				<a href="{{ path('category_display', {'name': bid.lot.category.name}) }}">{{ bid.lot.category.name }}</a>
+				</td>
+				<td>
+				<a href="{{ path('lot', {'id': bid.lot.id}) }}">{{ bid.lot.name }}</a>
+				</td>
+			</tr>
+		{% endfor %}
+		
+		{% if bids %}
+		</table>
+		{% endif %}
+		</div>
+	</div>
+</div>
+
+
+
+{% endblock %}

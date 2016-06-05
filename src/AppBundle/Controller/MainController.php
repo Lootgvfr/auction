@@ -22,7 +22,12 @@ class MainController extends Controller
 				->getQuery();
 		$lots = $query->getResult();
 		$recent = array_slice($lots, 0, 4);
-		$recommended = array_slice($lots, 0, 4);
+		$user = null;
+		if ($this->container->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY'))
+		{
+			$user = $this->get('security.token_storage')->getToken()->getUser();
+		}
+		$recommended = $this->getRecommendedLots($lots, $user);
         return $this->render('home.html.twig', array(
 			'recent' => $recent,
 			'recommended' => $recommended
@@ -134,8 +139,9 @@ class MainController extends Controller
 						'SELECT p
 						FROM AppBundle:Lot p
 						WHERE p.status != :status
-						and p.endDate > :date
-						and p.category = :cat'
+						AND p.endDate > :date
+						AND p.category = :cat
+						ORDER BY p.status DESC, p.startDate DESC'
 					)->setParameter('status', 'unconfirmed')
 					->setParameter('date', $date)
 					->setParameter('cat', $cat)
@@ -147,7 +153,8 @@ class MainController extends Controller
 						'SELECT p
 						FROM AppBundle:Lot p
 						WHERE p.endDate > :date
-						and p.category = :cat'
+						AND p.category = :cat
+						ORDER BY p.status DESC, p.startDate DESC'
 					)
 					->setParameter('date', $date)
 					->setParameter('cat', $cat)
@@ -178,6 +185,101 @@ class MainController extends Controller
 		return $this->render('categories.html.twig', array(
 			"categories" => $categories
         ));
+	}
+	
+	private function getRecommendedLots($lots, $user)
+	{
+		if ($user == null)
+		{
+			usort($lots, function($a, $b)
+			{
+				if($a->getRating() == $b->getRating())
+					return 0;
+				return $a->getRating() < $b->getRating()?1:-1;
+			});
+			$rec = array_slice($lots, 0, 4);
+			return $rec;
+		}
+		else
+		{
+			$recs = [];
+			foreach ($lots as $lot)
+			{
+				$recs[strval($lot->getId())] = [$lot, 0];
+			}
+			$userBids = $user->getBids();
+			$prop_rep = $this->getDoctrine()->getRepository('AppBundle:Property');
+			$em = $this->getDoctrine()->getManager();
+			$users = [];
+			foreach($userBids as $userBid)
+			{
+				$lot = $userBid->getLot();
+				$cat = $lot->getCategory();
+				$producer = '';
+				foreach($lot->getValues() as $value)
+				{
+					if ($value->getProperty()->getName() == 'Producer')
+					{
+						$producer = $value->getVal();
+						break;
+					}
+				}
+				foreach($lots as $lt)
+				{
+					$prod = '';
+					foreach($lt->getValues() as $value)
+					{
+						if ($value->getProperty()->getName() == 'Producer')
+						{
+							$prod = $value->getVal();
+							break;
+						}
+					}
+					if ($lt->getCategory() != $cat and $prod == $producer)
+					{
+						$recs[strval($lt->getId())][1] += 1;
+					}
+				}
+				foreach($lot->getBids() as $bid)
+				{
+					$us = $bid->getUser();
+					if ($us != $user)
+					{
+						array_push($users, $us);
+					}
+				}
+			}
+			array_unique($users);
+			foreach($users as $us)
+			{
+				$bids = $us->getBids();
+				$lts = [];
+				foreach($bids as $bid)
+				{
+					array_push($lts, $bid->getLot());
+				}
+				array_unique($lts);
+				foreach($lts as $lt)
+				{
+					if($lt->getStatus() == 'Open')
+					{
+						$recs[strval($lt->getId())][1] += 2;
+					}
+				}
+			}
+			usort($recs, function($a, $b)
+			{
+				if($a[1] == $b[1])
+					return 0;
+				return $a[1] < $b[1]?1:-1;
+			});
+			$rec = [];
+			for ($i = 0; $i < 4; $i++)
+			{
+				array_push($rec, $recs[$i][0]);
+			}
+			return $rec;
+		}
 	}
 }
 ?>
