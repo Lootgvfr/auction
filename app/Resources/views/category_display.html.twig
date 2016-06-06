@@ -7,6 +7,19 @@
 {% endblock %}
 
 {% block content %}
+	<form action="" method="post">
+		Sort by
+		<select name="sort" >
+			<option disabled></option>
+			<option value="name_ASC">Name A-Z</option>
+			<option value="name_DESC">Name Z-A</option>
+			<option value="startDate_ASC_">Data ↓</option>
+			<option value="startDate_DESC">Data ↑</option>
+			<option value="startPrice_ASC">Price ↑</option>
+			<option value="startPrice_DESC">Price ↓</option>
+		</select>
+		<input type="submit" value="Sort" name="Sort">
+	</form>
 	{% if lots %}
 		<ul class="grid row">
 		{% for lot in lots %}

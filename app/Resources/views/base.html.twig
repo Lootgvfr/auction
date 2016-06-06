@@ -101,7 +101,22 @@
 			<div class="side-menu">
 				<h3>Categories</h3>
 				{{ render(controller('AppBundle:Main:categories')) }}
-				{% block search_parameters %}{% endblock %}
+				{% block search_parameters %}
+				{% if s_properties  is defined %}
+					<form method="post" action="{{ path('category_display', {'name':name})}}">
+						{% for property in s_properties %}
+						<b>{{ property.name }}</b><br>
+						{% for values in property.values %}
+
+							<label><input type="checkbox" name="{{ values.var }}" value="{{ values.val }}" />{{ values.val }}</label><br>
+
+						{% endfor %}
+
+						{% endfor %}
+						<input type="submit" name="submit" value="Filter">
+					</form>
+				{% endif %}
+				{% endblock %}
 			</div>
 			
 			<div class=content>
