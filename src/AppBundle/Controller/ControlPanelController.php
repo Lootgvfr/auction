@@ -171,7 +171,7 @@ class ControlPanelController extends Controller
 				
 		$em->flush();
 		
-		return $this->redirectToRoute('moderator');
+		return $this->redirectToRoute('comments_user');
 		
 	}
   
@@ -188,7 +188,7 @@ class ControlPanelController extends Controller
 		$em->remove($comment);
 		$em->flush();
 		
-		return $this->redirectToRoute('moderator');
+		return $this->redirectToRoute('comments_user');
 		
 	}
 	/**
@@ -205,7 +205,7 @@ class ControlPanelController extends Controller
 				
 		$em->flush();
 		
-		return $this->redirectToRoute('moderator');
+		return $this->redirectToRoute('comments_lot');
 		
 	}
   
@@ -222,7 +222,7 @@ class ControlPanelController extends Controller
 		$em->remove($comment);
 		$em->flush();
 		
-		return $this->redirectToRoute('moderator');
+		return $this->redirectToRoute('comments_lot');
 		
 	}
 	

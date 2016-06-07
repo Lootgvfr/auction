@@ -23,9 +23,6 @@
 				<td width="100">
 				Lot: 
 				</td>
-				<td width="40">
-				Rating: 
-				</td>
 				<td width="100">
 				Confirm: 
 				</td>
@@ -49,9 +46,7 @@
 				<td>
 				<a href="{{ path('lot', {'id': lot.id}) }}">{{ lot.name}}</a>
 				</td>
-				<td>
-				Rating
-				</td>
+				
 				<td>
 				<a  class="btn btn-success btn-xs" href="{{ path('confirm-lot', {'id': lot.id}) }}">Confirm</a>
 				</td>
