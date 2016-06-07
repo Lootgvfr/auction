@@ -285,7 +285,8 @@ class MainController extends Controller
                     ->setParameter('status', 'unconfirmed')
                     ->setParameter('ids', $lots_id)
                     ->setMaxResults($per_page)
-                    ->orderBy($order[0], $order[1])
+					->orderBy('p.status', 'DESC')
+                    ->addOrderBy($order[0], $order[1])
                     ->getQuery() : $em->createQueryBuilder()
                     ->select('p')
                     ->from('AppBundle:Lot', 'p')
@@ -297,7 +298,8 @@ class MainController extends Controller
                     ->setParameter('ids', $lots_id)
                     ->setFirstResult($start)
                     ->setMaxResults($per_page)
-                    ->orderBy($order[0], $order[1])
+					->orderBy('p.status', 'DESC')
+                    ->addOrderBy($order[0], $order[1])
                     ->getQuery();
 
                 $lots = $query->getResult();
@@ -381,7 +383,8 @@ class MainController extends Controller
                 ->setFirstResult($start)
                 ->setParameter('status', 'unconfirmed')
                 ->setMaxResults($per_page)
-                ->orderBy($order[0], $order[1])
+				->orderBy('p.status', 'DESC')
+                ->addOrderBy($order[0], $order[1])
                 ->getQuery() : $em->createQueryBuilder()
                 ->select('p')
                 ->from('AppBundle:Lot', 'p')
@@ -391,7 +394,8 @@ class MainController extends Controller
                 ->setParameter('cat', $cat)
                 ->setFirstResult($start)
                 ->setMaxResults($per_page)
-                ->orderBy($order[0], $order[1])
+				->orderBy('p.status', 'DESC')
+                ->addOrderBy($order[0], $order[1])
                 ->getQuery();
 
             $lots = $query->getResult();
@@ -422,6 +426,14 @@ class MainController extends Controller
 	
 	private function getRecommendedLots($lots, $user)
 	{
+		if (count($lots) < 4)
+		{
+			$last = count($lots);
+		}
+		else
+		{
+			$last = 4;
+		}
 		if ($user == null)
 		{
 			usort($lots, function($a, $b)
@@ -430,7 +442,8 @@ class MainController extends Controller
 					return 0;
 				return $a->getRating() < $b->getRating()?1:-1;
 			});
-			$rec = array_slice($lots, 0, 4);
+			
+			$rec = array_slice($lots, 0, $last);
 			return $rec;
 		}
 		else
@@ -507,9 +520,9 @@ class MainController extends Controller
 				return $a[1] < $b[1]?1:-1;
 			});
 			$rec = [];
-			for ($i = 0; $i < 4; $i++)
+			for ($i = 0; $i < $last; $i++)
 			{
-				array_push($rec, $recs[$i][0]);
+				array_push($rec, $recs[strval($i)][0]);
 			}
 			return $rec;
 		}

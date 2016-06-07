@@ -12,7 +12,7 @@ class SearchController extends Controller
     /**
      * @Route("/search/{page}", name="search", defaults={"page" = 1}, requirements={"page" : "\d+"})
      */
-    public function homeAction(Request $request, $page)
+    public function searchAction(Request $request, $page)
     {
         if (!isset ($_GET['parameters']))
             return $this->redirectToRoute("home");

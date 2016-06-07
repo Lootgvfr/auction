@@ -19,6 +19,55 @@ html a{
 	background-color: #fff;
 }
 
+.divider{
+	border-top: 1px dashed #ceccbd;
+	font-family: "Palatino Linotype";
+	font-size: 22px;
+	text-align: center;
+}
+
+.chk{
+	border: 1px solid #aaa;
+	margin-top:2px;
+}
+
+.chkl{
+	margin-left: 20px;
+	font-family: "Palatino Linotype";
+	font-weight: normal;
+}
+
+.prop{
+	margin-bottom: 5px;
+	font-family: "Palatino Linotype";
+}
+
+.prpl{
+	font-size: 16px;
+	padding-left: 20px;
+}
+
+
+.submit{
+	font-family: "Palatino Linotype";
+	font-size: 16px;
+	padding: 3px 15px 3px 15px;
+	border: 0px;
+	color: white;
+	border-radius: 2px;
+	background-color: #555;
+	border: 1px solid #ceccbd;
+	margin-left: 20px;
+	margin-bottom: 10px;
+}
+
+.submit:hover{
+	cursor: pointer;
+	background-color: #eee;
+	border: 1px solid #555;
+	color: #555;
+}
+
 
 .inside-header{
 	display:block;
