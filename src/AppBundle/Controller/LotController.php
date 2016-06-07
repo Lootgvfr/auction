@@ -803,6 +803,17 @@ class LotController extends Controller
         
     }
 	
-	
+	/**
+     * @Route("/my_bids", name="my-bids")
+     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
+     */
+	public function myBidsAction(Request $request)
+	{
+		$user = $this->get('security.token_storage')->getToken()->getUser();
+		$bids = $user->getBids();
+		return $this->render('my-bids.html.twig', array(
+			"bids" => $bids
+        ));
+	}
 }
 ?>

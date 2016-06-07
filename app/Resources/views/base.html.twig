@@ -43,7 +43,11 @@
 					<li class="menu-item">
 						<a href="{{ path('contacts') }}">Contacts</a>
 					</li>
-					
+					{% if is_granted('IS_AUTHENTICATED_FULLY') and app.user.group == 'User' %}
+					<li class="menu-item">
+						<a href="{{ path('my-bids') }}">Your bids</a>
+					</li>
+					{% endif %}
 					{% if is_granted('IS_AUTHENTICATED_FULLY') and app.user.group == 'Moderator'%}
 					<div class="btn-group">
 						<button type="button" class="drop-item dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
