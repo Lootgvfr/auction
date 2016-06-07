@@ -285,7 +285,8 @@ class MainController extends Controller
                     ->setParameter('status', 'unconfirmed')
                     ->setParameter('ids', $lots_id)
                     ->setMaxResults($per_page)
-                    ->orderBy($order[0], $order[1])
+					->orderBy('p.status', 'DESC')
+                    ->addOrderBy($order[0], $order[1])
                     ->getQuery() : $em->createQueryBuilder()
                     ->select('p')
                     ->from('AppBundle:Lot', 'p')
@@ -297,7 +298,8 @@ class MainController extends Controller
                     ->setParameter('ids', $lots_id)
                     ->setFirstResult($start)
                     ->setMaxResults($per_page)
-                    ->orderBy($order[0], $order[1])
+					->orderBy('p.status', 'DESC')
+                    ->addOrderBy($order[0], $order[1])
                     ->getQuery();
 
                 $lots = $query->getResult();
@@ -381,7 +383,8 @@ class MainController extends Controller
                 ->setFirstResult($start)
                 ->setParameter('status', 'unconfirmed')
                 ->setMaxResults($per_page)
-                ->orderBy($order[0], $order[1])
+				->orderBy('p.status', 'DESC')
+                ->addOrderBy($order[0], $order[1])
                 ->getQuery() : $em->createQueryBuilder()
                 ->select('p')
                 ->from('AppBundle:Lot', 'p')
@@ -391,7 +394,8 @@ class MainController extends Controller
                 ->setParameter('cat', $cat)
                 ->setFirstResult($start)
                 ->setMaxResults($per_page)
-                ->orderBy($order[0], $order[1])
+				->orderBy('p.status', 'DESC')
+                ->addOrderBy($order[0], $order[1])
                 ->getQuery();
 
             $lots = $query->getResult();

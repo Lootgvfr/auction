@@ -107,17 +107,21 @@
 				{{ render(controller('AppBundle:Main:categories')) }}
 				{% block search_parameters %}
 				{% if s_properties  is defined %}
+					<div class="divider">Filters</div>
 					<form method="post" action="{{ path('category_display', {'name':name})}}">
 						{% for property in s_properties %}
-						<b>{{ property.name }}</b><br>
+						{% if (property.values|first).val != '' %}
+						<div class="prop">
+						<b><div class="prpl">{{ property.name }}</div></b>
 						{% for values in property.values %}
 
-							<label><input type="checkbox" name="{{ values.var }}" value="{{ values.val }}" />{{ values.val }}</label><br>
+							<label class="chkl"><input class="chk" type="checkbox" name="{{ values.var }}" value="{{ values.val }}" />{{ values.val }}</label><br>
 
 						{% endfor %}
-
+						</div>
+						{% endif %}
 						{% endfor %}
-						<input type="submit" name="submit" value="Filter">
+						<input class="submit" type="submit" name="submit" value="Filter">
 					</form>
 				{% endif %}
 				{% endblock %}
