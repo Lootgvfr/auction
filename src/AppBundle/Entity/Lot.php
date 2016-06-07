@@ -197,6 +197,27 @@ class Lot
 		}
 	}
 	
+	public function __toString()
+	{
+		return strval($this->id);
+	}
+	
+	public function getRating()
+	{
+		$comments = $this->comments;
+		if (count($comments) == 0)
+		{
+			return 0;
+		}
+		$sum = 0.0;
+		foreach($comments as $comment)
+		{
+			$sum += $comment->getRating();
+		}
+		$sum /= count($comments);
+		return $sum;
+	}
+	
     /**
      * Get id
      *
