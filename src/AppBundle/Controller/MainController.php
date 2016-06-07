@@ -91,7 +91,7 @@ class MainController extends Controller
 		if ($this->container->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY'))
 		{
 			$user = $this->get('security.token_storage')->getToken()->getUser();
-			if ($user->getGroup() == 'Admin' or $user->getGroup() == 'Content-manager')
+			if ($user->getGroup() == 'Admin' or $user->getGroup() == 'Manager')
 			{
 				$cm = true;
 			}
