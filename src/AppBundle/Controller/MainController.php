@@ -158,7 +158,8 @@ class MainController extends Controller
         $per_page = 10;
 		if (isset($_POST['submit']))
 		{
-
+			
+				
             for ($i = 0; $i < sizeof($properties); $i++)
             {
 
@@ -174,7 +175,8 @@ class MainController extends Controller
                     }
                 }
             }
-
+if (isset($s_properties))
+{
             for ($i = 0; $i < sizeof($s_properties); $i++) {
 
                 $query = $em
@@ -205,6 +207,7 @@ class MainController extends Controller
 
                 }
             }
+}
 
             if (isset($lots_id)) {
                 if (!$cm)

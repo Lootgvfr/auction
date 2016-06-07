@@ -110,6 +110,7 @@
 					<div class="divider">Filters</div>
 					<form method="post" action="{{ path('category_display', {'name':name})}}">
 						{% for property in s_properties %}
+						{% if (property.values) %}
 						{% if (property.values|first).val != '' %}
 						<div class="prop">
 						<b><div class="prpl">{{ property.name }}</div></b>
@@ -119,6 +120,7 @@
 
 						{% endfor %}
 						</div>
+						{% endif %}
 						{% endif %}
 						{% endfor %}
 						<input class="submit" type="submit" name="submit" value="Filter">
