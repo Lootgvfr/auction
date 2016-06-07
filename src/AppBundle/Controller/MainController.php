@@ -120,22 +120,40 @@ class MainController extends Controller
 
 
         $properties = array();
+        $query = $em->createQuery(
+            'SELECT p.id
+            FROM AppBundle:Lot p
+            WHERE p.status = :property'
+        )
+            ->setParameter('property', 'finished');
+        $finished = $query->getResult();
+        for ($i = 0; $i < sizeof($finished); $i++)
+        {
+            $closed[] = $finished[$i]["id"];
+        }
+        
         for ($i = 0; $i < sizeof($names); $i++)
         {
-            $query = $em->createQuery(
-                'SELECT p.val
+            if ($names[$i]['name']) {
+
+
+                $query = $em->createQuery(
+                    'SELECT p.val
             FROM AppBundle:Value p
             WHERE p.property = :property
+            AND p.lot NOT IN (:closed)
             GROUP BY p.val'
-            )
-                ->setParameter('property', $names[$i]['id']);
-            $property = $query->getResult();
-            $property = $this->prs($property);
-            $properties[$i] = array(
-                'name' => $names[$i]['name'],
-                'values' => $property,
-                'id' => $names[$i]['id']
-            );
+                )
+                    ->setParameter('property', $names[$i]['id'])
+                    ->setParameter('closed', $closed);
+                $property = $query->getResult();
+                $property = $this->prs($property);
+                $properties[$i] = array(
+                    'name' => $names[$i]['name'],
+                    'values' => $property,
+                    'id' => $names[$i]['id']
+                );
+            }
         }
         $per_page = 10;
 		if (isset($_POST['submit']))
@@ -192,6 +210,7 @@ class MainController extends Controller
             }
 
             if (isset($lots_id)) {
+                var_dump("sdfsf");
 
                 if (!$cm)
                 {
@@ -287,7 +306,13 @@ class MainController extends Controller
                     $lot->getCurrentPrice();
                 }
             }
-            else $lots = NULL;
+            else {
+                $lots = NULL;
+                $pages = 1;
+                $start_pag = 1;
+                $end_pag = 1;
+
+            }
 
 		}
         else
@@ -375,7 +400,6 @@ class MainController extends Controller
                 $lot->getCurrentPrice();
             }
         }
-
 
         return $this->render('category_display.html.twig', array(
 			"lots" => $lots,
