@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\AppBundle;
 use AppBundle\Entity\Contact;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -9,6 +10,18 @@ use Symfony\Component\HttpFoundation\Request;
 
 class MainController extends Controller
 {
+    private function prs($property)
+    {
+        for ($j = 0; $j < sizeof($property); $j++) {
+            $property[$j]['var'] = str_replace("\"", "_", $property[$j]['val']);
+            $property[$j]['var'] = str_replace(",", "_", $property[$j]['var']);
+            $property[$j]['var'] = str_replace(".", "_", $property[$j]['var']);
+            $property[$j]['var'] = str_replace(" ", "_", $property[$j]['var']);
+        }
+        return $property;
+
+    }
+
     /**
      * @Route("/", name="home")
      */
@@ -52,14 +65,26 @@ class MainController extends Controller
             array('message' => $message
         ));
     }
+
+
+
 	
 	/**
      * @Route("/categories/{name}/{page}", name="category_display", defaults={"page" = 1}, requirements={"page" : "\d+"})
      */
     public function categoryAction(Request $request, $name, $page)
     {
+
+        if (isset($_POST['sort']))
+            $order = $_POST['sort'];
+        else if (isset($_GET['order']))
+            $order = $_GET['order'];
+        else $order = "startDate_ASC";
+        $order = explode('_', $order);
+        $order[0] = "p.".$order[0];
+
 		$cat = $this->getDoctrine()->getRepository('AppBundle:Category')->findOneByName($name);
-		$rep = $this->getDoctrine()->getRepository('AppBundle:Lot');
+
 		$date = new \DateTime();
 		$date->sub(new \DateInterval('P7D'));
 		$cm = false;
@@ -73,102 +98,290 @@ class MainController extends Controller
 		}
 		
 		$em = $this->getDoctrine()->getManager();
+
+
 		
-		$per_page = 10;   
-		if (!$cm)
+
+
+        $query = $em->createQuery(
+            'SELECT p.name, p.id
+            FROM AppBundle:Property p
+            WHERE p.category = :cat
+            GROUP BY p.id'
+        )
+            ->setParameter('cat', $cat);
+
+        $names = $query->getResult();
+
+
+        $properties = array();
+        for ($i = 0; $i < sizeof($names); $i++)
+        {
+            $query = $em->createQuery(
+                'SELECT p.val
+            FROM AppBundle:Value p
+            WHERE p.property = :property
+            GROUP BY p.val'
+            )
+                ->setParameter('property', $names[$i]['id']);
+            $property = $query->getResult();
+            $property = $this->prs($property);
+            $properties[$i] = array(
+                'name' => $names[$i]['name'],
+                'values' => $property,
+                'id' => $names[$i]['id']
+            );
+        }
+        $per_page = 10;
+		if (isset($_POST['submit']))
 		{
-			$pages_query = $em->createQuery(
-						'SELECT COUNT(p.id)
+
+            for ($i = 0; $i < sizeof($properties); $i++)
+            {
+
+                for ($j = 0; $j < sizeof($properties[$i]['values']); $j++) {
+
+                    $prop = $properties[$i]['values'][$j]['var'];
+                    $property = $properties[$i]['values'][$j]['val'];
+
+                    if (isset($_POST[$prop])) {
+                        $s_properties[] = $properties[$i]['name'];
+                        $s_prop[$properties[$i]['name']][] = $property;
+
+                    }
+                }
+            }
+
+            for ($i = 0; $i < sizeof($s_properties); $i++) {
+                //var_dump($s_properties[$i]);
+                //var_dump($s_prop[$s_properties[$i]]);
+
+                $query = $em
+                    ->createQuery(
+                        'SELECT l.id as l_id,v.id as v_id,p.id as p_id FROM AppBundle:Value v
+								JOIN v.property p 
+								JOIN v.lot l
+								WHERE p.name = :property
+								and v.val in (:val)
+								'
+                    )->setParameter('property', $s_properties[$i])
+                    ->setParameter('val', $s_prop[$s_properties[$i]]);
+
+                $id_lots[] = $query->getResult();
+            }
+            //var_dump($id_lots);
+            for ($i = 0; $i < sizeof($id_lots); $i++)
+            {
+                for ($j = 0; $j < sizeof($id_lots[$i]); $j++)
+                {
+
+                        if (isset($num[$id_lots[$i][$j]['l_id']])) {
+                            $num[$id_lots[$i][$j]['l_id']]++;
+
+                        }
+                        else $num[$id_lots[$i][$j]['l_id']] = 1;
+                    if ($num[$id_lots[$i][$j]['l_id']] == sizeof($id_lots))
+                        $lots_id[] = $id_lots[$i][$j]['l_id'];
+
+                }
+            }
+
+            if (isset($lots_id)) {
+
+                if (!$cm)
+                {
+                    $pages_query = $em->createQuery(
+                        'SELECT COUNT(p.id)
+						FROM AppBundle:Lot p
+						WHERE p.status != :status
+						and p.id in (:ids)
+						and p.endDate > :date
+						and p.category = :cat'
+
+                    )->setParameter('status', 'unconfirmed')
+                        ->setParameter('date', $date)
+                        ->setParameter('cat', $cat)
+                        ->setParameter('ids', $lots_id);
+                }
+                else {
+                    $pages_query = $em->createQuery(
+                        'SELECT COUNT(p.id)
+						FROM AppBundle:Lot p
+						WHERE p.endDate > :date
+						and p.id in (:ids)
+						and p.category = :cat'
+                    )
+
+                        ->setParameter('date', $date)
+                        ->setParameter('cat', $cat)
+                        ->setParameter('ids', $lots_id);
+                }
+                $pages = $pages_query->getResult();
+
+
+                $pages = ceil($pages[0][1] / $per_page);
+                $start = ($page - 1) * $per_page;
+
+                if ($pages > 5)
+                {
+                    if ($page > 3)
+                    {
+                        if ($page < $page - 2)
+                        {
+                            $start_pag = $pages - 2;
+                            $end_pag = $pages + 2;
+                        }
+                        else if ($page > $page - 2)
+                        {
+                            $start_pag = $pages - 4;
+                            $end_pag = $pages;
+                        }
+                    }
+                    else {
+                        $start_pag = 1;
+                        $end_pag = 5;
+                    }
+                }
+                else
+                {
+                    $start_pag = 1;
+                    $end_pag = $pages;
+                }
+
+                $query = !$cm ? $em->createQueryBuilder()
+                    ->select('p')
+                    ->from('AppBundle:Lot', 'p')
+                    ->where('p.endDate > :date')
+                    ->andWhere('p.category = :cat')
+                    ->andWhere('p.status != :status')
+                    ->andWhere('p.id in (:ids)')
+                    ->setParameter('date', $date)
+                    ->setParameter('cat', $cat)
+                    ->setFirstResult($start)
+                    ->setParameter('status', 'unconfirmed')
+                    ->setParameter('ids', $lots_id)
+                    ->setMaxResults($per_page)
+                    ->orderBy($order[0], $order[1])
+                    ->getQuery() : $em->createQueryBuilder()
+                    ->select('p')
+                    ->from('AppBundle:Lot', 'p')
+                    ->where('p.endDate > :date')
+                    ->andWhere('p.category = :cat')
+                    ->andWhere('p.id in (:ids)')
+                    ->setParameter('date', $date)
+                    ->setParameter('cat', $cat)
+                    ->setParameter('ids', $lots_id)
+                    ->setFirstResult($start)
+                    ->setMaxResults($per_page)
+                    ->orderBy($order[0], $order[1])
+                    ->getQuery();
+
+                $lots = $query->getResult();
+                foreach($lots as $lot)
+                {
+                    $lot->getCurrentPrice();
+                }
+            }
+            else $lots = NULL;
+
+		}
+        else
+        {
+
+
+            if (!$cm)
+            {
+                $pages_query = $em->createQuery(
+                    'SELECT COUNT(p.id)
 						FROM AppBundle:Lot p
 						WHERE p.status != :status
 						and p.endDate > :date
 						and p.category = :cat'
-					)->setParameter('status', 'unconfirmed')
-					->setParameter('date', $date)
-					->setParameter('cat', $cat);
-		}
-		else {
-			$pages_query = $em->createQuery(
-						'SELECT COUNT(p.id)
+                )->setParameter('status', 'unconfirmed')
+                    ->setParameter('date', $date)
+                    ->setParameter('cat', $cat);
+            }
+            else {
+                $pages_query = $em->createQuery(
+                    'SELECT COUNT(p.id)
 						FROM AppBundle:Lot p
 						WHERE p.endDate > :date
 						and p.category = :cat'
-					)
-					->setParameter('date', $date)
-					->setParameter('cat', $cat);
-		}
-		$pages = $pages_query->getResult();
-		
-		$pages = ceil($pages[0][1] / $per_page);  
-		$start = ($page - 1) * $per_page; 
-		
-		if ($pages > 5)
-		{
-			if ($page > 3)
-			{
-				if ($page < $page - 2)
-				{
-					$start_pag = $pages - 2;
-					$end_pag = $pages + 2;
-				}
-				else if ($page > $page - 2)
-				{
-					$start_pag = $pages - 4;
-					$end_pag = $pages;
-				}
-			}
-			else {
-				$start_pag = 1;
-				$end_pag = 5;
-			}
-		}
-		else
-		{
-			$start_pag = 1;
-			$end_pag = $pages;
-		}
+                )
+                    ->setParameter('date', $date)
+                    ->setParameter('cat', $cat);
+            }
+            $pages = $pages_query->getResult();
 
-		if (!$cm)
-		{
-			$query = $em->createQuery(
-						'SELECT p
-						FROM AppBundle:Lot p
-						WHERE p.status != :status
-						and p.endDate > :date
-						and p.category = :cat'
-					)->setParameter('status', 'unconfirmed')
-					->setParameter('date', $date)
-					->setParameter('cat', $cat)
-					->setFirstResult($start)
-					->setMaxResults($per_page);
-		}
-		else {
-			$query = $em->createQuery(
-						'SELECT p
-						FROM AppBundle:Lot p
-						WHERE p.endDate > :date
-						and p.category = :cat'
-					)
-					->setParameter('date', $date)
-					->setParameter('cat', $cat)
-					->setFirstResult($start)
-					->setMaxResults($per_page);
-		}
-		
+            $pages = ceil($pages[0][1] / $per_page);
+            $start = ($page - 1) * $per_page;
 
-		$lots = $query->getResult();
+            if ($pages > 5)
+            {
+                if ($page > 3)
+                {
+                    if ($page < $page - 2)
+                    {
+                        $start_pag = $pages - 2;
+                        $end_pag = $pages + 2;
+                    }
+                    else if ($page > $page - 2)
+                    {
+                        $start_pag = $pages - 4;
+                        $end_pag = $pages;
+                    }
+                }
+                else {
+                    $start_pag = 1;
+                    $end_pag = 5;
+                }
+            }
+            else
+            {
+                $start_pag = 1;
+                $end_pag = $pages;
+            }
 
-		foreach($lots as $lot)
-		{
-			$lot->getCurrentPrice();
-		}
+            $query = !$cm ? $em->createQueryBuilder()
+                ->select('p')
+                ->from('AppBundle:Lot', 'p')
+                ->where('p.endDate > :date')
+                ->andWhere('p.category = :cat')
+                ->andWhere('p.status != :status')
+                ->setParameter('date', $date)
+                ->setParameter('cat', $cat)
+                ->setFirstResult($start)
+                ->setParameter('status', 'unconfirmed')
+                ->setMaxResults($per_page)
+                ->orderBy($order[0], $order[1])
+                ->getQuery() : $em->createQueryBuilder()
+                ->select('p')
+                ->from('AppBundle:Lot', 'p')
+                ->where('p.endDate > :date')
+                ->andWhere('p.category = :cat')
+                ->setParameter('date', $date)
+                ->setParameter('cat', $cat)
+                ->setFirstResult($start)
+                ->setMaxResults($per_page)
+                ->orderBy($order[0], $order[1])
+                ->getQuery();
+
+            $lots = $query->getResult();
+            foreach($lots as $lot)
+            {
+                $lot->getCurrentPrice();
+            }
+        }
+
+
         return $this->render('category_display.html.twig', array(
 			"lots" => $lots,
 			"name" => $name,
 			'start_pag' => $start_pag,
 			'end_pag' => $end_pag,
 			'page' => $page,
-			'pages' => $pages
+			'pages' => $pages,
+            's_properties' => $properties
         ));
     }
 	
