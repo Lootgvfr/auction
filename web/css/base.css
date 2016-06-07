@@ -21,6 +21,7 @@ html a{
 
 .divider{
 	border-top: 1px dashed #ceccbd;
+    margin-top: 10px;
 	font-family: "Palatino Linotype";
 	font-size: 22px;
 	text-align: center;

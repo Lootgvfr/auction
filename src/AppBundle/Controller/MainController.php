@@ -176,8 +176,6 @@ class MainController extends Controller
             }
 
             for ($i = 0; $i < sizeof($s_properties); $i++) {
-                //var_dump($s_properties[$i]);
-                //var_dump($s_prop[$s_properties[$i]]);
 
                 $query = $em
                     ->createQuery(
@@ -192,7 +190,6 @@ class MainController extends Controller
 
                 $id_lots[] = $query->getResult();
             }
-            //var_dump($id_lots);
             for ($i = 0; $i < sizeof($id_lots); $i++)
             {
                 for ($j = 0; $j < sizeof($id_lots[$i]); $j++)
@@ -210,8 +207,6 @@ class MainController extends Controller
             }
 
             if (isset($lots_id)) {
-                var_dump("sdfsf");
-
                 if (!$cm)
                 {
                     $pages_query = $em->createQuery(
