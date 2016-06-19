@@ -2,9 +2,10 @@
 <html>
     <head>
         <meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
         <title>{% block title %}{% endblock %}</title>
-		<link href="{{ asset('css/base.css') }}" rel="stylesheet">
 		<link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet">
+		<link href="{{ asset('css/base.css') }}" rel="stylesheet">
 		<link href="{{ asset('css/star-rating.css') }}" rel="stylesheet">
 		<script src="https://code.jquery.com/jquery.min.js"></script>
 		<script rel="text/javascript" src="{{ asset('js/bootstrap.js') }}"></script>
@@ -15,11 +16,17 @@
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
     <body>
-	<div id="lala">
-		<header class="header">
-			<div class="inside-header">
-				<h1 class="title"><a href="{{ path('home') }}">Auction</a></h1>
-				<div class="entrance">
+		<div class="container-fluid">
+			<div class="row" id="header">
+				<div class="col-md-6 col-sm-6 col-xs-12">
+					<div class="center-block">
+						<h1 id="title">
+							<a href="{{ path('home') }}">Auction</a>
+						</h1>
+					</div>
+				</div>
+				<div class="col-md-6 col-sm-6 col-xs-12">
+					<div class="center-block" id="login-block">
 					{% if not is_granted('IS_AUTHENTICATED_FULLY') %}
 						<a href="{{ path('register') }}">Register</a>
 						<br> <a href="{{ path('login') }}">Login</a>
@@ -27,118 +34,114 @@
 						<div class="logged">Logged in as <b><a href="{{ path('profile', {'username': app.user.username}) }}">{{ app.user.username }}</a></b></div>
 						<a href="{{ path('logout') }}">Log Out</a>
 					{% endif %}
+					</div>
 				</div>
 			</div>
-		</header>
-		
-		<nav>
-			<div  class="menu">
-				<ul class="main-menu">
-					<li class="menu-item">
-						<a href="{{ path('home') }}">Home</a>
-					</li>
-					<li class="menu-item">
-						<a href="{{ path('make-lot') }}">Make a lot</a>
-					</li>
-					<li class="menu-item">
-						<a href="{{ path('contacts') }}">Contacts</a>
-					</li>
-					{% if is_granted('IS_AUTHENTICATED_FULLY') and app.user.group == 'User' %}
-					<li class="menu-item">
-						<a href="{{ path('my-bids') }}">Your bids</a>
-					</li>
-					{% endif %}
-					{% if is_granted('IS_AUTHENTICATED_FULLY') and app.user.group == 'Moderator'%}
-					<div class="btn-group">
-						<button type="button" class="drop-item dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						Panel <span class="caret"></span>
-						</button>
-						<ul class="dropdown-menu">
-							<li><a href="{{ path('comments_user') }}">Comments User</a></li>
-							<li><a href="{{ path('comments_lot') }}">Comments Lot</a></li>
-						</ul>
+		</div>
+		<nav class="nav navbar-default" id="menu">
+			<div class="container-fluid">
+				<div class="navbar-header visible-xs">
+					<button type="button" id="toggle-btn" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span> 
+					</button>
+					<a class="navbar-brand" href="{{ path('home') }}" id="a-item">Auction</a>
+				</div>
+				<div class="collapse navbar-collapse" id="navbar">
+					<ul class="nav navbar-nav" id="nav">
+						<li id="item"><a href="{{ path('home') }}">Home</a></li>
+						<li id="item"><a href="{{ path('make-lot') }}">Make a lot</a></li>
+						<li id="item"><a href="{{ path('contacts') }}">Contacts</a></li> 
+						{% if is_granted('IS_AUTHENTICATED_FULLY') and app.user.group == 'User' %}
+							<li id="item"><a href="{{ path('my-bids') }}">Your bids</a></li> 
+						{% endif %}
+						{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+							<li class="dropdown">
+								<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="a-item">
+									Panel <span class="caret"></span>
+								</a>
+								<ul class="dropdown-menu">
+									{% if app.user.group == 'Moderator' %}
+										<li><a href="{{ path('comments_user') }}">Comments User</a></li>
+										<li><a href="{{ path('comments_lot') }}">Comments Lot</a></li>
+									{% elseif app.user.group == 'Manager' %}
+										<li><a href="{{ path('manager') }}">Lots</a></li>
+										<li><a href="{{ path('check-lots') }}">Check outdated lots</a></li>
+									{% elseif app.user.group == 'Admin' %}
+										<li><a href="{{ path('admin') }}">Messages</a></li>
+										<li><a href="{{ path('manager') }}">Lots</a></li>
+										<li><a href="{{ path('comments_user') }}">Comments User</a></li>
+										<li><a href="{{ path('comments_lot') }}">Comments Lot</a></li>
+										<li><a href="{{ path('check-lots') }}">Check outdated lots</a></li>
+									{% endif %}
+								</ul>
+							</li>
+						{% endif %}
+					</ul>
+					<div class="col-sm-3 col-md-3 pull-right" id="srch">
+						<form action="{{ path('search') }}">
+							<div class="input-group" id="sch-div">
+								<input type="text" class="form-control" placeholder="Search" name="parameters" id="sch">
+								<div class="input-group-btn" id="sch-btn">
+									<button class="btn btn-sch" type="submit" name="search"><i class="glyphicon glyphicon-search"></i></button>
+								</div>
+							</div>
+						</form>
 					</div>
-					{% endif %}
-					{% if is_granted('IS_AUTHENTICATED_FULLY') and app.user.group == 'Manager'%}
-					<div class="btn-group">
-						<button type="button" class="drop-item dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							Panel <span class="caret"></span>
-						</button>
-						<ul class="dropdown-menu">
-							<li><a href="{{ path('manager') }}">Lots</a></li>
-							<li><a href="{{ path('check-lots') }}">Check outdated lots</a></li>
-						</ul>
-					</div>
-						
-					{% endif %}
-					{% if is_granted('IS_AUTHENTICATED_FULLY') and app.user.group == 'Admin'%}
-					
-					<div class="btn-group">
-					  <button type="button" class="drop-item dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						Panel <span class="caret"></span>
-					  </button>
-					  <ul class="dropdown-menu">
-						<li><a href="{{ path('admin') }}">Messages</a></li>
-						<li><a href="{{ path('manager') }}">Lots</a></li>
-						<li><a href="{{ path('comments_user') }}">Comments User</a></li>
-						<li><a href="{{ path('comments_lot') }}">Comments Lot</a></li>
-						<li><a href="{{ path('check-lots') }}">Check outdated lots</a></li>
-					  </ul>
-					</div>
-					
-		
-					{% endif %}
-				</ul>
-				<div class="quick-search">
-					<form action="{{ path('search') }}">
-						<input class="search" type="text" name="parameters">
-						<button type="submit" class="but_search" name="search" >
-						  <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-						</button>
-						
-					</form>
 				</div>
 			</div>
 		</nav>
 		{% block page %}
-		<div class="parent">
-			<div class="side-menu">
-				<h3>Categories</h3>
-				{{ render(controller('AppBundle:Main:categories')) }}
-				{% block search_parameters %}
-				{% if s_properties  is defined %}
-					<div class="divider">Filters</div>
-					<form method="post" action="{{ path('category_display', {'name':name})}}">
-						{% for property in s_properties %}
-						{% if (property.values|first).val != '' %}
-						<div class="prop">
-						<b><div class="prpl">{{ property.name }}</div></b>
-						{% for values in property.values %}
-
-							<label class="chkl"><input class="chk" type="checkbox" name="{{ values.var }}" value="{{ values.val }}" />{{ values.val }}</label><br>
-
-						{% endfor %}
+			<div class="container" id="cont">
+				<div class="row-eq-height" id="main-row">
+					<div class="col-md-2 col-sm-3 hidden-xs" id="left-cont">
+						<h3>Categories</h3>
+						{{ render(controller('AppBundle:Main:categories')) }}
+						{% block search_parameters %}
+							{% if s_properties  is defined %}
+								<h3>Filters</h3>
+								<form method="post" action="{{ path('category_display', {'name':name})}}">
+									{% for property in s_properties %}
+										{% if (property.values|first).val != '' %}
+											<div class="prop">
+											<b><div class="prpl">{{ property.name }}</div></b>
+											{% for values in property.values %}
+												<label class="chkl"><input class="chk" type="checkbox" name="{{ values.var }}" value="{{ values.val }}" />{{ values.val }}</label><br>
+											{% endfor %}
+											</div>
+										{% endif %}
+									{% endfor %}
+									<input class="submit" type="submit" name="submit" value="Filter">
+								</form>
+							{% endif %}
+						{% endblock %}
+					</div>
+					
+					<div class="col-md-10 col-sm-9 col-xs-12" id="right-cont">
+						<div class="col-xs-12 visible-xs" id="sel">
+							<div class="dropdown">
+							  <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+								  Select category
+								  <span class="caret"></span>
+							  </button>
+							  <ul class="dropdown-menu" id="select-cat">
+								{{ render(controller('AppBundle:Main:categories')) }}
+							  </ul>
+							</div>
+							
 						</div>
-						{% endif %}
-						{% endfor %}
-						<input class="submit" type="submit" name="submit" value="Filter">
-					</form>
-				{% endif %}
-				{% endblock %}
+						<div class="content">
+							{% block content %}
+							{% endblock %}
+						</div>
+					</div>
+				</div>
 			</div>
-			
-			<div class=content>
-				{% block content %}{% endblock %}
-			</div>
-		</div>
 		{% endblock %}
-		<div class="footer1">
-		
-		<div class="footer">
+		<footer class="footer" id="footer">
 			Made by Good people.
-		</div>
-		</div>
-	</div>
+		</footer>
 		{% block js %}{% endblock %}
     </body>
 </html>
