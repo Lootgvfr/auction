@@ -96,9 +96,10 @@ class ControlPanelController extends Controller
 		$per_page = 10;   
 		$pages_query = $em->createQuery(
 						'SELECT COUNT(p.id)
-						FROM AppBundle:CommentUser p
+						FROM AppBundle:CommentLot p
 						WHERE p.status = :status'
 					)->setParameter('status', 'unconfirmed');
+		
 		$pages = $pages_query->getResult();
 		
 		$pages = ceil($pages[0][1] / $per_page);  
@@ -269,6 +270,11 @@ class ControlPanelController extends Controller
 		{
 			$start_pag = 1;
 			$end_pag = $pages;
+			if (!$end_pag)
+			{
+				$end_pag = 1;
+				$pages = 1;
+			}
 		}
 
 		$query = $em->createQuery(

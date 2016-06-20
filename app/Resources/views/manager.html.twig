@@ -64,28 +64,28 @@
 	<ul class="pagination pagination-sm">
 				
 				{% if page - 1 == 0%}
-					<li class="disabled"><a href="{{ path('comments_user', {'page': page - 1}) }}" aria-label="Previous">
+					<li class="disabled"><a href="{{ path('manager', {'page': page - 1}) }}" aria-label="Previous">
 						<span aria-hidden="true">&laquo;</span>
 					</a></li>
 				{% else %}
-					<li><a href="{{ path('comments_user', {'page': page - 1}) }}" aria-label="Previous">
+					<li><a href="{{ path('manager', {'page': page - 1}) }}" aria-label="Previous">
 						<span aria-hidden="true">&laquo;</span>
 					</a></li>
 				{% endif %}
 				
 				{% for i in start_pag..end_pag %}
 					{% if i == page %}
-						<li class="active"><a href="{{ path('comments_user', {'page': i}) }}">{{i}}</a></li>
+						<li class="active"><a href="{{ path('manager', {'page': i}) }}">{{i}}</a></li>
 					{% else %}
-						<li><a href="{{ path('comments_user', {'page': i}) }}">{{i}}</a></li>
+						<li><a href="{{ path('manager', {'page': i}) }}">{{i}}</a></li>
 					{% endif %}
 				{% endfor %}
 				{% if pages == page%}
-					<li class="disabled"><a href="{{ path('comments_user', {'page': page + 1}) }}" aria-label="Next">
+					<li class="disabled"><a href="{{ path('manager', {'page': page + 1}) }}" aria-label="Next">
 						<span aria-hidden="true">&raquo;</span>
 					</a></li>
 				{% else %}
-					<li><a href="{{ path('comments_user', {'page': page + 1}) }}" aria-label="Next">
+					<li><a href="{{ path('manager', {'page': page + 1}) }}" aria-label="Next">
 						<span aria-hidden="true">&raquo;</span>
 					</a></li>
 				{% endif %}

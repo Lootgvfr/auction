@@ -84,7 +84,7 @@
 							<div class="input-group" id="sch-div">
 								<input type="text" class="form-control" placeholder="Search" name="parameters" id="sch">
 								<div class="input-group-btn" id="sch-btn">
-									<button class="btn btn-sch" type="submit" name="search"><i class="glyphicon glyphicon-search"></i></button>
+									<button class="btn btn-sch" type="submit" name=""><i class="glyphicon glyphicon-search"></i></button>
 								</div>
 							</div>
 						</form>
@@ -103,7 +103,7 @@
 								<h3>Filters</h3>
 								<form method="post" action="{{ path('category_display', {'name':name})}}">
 									{% for property in s_properties %}
-										{% if (property.values|first).val != '' %}
+										{% if property.values and (property.values|first).val != '' %}
 											<div class="prop">
 											<b><div class="prpl">{{ property.name }}</div></b>
 											{% for values in property.values %}
