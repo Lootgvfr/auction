@@ -121,6 +121,7 @@ a:hover, a:focus, a:visited{
 	font-size: 21px;
 	text-align: center;
 	padding: 0 20px 0 20px;
+	-webkit-transition: 0.12s;
 }
 
 #item a:hover{
