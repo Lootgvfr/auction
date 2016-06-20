@@ -18,6 +18,8 @@ class SearchController extends Controller
             return $this->redirectToRoute("home");
         else{
             $parameter = $_GET['parameters'];
+			if ($parameter == "")
+				return $this->redirectToRoute("home");
             $em = $this->getDoctrine()->getManager();
             $per_page = 10;
             $date = new \DateTime();

@@ -16,7 +16,11 @@
 	margin: 0 auto;
 }
 
-
+.headline{
+	font-size: 25px;
+	padding: 5px 0 10px 0;
+	text-align: center;
+}
 .wrapper{
 	display: -webkit-flex;    
 	display: flex;  
@@ -24,7 +28,7 @@
 	min-width: 450px;
 	width: 30%;
 	min-height: 490px;
-	padding-bottom: 90px;
+	padding: 20px 0 20px 0;
 	flex-wrap: wrap;
 }
 

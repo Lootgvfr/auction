@@ -83,6 +83,36 @@ a:hover, a:focus, a:visited{
 	background-color: #e71c1c;
 	box-shadow: 2px 2px 5px black;
 }
+.red {
+	color: red;
+}
+
+.new_comment{
+	margin: 25px 10px 10px 10px;
+}
+.new_comment textarea{
+	resize: none;
+	border-radius: 3px;
+}
+
+.parent{
+	display: -webkit-flex;    
+	display: flex;  
+	margin: auto;
+	width: 85%;
+	padding: 20px 0 20px 0;
+	
+}
+.content{
+	margin: auto;
+	background-color: white;
+	background-color: #fff;
+	border: 1px solid #ceccbd;
+	height: 100%;
+	padding: 15px;
+	padding-bottom: 0px;
+	width: auto;
+}
 
 #item a{
 	color: white;
@@ -142,14 +172,7 @@ a:hover, a:focus, a:visited{
 	padding: 0px;
 }
 
-.content{
-	background-color: white;
-	background-color: #fff;
-	border: 1px solid #ceccbd;
-	height: 100%;
-	padding: 15px;
-	padding-bottom: 0px;
-}
+
 
 .row-eq-height {
   display: -webkit-box;
