@@ -21,28 +21,31 @@
 		<input class="submit" type="submit" value="Sort" name="Sort">
 	</form>
 	{% if lots %}
-		<ul class="grid row">
-		{% for lot in lots %}
-			<li class="item">
-				<a href="{{ path('lot', {'id':lot.id}) }}">
-					<img class="item-pic" src="{{ lot.img }}" alt="{{ lot.name }}"/>
-					<div class="item-name">{{ lot.name }}</div><br>
-				</a>
-				<div class="bottom">
-					{% if lot.status == 'Finished' %}
-						<label class="label-closed">Closed</label>
-					{% elseif lot.status == 'Unconfirmed' %}
-						<label class="label-closed">Pending</label>
-					{% else %}
-						<label class="label-open">Open</label>
-					{% endif %}
-					<div class="item-price">{{ lot.currentPrice }} {{ lot.currency.name }}</div>
-					<!-- <a href="#" class="item-buy">Buy</a> -->
-					<div class="item-comments">{{ lot.comments|length }} comments</div>
+		<div class="row">
+			{% for lot in lots %}
+			<div class="col-md-3 col-sm-6 col-xs-6">
+				<div class="container-fluid" id="lot-item">
+					<div class="row">
+						<a class="item-link" href="{{ path('lot', {'id':lot.id}) }}">
+							<img class="item-pic" src="{{ lot.img }}" alt="{{ lot.name }}"/>
+							<div class="item-name">{{ lot.name }}</div><br>
+						</a>
+					</div>
+					<div class="row" id="bottom">
+						{% if lot.status == 'Finished' %}
+							<label class="label-closed">Closed</label>
+						{% elseif lot.status == 'Unconfirmed' %}
+							<label class="label-closed">Pending</label>
+						{% else %}
+							<label class="label-open">Open</label>
+						{% endif %}
+						<div class="item-price">{{ lot.currentPrice }} {{ lot.currency.name }}</div>
+						<div class="item-comments">{{ lot.comments|length }} comments</div>
+					</div>
 				</div>
-			</li>
-		{% endfor %}
-		</ul>
+			</div>
+			{% endfor %}
+		</div>
 		<ul class="pagination pagination-sm row">
 				
 				{% if page - 1 == 0%}

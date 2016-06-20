@@ -14,81 +14,90 @@
 
 {% block content %}
 	{% if found %}
-		<div class="text-title">{{ lot.name }}</div>
-		<div class="else">
+	<div class="container-fluid" id="lot-cont">
+		<h3 class="h3title"><b>{{ lot.name }}</b></h3>
+		<div class="row" >
 			{% if lot.img %}
-			<img class="img" src="{{ path }}">
+			<div class="col-md-5 col-xs-12">
+				<img class="img-responsive" id="lot-img" src="{{ path }}"/>
+			</div>
 			{% endif %}
-			<div class="buy">
-			<p><b>Seller:  </b> <strong><a href="{{ path('profile', {'username': lot.author.username}) }}"> {{ lot.author.username }}</a></strong></p>
-				<form method="post" action="{{ path('lot', {'id':lot.id}) }}">
-					<div class="bid">
-						<div id="pr" class="text"><b>Current price:</b> {% if not price == 0 %}{{ price }}{% else %}{{ lot.currentPrice }}{% endif %} {{ lot.currency.name }}</div>
-						{% if lot.status == 'Open' and is_granted('IS_AUTHENTICATED_FULLY') %}
-							<button class="submit" name="Bid" type="submit">Make a bid</button>
-							<input class="text-input" name="Bid_value" placeholder="Your bid"/>
-						{% endif %}
+			<div class="col-md-7 col-xs-12">
+				<div class="container-fluid">
+					<div class="row" id="buy-row">
+						<b>Seller:  </b> <strong><a href="{{ path('profile', {'username': lot.author.username}) }}"> {{ lot.author.username }}</a></strong>
 					</div>
-					{% if error %}
-						<div class="error">{{ error }}</div>
-					{% endif %}
-					<div class="buyout">
-					{% if lot.status == 'Open'%}
-						{% if lot.buyoutPrice %}
-							<div id="pr" class="text"><b>Buyout price:</b> {{ lot.buyoutPrice }} {{ lot.currency.name }}</div>
+					<form method="post" action="{{ path('lot', {'id':lot.id}) }}">
+						<div class="row" id="buy-row">
+							<div class="col-md-6 col-xs-6" id="buy-col">
+								<b>Current price:</b> {% if not price == 0 %}{{ price }}{% else %}{{ lot.currentPrice }}{% endif %} {{ lot.currency.name }}
+							</div>
+							<div class="col-md-6 col-xs-6" id="buy-col">
 							{% if lot.status == 'Open' and is_granted('IS_AUTHENTICATED_FULLY') %}
-								<button id="b" class="submit" name="Buyout" type="submit">Buyout</button>
+								<input class="text-input" name="Bid_value" placeholder="Your bid"/>
+								<button class="submit" name="Bid" type="submit">Make a bid</button>
+							{% endif %}
+							{% if error %}
+								<div class="error">{{ error }}</div>
+							{% endif %}
+							</div>
+						</div>
+						{% if lot.status == 'Open'%}
+							{% if lot.buyoutPrice %}
+								<div class="row" id="buy-row">
+									<div class="col-md-6 col-xs-6" id="buy-col">
+										<b>Buyout price:</b> {{ lot.buyoutPrice }} {{ lot.currency.name }}
+									</div>
+									<div class="col-md-6 col-xs-6" id="buy-col">
+									{% if lot.status == 'Open' and is_granted('IS_AUTHENTICATED_FULLY') %}
+										<button id="b" class="submit" name="Buyout" type="submit">Buyout</button>
+									{% endif %}
+									</div>
+								</div>
 							{% endif %}
 						{% endif %}
-					{% endif %}
+					</form>
+					<div class="row" id="buy-row">
+						{% if lot.status == 'Unconfirmed' %}
+							This lot is not yet confirmed<br>Duration: {{ duration }} days
+						{% elseif lot.status == 'Open' %}
+							Ends on {{ lot.endDate|date('d.m.Y') }}!
+						{% elseif lot.status == 'Finished' %}
+							This lot is already closed<br>It was closed on {{ lot.endDate|date('d.m.Y') }}
+						{% endif %}
 					</div>
-				</form>
-				{% if lot.status == 'Unconfirmed' %}
-				<div class="right">
-					This lot is not yet confirmed<br>Duration: {{ duration }} days
-				</div>
-				{% endif %}
-				{% if lot.status == 'Open' %}
-				<div class="right">
-					Ends on {{ lot.endDate|date('d.m.Y') }}!
-				</div>
-				{% endif %}
-				{% if lot.status == 'Finished' %}
-				<div class="right">
-					This lot is already closed<br>It was closed on {{ lot.endDate|date('d.m.Y') }}
-				</div>
-				{% endif %}
-				{% if is_granted('IS_AUTHENTICATED_FULLY') and lot.status == 'Unconfirmed' %}
-					{% if app.user.username == author.username or app.user.group == 'Manager' or app.user.group == 'Admin' %}
-						<div class="right-block">
+					{% if is_granted('IS_AUTHENTICATED_FULLY') and lot.status == 'Unconfirmed' %}
+						{% if app.user.username == author.username or app.user.group == 'Manager' or app.user.group == 'Admin' %}
+						<div class="row" id="menu-row">
 							<a href="{{ path('edit-lot', {'id':lot.id}) }}">Edit lot</a><br>
 							<a href="{{ path('delete-lot', {'id':lot.id}) }}">Delete lot</a>
 							{% if app.user.group == 'Manager' or app.user.group == 'Admin' %}
 								<br><a href="{{ path('confirm-lot', {'id':lot.id}) }}">Confirm lot</a>
 							{% endif %}
 						</div>
+						{% endif %}
 					{% endif %}
-				{% endif %}
+				</div>
 			</div>
 		</div>
-		<div class="row">
-		<div class="col-md-6">
-			<div id="desc" class="text"><b>Description:</b> {{ lot.description }}</div>
-			<p>
-				<div class="sep">
-					<i><b>Properties:</b></i>
-				</div>
-				{% for prop in properties %}
-					{% if prop.value %}
-					<div class="property">
-						<b>{{ prop.name }}:</b> {{ prop.value }}
+		<div class="row" id="buy-row">
+			<div class="col-md-5 col-xs-12">
+				<p><b>Description:</b> {{ lot.description }}</p>
+				<p>
+					<div class="sep">
+						<i><b>Properties:</b></i>
 					</div>
-					{% endif %}
-				{% endfor %}
-			</p>
-		</div>
-		
-		<div class="comments col-md-6">
+					{% for prop in properties %}
+						{% if prop.value %}
+						<div class="property">
+							<b>{{ prop.name }}:</b> {{ prop.value }}
+						</div>
+						{% endif %}
+					{% endfor %}
+				</p>
+			</div>
+			
+			<div class="comments col-md-7 col-xs-12">
 				{% for comment in lot.comments %}
 					<div class="row show-comment">
 						<div class="col-sm-4">
@@ -110,9 +119,9 @@
 				
 				<form action="{{ path('lot_comment_new', { 'lot_id': lot.id }) }}" method="post">
 					<div class="new_comment">
-							<input  required id="input-1-sm" name="rating" class="rating rating-loading" data-min="0" data-max="5" data-step="1" data-size="sm"> <br>
-							<textarea name="text"  required ></textarea>
-							<button class="button" type="submit" name="submit">Comment</button>
+						<input  required id="input-1-sm" name="rating" class="rating rating-loading" data-min="0" data-max="5" data-step="1" data-size="sm"> <br>
+						<textarea class="txt" name="text"  required ></textarea><br>
+						<button class="submit sbm" type="submit" name="submit">Comment</button>
 					</div>
 
 				</form>
@@ -126,46 +135,7 @@
 				</p>
 				{% endif %}
 			</div>     
-	<!----------
-		
-		<div class="col-md-4">
-		{% for comment in lot.comments %}
-			<div class="row post-comment">
-				<div class="col-sm-4 ">
-				<span class="glyphicon glyphicon-comment" aria-label="Left Align"></span>
-					<strong><a href="{{ path('profile', {'username': comment.author.username}) }}"> {{ comment.author.username }}</a></strong> 
-					{{ comment.date|date('d.m.Y') }}
-					<input class="rating rating-loading" data-size="xs" data-readonly="true" value="{{ comment.rating }}" >
-				</div>
-				<div class="col-sm-9 left">
-					{{ comment.text }}
-				</div>
-				
-			</div>
-		{% else %}
-			<div class="post-comment">
-				<p>No comments here yet.</p>
-			</div>
-		{% endfor %}
-		{% if is_granted('IS_AUTHENTICATED_FULLY') %}
-			<form action="{{ path('lot_comment_new', { 'lot_id': lot.id }) }}" method="post">
-					<div class="new_comment">
-							<input id="input-1-sm" name="rating" class="rating rating-loading" data-min="0" data-max="5" data-step="1" data-size="sm"> <br>
-							<textarea name="text"></textarea>
-							<button class="button" type="submit" name="submit">Comment</button>
-					</div>
-
-				</form>
-		{% else %}
-		<p>
-			<a class="submit" href="{{ path('login') }}">
-				Sign in
-			</a>
-			for leaving a comment
-		</p>
-		{% endif %}
-	</div>
-	-->
+		</div>
 	</div>
 	{% else %}
 		Lot not found.
