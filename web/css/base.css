@@ -280,6 +280,11 @@ a:hover, a:focus, a:visited{
 #lot-item{
 	border: 1px solid #aaa;
 	margin-bottom: 20px;
+	-webkit-transition: 0.2s;
+}
+
+#lot-item:hover{
+	border-color: #4169E1;
 }
 
 .item-link{
