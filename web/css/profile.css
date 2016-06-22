@@ -145,12 +145,7 @@ li {
 }
 .comments
 {
-	overflow-y: scroll;
-	overflow-x: hidden;
-	/*padding-left: 15px;*/
-	/*margin-left: 15px;*/
-	/*float: right;*/
-	/*width: 35%;*/
+	
 	border-left: 1px dashed #ceccbd;
 }
 
