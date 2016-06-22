@@ -7,58 +7,59 @@
 {% endblock %}
 
 {% block content %}
-	<div class="welcome">
-	Welcome to the internet-auction!
-	</div>
-	<div class="part">
-		<div class="txt">Recently opened lots:</div>
-		<ul class="grid">
+	<div class="container-fluid">
+		<h2>Welcome to the internet-auction!</h2>
+		<h4>Recently opened lots:</h4>
+		<div class="row">
 			{% for lot in recent %}
-				<li class="item">
-					<a href="{{ path('lot', {'id':lot.id}) }}">
-						<img class="item-pic" src="{{ lot.img }}" alt="{{ lot.name }}"/>
-						<div class="item-name">{{ lot.name }}</div><br>
-					</a>
-					<div class="bottom">
+			<div class="col-md-3 col-sm-6 col-xs-6">
+				<div class="container-fluid" id="lot-item">
+					<div class="row">
+						<a class="item-link" href="{{ path('lot', {'id':lot.id}) }}">
+							<img class="item-pic" src="{{ lot.img }}" alt="{{ lot.name }}"/>
+							<div class="item-name">{{ lot.name }}</div><br>
+						</a>
+					</div>
+					<div class="row" id="bottom">
 						{% if lot.status == 'Finished' %}
 							<label class="label-closed">Closed</label>
 						{% elseif lot.status == 'Unconfirmed' %}
-							<label class="label-closed">Unconfirmed</label>
+							<label class="label-closed">Pending</label>
 						{% else %}
 							<label class="label-open">Open</label>
 						{% endif %}
 						<div class="item-price">{{ lot.currentPrice }} {{ lot.currency.name }}</div>
-						<!-- <a href="#" class="item-buy">Buy</a> -->
 						<div class="item-comments">{{ lot.comments|length }} comments</div>
 					</div>
-				</li>
+				</div>
+			</div>
 			{% endfor %}
-		</ul>
-	</div>
-	
-	<div class="part">
-		<div class="txt">Recommended for you:</div>
-		<ul class="grid">
+		</div>
+		<h4>Recommended for you:</h4>
+		<div class="row">
 			{% for lot in recommended %}
-				<li class="item">
-					<a href="{{ path('lot', {'id':lot.id}) }}">
-						<img class="item-pic" src="{{ lot.img }}" alt="{{ lot.name }}"/>
-						<div class="item-name">{{ lot.name }}</div><br>
-					</a>
-					<div class="bottom">
+			<div class="col-md-3 col-sm-6 col-xs-6">
+				<div class="container-fluid" id="lot-item">
+					<div class="row">
+						<a class="item-link" href="{{ path('lot', {'id':lot.id}) }}">
+							<img class="item-pic" src="{{ lot.img }}" alt="{{ lot.name }}"/>
+							<div class="item-name">{{ lot.name }}</div><br>
+						</a>
+					</div>
+					<div class="row" id="bottom">
 						{% if lot.status == 'Finished' %}
 							<label class="label-closed">Closed</label>
 						{% elseif lot.status == 'Unconfirmed' %}
-							<label class="label-closed">Unconfirmed</label>
+							<label class="label-closed">Pending</label>
 						{% else %}
 							<label class="label-open">Open</label>
 						{% endif %}
 						<div class="item-price">{{ lot.currentPrice }} {{ lot.currency.name }}</div>
-						<!-- <a href="#" class="item-buy">Buy</a> -->
 						<div class="item-comments">{{ lot.comments|length }} comments</div>
 					</div>
-				</li>
+				</div>
+			</div>
 			{% endfor %}
-		</ul>
+		</div>
 	</div>
 {% endblock %}
