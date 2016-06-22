@@ -9,197 +9,197 @@
 
 {% block page %}
 
-<div class="parent">
-	<div class="content">
-		<div class="content_title">User Profile</div>
-		<div class="row">
-		<div class="col-md-2">
-				
-				<div class="manage">
-				<img src='{{ path }}' alt="Profile image" class="image">
-				<input class="rating rating-loading" data-size="sm" data-readonly="true" value="{{ rating }}" ><br>
-				{% if is_granted('IS_AUTHENTICATED_FULLY') and user.username == app.user.username %}
-					<div class="edit_profile">
-					<a href="{{path('edit')}}"><img src='/img/edit.png'>Edit profile</a><br>
-					</div>
-				{% endif %}
-				{% if  is_granted('IS_AUTHENTICATED_FULLY') and "Admin" == app.user.group %}
-				<form action="{{path('set_group')}}" method="post" class="set_group">
-					<select name="new_group">
-						<option {% if user.group == "Admin" %} selected {% endif %} value="Admin">Admin
-						<option {% if user.group == "Moderator" %} selected {% endif %} value="Moderator">Moderator
-						<option {% if user.group == "Manager" %} selected {% endif %} value="Manager">Manager
-						<option {% if user.group == "User" %} selected {% endif %} value="User">User
-						<option {% if user.group == "Banned" %} selected {% endif %} value="Banned">Banned
-					</select>
+<div id="cont" class="container prof" >
+	<div class="contr">
+	<div class="content_title">User Profile</div>
+	<div class="row">
+	<div class="col-md-2 col-sm-3 col-xs-4">
+			
+			<div class="manage">
+			<img src='{{ path }}' alt="Profile image" class="image">
+			<input class="rating rating-loading" data-size="sm" data-readonly="true" value="{{ rating }}" ><br>
+			{% if is_granted('IS_AUTHENTICATED_FULLY') and user.username == app.user.username %}
+				<div class="edit_profile">
+				<a href="{{path('edit')}}"><img src='/img/edit.png'>Edit profile</a><br>
+				</div>
+			{% endif %}
+			{% if  is_granted('IS_AUTHENTICATED_FULLY') and "Admin" == app.user.group %}
+			<form action="{{path('set_group')}}" method="post" class="set_group">
+				<select name="new_group">
+					<option {% if user.group == "Admin" %} selected {% endif %} value="Admin">Admin
+					<option {% if user.group == "Moderator" %} selected {% endif %} value="Moderator">Moderator
+					<option {% if user.group == "Manager" %} selected {% endif %} value="Manager">Manager
+					<option {% if user.group == "User" %} selected {% endif %} value="User">User
+					<option {% if user.group == "Banned" %} selected {% endif %} value="Banned">Banned
+				</select>
+				<input type="hidden" value="{{user.username}}" name="username">
+				<input type="submit" value="OK" class="ok_button">
+			</form>
+			{% endif %}
+			{% if is_granted('IS_AUTHENTICATED_FULLY') and ("Moderator" == app.user.group  or "Manager" == app.user.group) %}
+			{% if user.group == "User" %}
+				<form action="{{path('set_group')}}" method="post">
+					<input type="hidden" value="Banned" name="new_group">
 					<input type="hidden" value="{{user.username}}" name="username">
-					<input type="submit" value="OK" class="ok_button">
+					<input type="submit" value="Ban" class="ban_button">
 				</form>
-				{% endif %}
-				{% if is_granted('IS_AUTHENTICATED_FULLY') and ("Moderator" == app.user.group  or "Manager" == app.user.group) %}
-				{% if user.group == "User" %}
-					<form action="{{path('set_group')}}" method="post">
-						<input type="hidden" value="Banned" name="new_group">
-						<input type="hidden" value="{{user.username}}" name="username">
-						<input type="submit" value="Ban" class="ban_button">
-					</form>
-				{% endif %}
-				{% endif %}
-				{% if  is_granted('IS_AUTHENTICATED_FULLY') and "User" != app.user.group and user.group == "Banned" %}
-					<form action="{{path('set_group')}}" method="post">
-						<input type="hidden" value="User" name="new_group">
-						<input type="hidden" value="{{user.username}}" name="username">
-						<input type="submit" value="Unban" class="unban_button">
-					</form>
-				{% endif %}
-				</div>
+			{% endif %}
+			{% endif %}
+			{% if  is_granted('IS_AUTHENTICATED_FULLY') and "User" != app.user.group and user.group == "Banned" %}
+				<form action="{{path('set_group')}}" method="post">
+					<input type="hidden" value="User" name="new_group">
+					<input type="hidden" value="{{user.username}}" name="username">
+					<input type="submit" value="Unban" class="unban_button">
+				</form>
+			{% endif %}
+			</div>
+	</div>
+	
+	<div class="info row col-md-4 col-sm-4 col-xs-8">
+		<div class="row">
+			<div class="col-sm-3 col-xs-4">
+				Username: 
+			</div>
+			<div class="col-sm-8 col-xs-8">
+				{{ user.username }}
+			</div>
 		</div>
+			{% if user.name %}
+		<div class="row">
+			<div class="col-sm-3 col-xs-4">
+			Name: 
+			</div>
+			<div class="col-sm-8 col-xs-8">
+			{{ user.name }}
+			</div>
+		</div>
+			{% endif %}
+			{% if  is_granted('IS_AUTHENTICATED_FULLY') and user.username == app.user.username %}
+		<div class="row">
+			<div class="col-sm-3 col-xs-4">
+			Email:
+			</div>
+			<div class="col-sm-8 col-xs-8">
+			{{ user.email }}
+			</div>
+		</div>
+			{% endif %}
+		<div class="row">
+			<div class="col-sm-3 col-xs-4">
+			Group:
+			</div>
+			<div class="col-sm-8 col-xs-8">
+			{{ user.group }}
+			</div>
+		</div>
+			{% if  is_granted('IS_AUTHENTICATED_FULLY') and user.address and user.username == app.user.username %}
+		<div class="row">
+			<div class="col-sm-3 col-xs-4">
+			Address:
+			</div>
+			<div class="col-sm-8 col-xs-8">
+			{{ user.address }}
+			</div>
+		</div>
+			{% endif %}
+			{% if  is_granted('IS_AUTHENTICATED_FULLY') and user.phone and user.username == app.user.username %}
+		<div class="row">
+			<div class="col-sm-3 col-xs-4">
+			Phone:
+			</div>
+			<div class="col-sm-8 col-xs-8">
+			{{ user.phone }}
+			</div>
+		</div>
+			{% endif %}
+			{% if user.info %}
+		<div class="row">
+			<div class="col-sm-3 col-xs-4">
+			Info:
+			</div>
+			<div class="col-sm-8 col-xs-8">
+			{{ user.info }}
+			</div>
+		</div>
+			{% endif %}
 		
-		<div class="info row col-md-5">
-			<div class="row">
-				<div class="col-sm-2">
-					Username: 
+	</div>
+		<div class="comments col-md-6 col-sm-5 col-xs-12">
+			{% for comment in comments %}
+				<div class="row show-comment">
+					<div class="col-sm-4 left">
+					<span class="glyphicon glyphicon-comment" aria-label="Left Align"></span>
+						<strong><a href="{{ path('profile', {'username': comment.author.username}) }}"> {{ comment.author.username }}</a></strong> 
+						{{ comment.date|date('d.m.Y') }}
+						<input class="rating rating-loading" data-size="xs" data-readonly="true" value="{{ comment.rating }}" >
+					</div>
+					<div class="col-sm-8">
+						{{ comment.text }}
+					</div>
 				</div>
-				<div class="col-sm-10">
-					{{ user.username }}
+			{% else %}
+				<div class="post-comment">
+					<p>No comments.</p>
 				</div>
-			</div>
-				{% if user.name %}
-			<div class="row">
-				<div class="col-sm-2">
-				Name: 
-				</div>
-				<div class="col-sm-10">
-				{{ user.name }}
-				</div>
-			</div>
-				{% endif %}
-				{% if  is_granted('IS_AUTHENTICATED_FULLY') and user.username == app.user.username %}
-			<div class="row">
-				<div class="col-sm-2">
-				Email:
-				</div>
-				<div class="col-sm-10">
-				{{ user.email }}
-				</div>
-			</div>
-				{% endif %}
-			<div class="row">
-				<div class="col-sm-2">
-				Group:
-				</div>
-				<div class="col-sm-10">
-				{{ user.group }}
-				</div>
-			</div>
-				{% if  is_granted('IS_AUTHENTICATED_FULLY') and user.address and user.username == app.user.username %}
-			<div class="row">
-				<div class="col-sm-2">
-				Address:
-				</div>
-				<div class="col-sm-10">
-				{{ user.address }}
-				</div>
-			</div>
-				{% endif %}
-				{% if  is_granted('IS_AUTHENTICATED_FULLY') and user.phone and user.username == app.user.username %}
-			<div class="row">
-				<div class="col-sm-2">
-				Phone:
-				</div>
-				<div class="col-sm-10">
-				{{ user.phone }}
-				</div>
-			</div>
-				{% endif %}
-				{% if user.info %}
-			<div class="row">
-				<div class="col-sm-2">
-				Info:
-				</div>
-				<div class="col-sm-10">
-				{{ user.info }}
-				</div>
-			</div>
-				{% endif %}
+			{% endfor %}
+			{% if is_granted('IS_AUTHENTICATED_FULLY') %}
 			
-		</div>
-			<div class="comments col-md-5">
-				{% for comment in comments %}
-					<div class="row show-comment">
-						<div class="col-sm-4 left">
-						<span class="glyphicon glyphicon-comment" aria-label="Left Align"></span>
-							<strong><a href="{{ path('profile', {'username': comment.author.username}) }}"> {{ comment.author.username }}</a></strong> 
-							{{ comment.date|date('d.m.Y') }}
-							<input class="rating rating-loading" data-size="xs" data-readonly="true" value="{{ comment.rating }}" >
-						</div>
-						<div class="col-sm-8">
-							{{ comment.text }}
-						</div>
-					</div>
-				{% else %}
-					<div class="post-comment">
-						<p>No comments.</p>
-					</div>
-				{% endfor %}
-				{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+			<form action="{{ path('comment_new', { 'sellerName': user.username }) }}" method="post">
+				<div class="new_comment">
+				Leave a comment
+						<input  required id="input-1-sm" name="rating" class="rating rating-loading" data-min="0" data-max="5" data-step="1" data-size="sm"> 
+						<textarea class="col-md-10" name="text"  required ></textarea><br>
+						<button class="button" type="submit" name="submit">Comment</button>
+				</div>
+
+			</form>
 				
-				<form action="{{ path('comment_new', { 'sellerName': user.username }) }}" method="post">
-					<div class="new_comment">
-					Leave a comment
-							<input  required id="input-1-sm" name="rating" class="rating rating-loading" data-min="0" data-max="5" data-step="1" data-size="sm"> 
-							<textarea class="col-md-10" name="text"  required ></textarea><br>
-							<button class="button" type="submit" name="submit">Comment</button>
-					</div>
-
-				</form>
-					
-				{% else %}
-				<p>
-					<a class="submit" href="{{ path('login') }}">
-						Sign in
-					</a>
-					for leaving a comment
-				</p>
-				{% endif %}
-			</div>
-			
-		
-		</div>
-		<div class="auctions">
-			<div class="content_title">
-				User's lots
-			</div>
-            {% if lots %}
-		<ul class="grid">
-		{% for lot in lots %}
-			<li class="item">
-				<a href="{{ path('lot', {'id':lot.id}) }}">
-					<img class="item-pic" src="{{ lot.img }}" alt="{{ lot.name }}"/>
-					<div class="item-name">{{ lot.name }}</div><br>
+			{% else %}
+			<p>
+				<a class="submit" href="{{ path('login') }}">
+					Sign in
 				</a>
-				<div class="bottom">
-					{% if lot.status == 'Finished' %}
-						<label class="label-closed">Closed</label>
-					{% elseif lot.status == 'Unconfirmed' %}
-						<label class="label-closed">Pending</label>
-					{% else %}
-						<label class="label-open">Open</label>
-					{% endif %}
-					<div class="item-price">{{ lot.currentPrice }} {{ lot.currency.name }}</div>
-					<!-- <a href="#" class="item-buy">Buy</a> -->
-					<div class="item-comments">{{ lot.comments|length }} comments</div>
-				</div>
-			</li>
-		{% endfor %}
-		</ul>
-	{% else %}
-		<p>User doesn't have lots yet.</p>
-	{% endif %}
-
-
-
+				for leaving a comment
+			</p>
+			{% endif %}
 		</div>
+		
+	
+	</div>
+	<div class="auctions">
+		<div class="content_title">
+			User's lots
+		</div>
+		{% if lots %}
+			<div class="row">
+			{% for lot in lots %}
+			<div class="col-md-3 col-sm-4 col-xs-6">
+				<div class="container-fluid" id="lot-item">
+					<div class="row">
+						<a class="item-link" href="{{ path('lot', {'id':lot.id}) }}">
+							<img class="item-pic" src="{{ lot.img }}" alt="{{ lot.name }}"/>
+							<div class="item-name">{{ lot.name }}</div><br>
+						</a>
+					</div>
+					<div class="row" id="bottom">
+						{% if lot.status == 'Finished' %}
+							<label class="label-closed">Closed</label>
+						{% elseif lot.status == 'Unconfirmed' %}
+							<label class="label-closed">Pending</label>
+						{% else %}
+							<label class="label-open">Open</label>
+						{% endif %}
+						<div class="item-price">{{ lot.currentPrice }} {{ lot.currency.name }}</div>
+						<div class="item-comments">{{ lot.comments|length }} comments</div>
+					</div>
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+		{% else %}
+			<p>User doesn't have lots yet.</p>
+		{% endif %}
+	</div>
 	</div>
 </div>
 
